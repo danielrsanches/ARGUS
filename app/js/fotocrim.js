@@ -3,8 +3,12 @@ clearCss();
 clearJs();
 
 /*==================================================
-= CONFIGURAÇÕES DA TABELA
+= CONFIGURAÇÕES DAS TABELAS
 ==================================================*/
+var viewFotocrim = {}; //objeto de visualização de fotocrim
+var tableFotocrim = {}; //objeto de tabela de fotocrim
+var tableFotocrimEnderecos = {}; //objeto de tabela de endereços de fotocrim
+
 var tableConfig = {
     tableName: "fotocrim",
     orderByDefault: "nome ASC",
@@ -30,10 +34,11 @@ var tableConfig = {
         {name: "createdAt", type: "datetime", label: "Criado em", searchable: true},
         {name: "updatedAt", type: "datetime", label: "Atualizado em", searchable: true}
     ],
-    relations: [
+    join: [
         {
-            table: "faccao",
-            on: "pessoa.idFaccao = faccao.id",
+            tableName: "faccao",
+            joinType: "LEFT",
+            on: "fotocrim.idFaccao = faccao.id",
             // prettier-ignore
             fields: [
                 {name: "id", type: "bigint", label: "ID", searchable: true},
