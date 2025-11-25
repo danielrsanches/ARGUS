@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- CSP: tudo local, sem inline; imagens locais (paths relativos, inclusive "../") -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self';
+                       script-src 'self';
+                       style-src 'self';
+                       img-src 'self' data: blob:;
+                       font-src 'self' data:;
+                       connect-src 'self';
+                       object-src 'none';
+                       base-uri 'self';"
+        />
+
+        <!-- Headers complementares via meta (ideal por header HTTP no servidor) -->
+        <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+        <title>ARGUS — Sistema de Inteligência Policial</title>
+
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="stylesheet" href="css/index.css" data-type="fixed" />
+        <link rel="stylesheet" href="css/form.css" data-type="fixed" />
+        <link rel="stylesheet" href="css/modulo.css" data-type="fixed" />
+
+        <script src="js/vendor/jquery-3.7.1.min.js" data-type="fixed"></script>
+        <script defer src="js/sessionVerify.js" data-type="fixed"></script>
+        <script defer src="js/index.js" data-type="fixed"></script>
+        <script defer src="js/argus.js" data-type="fixed"></script>
+    </head>
+
+    <body>
+        <!-- Topbar fixa -->
+        <header class="topbar">
+            <div class="cabecalho">
+                <img src="img/coruja.png" alt="ARGUS" />
+                <div class="titulo">
+                    <strong>ARGUS</strong>
+                    <span>Sistema de Inteligência Policial</span>
+                </div>
+            </div>
+            <div class="botoes">
+                <button id="novaJanela" title="Abrir o sistema em nova aba">Nova janela</button>
+                <button id="logout" title="Encerrar sessão">Sair</button>
+            </div>
+        </header>
+
+        <!-- Sidebar fixa (MENU PRINCIPAL) -->
+        <aside id="menuPrincipal" class="menuPrincipal">
+            <div class="menuTitulo">Navegação</div>
+            <a href="#/home" class="active" data-modulo="home">Início</a>
+            <a href="#/agentes" class="" data-modulo="agentes">Agentes</a>
+            <a href="#/fotocrim" class="" data-modulo="fotocrim">Fotocrim</a>
+        </aside>
+
+        <!-- Área dinâmica (recarregada a cada módulo) -->
+        <main id="modulo">
+
+        </main>
+
+        <footer id="rodape">
+            <div class="user"></div>
+        </footer>
+    </body>
+</html>

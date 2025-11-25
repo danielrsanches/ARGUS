@@ -1,0 +1,155 @@
+/************************************/
+/********* ELEMENTOS GERAIS *********/
+/************************************/
+html {
+    height: 100%;
+    user-select: none;
+
+    body {
+        height: 100%;
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+        background: #0f1216;
+        color: #e7ecf3;
+        display: grid;
+        grid-template-rows: 64px 1fr;
+        grid-template-columns: 280px 1fr;
+        grid-template-areas:
+            "topbar topbar"
+            "sidebar main";
+        overflow: hidden;
+    }
+
+    * {
+        box-sizing: border-box;
+        /*largura total = width (já incluindo padding + border)*/
+    }
+}
+
+/************************************************/
+/********* TOP BAR (CABEÇALHO + BOTÕES) *********/
+/************************************************/
+header.topbar {
+    grid-area: topbar;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 64px;
+    background: linear-gradient(90deg, #b22234 0%, #3a3f46 60%, #2b3139 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px 0 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    user-select: none;
+
+    div.cabecalho {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        img {
+            height: 44px;
+            filter: contrast(0) brightness(2);
+            pointer-events: none; /* impede clique sobre a imagem */
+        }
+
+        div.titulo {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+
+            strong {
+                font-size: 22px;
+                letter-spacing: 0.6px;
+                font-weight: 800;
+            }
+
+            span {
+                font-size: 14px;
+                color: #f1f5f9;
+                opacity: 0.9;
+            }
+        }
+    }
+
+    div.botoes {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+/* ********************************* */
+/* ******** MENU PRINCIPAL ********* */
+/* ********************************* */
+aside.menuPrincipal {
+    grid-area: sidebar;
+    height: calc(100vh - 64px);
+    overflow: auto;
+    padding: 14px;
+    background: #171b21;
+    border-right: 1px solid #232a33;
+    user-select: none;
+
+    div.menuTitulo {
+        font-size: 12px;
+        color: #a6b0be;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin: 10px 8px;
+    }
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        margin: 6px 0;
+        border-radius: 10px;
+        color: #e7ecf3;
+        text-decoration: none;
+        background: transparent;
+        border: 1px solid transparent;
+
+        &:hover {
+            background: #1e242d;
+            border-color: #2a3340;
+        }
+
+        &.active {
+            background: #212833;
+            border-color: #2f3a49;
+        }
+    }
+}
+
+/***********************************/
+/********* Main Módulo *************/
+/***********************************/
+main#modulo {
+    height: calc(100vh - 90px);
+    overflow: auto;
+    padding: 18px;
+    position: relative;
+    /*importante para alinhar os elementos do módulo dentro dele*/
+    background: radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.04), transparent 45%), linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 120px);
+}
+
+
+footer#rodape{
+    position: fixed;
+    bottom: 0;
+    left: 280px;
+    z-index: 50;
+    height: 26px;
+    width: calc(100vw - 280px);
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding: 2px 15px;
+    user-select: none;
+    font-size: 0.8rem;
+    background: #171b21;
+    color: darkgray;
+    border-top: 1px solid #232a33;
+}

@@ -1,0 +1,28 @@
+div.topBar {
+    background: #1e1e1e;
+    color: #f1f1f1;
+    padding: 5px;
+    margin-top: -10px;
+    border-bottom: 1px solid #333;
+    user-select: none;
+
+    /* Linha 1: título + menu */
+    div.titulo {
+        display: flex;
+        justify-content: space-between;
+        /* título à esquerda, menu à direita */
+        align-items: center;
+        /* alinhamento vertical */
+        width: 100%;
+
+        strong {
+            font-size: 1.5rem;
+            color: #f1f1f1;
+        }
+
+        div.menuModulo {
+            display: flex;
+            gap: 10px;
+        }
+    }
+}

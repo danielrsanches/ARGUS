@@ -1,0 +1,71 @@
+<!-- Modal de Pesquisa Avançada -->
+<div id="pesquisaModal" class="pesquisaModal modal" aria-hidden="true">
+    <div class="pesquisaModalBackdrop modalBackdrop"></div>
+
+    <div class="pesquisaModalCaixa modalCaixa" role="dialog" aria-modal="true" aria-labelledby="pesquisaTitulo">
+        <header class="pesquisaModalHeader modalHeader">
+            <h2 id="pesquisaTitulo" class="pesquisaTitulo modalTitulo">Pesquisa</h2>
+            <button type="button" class="pesquisaFecharBtn modalFecharBtn" aria-label="Fechar pesquisa">
+                &times;
+            </button>
+        </header>
+
+        <main class="pesquisaModalCorpo modalCorpo">
+            <!-- Busca global estilo Google -->
+            <section class="pesquisaGlobal">
+                <label for="pesquisaGlobalInput" class="pesquisaLabel">Pesquisa global</label>
+                <input id="pesquisaGlobalInput" class="pesquisaInput" type="text"
+                    placeholder="Digite para pesquisar em todos os campos..." />
+            </section>
+
+            <!-- Meta-pesquisa de campos + lista de campos pesquisáveis -->
+            <section class="pesquisaCampos">
+                <div class="pesquisaCamposHeader">
+                    <label for="pesquisaMetaCampoInput" class="pesquisaLabel">
+                        Filtrar campos
+                    </label>
+                    <input id="pesquisaMetaCampoInput" class="pesquisaInput" type="text"
+                        placeholder="Comece a digitar para filtrar a lista de campos..." />
+                </div>
+
+                <ul id="pesquisaCamposLista" class="pesquisaCamposLista">
+                    <!-- li gerados via JS pela montaPesquisa -->
+                    <!--
+                    <li data-campo="cpf" class="campoItem">
+                        <span class="campoLabel">CPF</span>
+                    </li>
+                    -->
+                </ul>
+            </section>
+
+            <!-- Chips de filtros ativos (placeholder para próxima etapa) -->
+            <section class="pesquisaFiltrosAtivos">
+                <span class="pesquisaFiltrosTitulo">Filtros ativos:</span>
+
+                <!-- Editor do campo selecionado -->
+                <div id="pesquisaEditorCampo" class="pesquisaEditorCampo">
+                    <span id="pesquisaEditorCampoLabel" class="pesquisaEditorCampoLabel">
+                        <!-- aqui aparece o nome do campo selecionado -->
+                    </span>
+                    <input id="pesquisaEditorCampoInput" class="pesquisaInput pesquisaEditorCampoInput" type="text"
+                        placeholder='Digite: "frase exata", 10..20 para intervalos, -palavra para excluir' />
+                </div>
+
+                <!-- Chips de filtros já adicionados -->
+                <div id="pesquisaChipsContainer" class="pesquisaChipsContainer">
+                    <!-- Ex.: [Nome] daniel sanches  [x] -->
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="pesquisaModalRodape modalRodape">
+            <button type="button" id="pesquisaLimparBtn" class="pesquisaBtn">
+                Limpar filtros
+            </button>
+            <button type="button" id="pesquisaAplicarBtn" class="pesquisaBtn primario">
+                Aplicar
+            </button>
+        </footer>
+    </div>
+</div>
