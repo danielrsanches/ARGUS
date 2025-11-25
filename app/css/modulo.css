@@ -9,10 +9,8 @@ div.topBar {
     /* Linha 1: título + menu */
     div.titulo {
         display: flex;
-        justify-content: space-between;
-        /* título à esquerda, menu à direita */
-        align-items: center;
-        /* alinhamento vertical */
+        justify-content: space-between; /* título à esquerda, menu à direita */
+        align-items: center; /* alinhamento vertical */
         width: 100%;
 
         strong {
