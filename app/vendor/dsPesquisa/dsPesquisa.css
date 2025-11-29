@@ -5,7 +5,7 @@ section#dsPesquisa {
     transform: translate(-50%, -50%);
     width: 50vw;
     max-height: 70vh;
-    background: #111827; /* fundo do modal mais escuro */
+    background: #000000; /* fundo do modal mais escuro */
     border-radius: 12px;
     border: 1px solid #1f2937;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
@@ -31,14 +31,16 @@ section#dsPesquisa {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.75rem 1rem;
-        background: #020617; /* ainda mais escuro que o corpo */
+        background: #020617;
         border-bottom: 1px solid #1f2937;
+        height: 60px; /* Defina uma altura fixa */
 
         div.titulo {
-            font-size: 1rem;
+            font-size: 1.3rem !important; /* Força o tamanho da fonte */
             font-weight: 600;
             color: #f9fafb;
+            margin-left: 10px;
+            margin-top: 10px;
         }
 
         button.fechar {
@@ -46,12 +48,14 @@ section#dsPesquisa {
             border: none;
             font-size: 0.9rem;
             cursor: pointer;
-            padding: 0.35rem 0.5rem;
+            padding: 5px 10px;
             color: #9ca3af;
+            margin-top: 7px;
+            margin-right: 10px;
 
             &:hover {
+                background: rgba(200, 0, 0, 0.5);
                 color: #e5e7eb;
-                text-decoration: underline;
             }
         }
     }
@@ -217,6 +221,8 @@ section#dsPesquisa {
                             font-size: 1rem;
                             line-height: 1;
                             color: #9ca3af;
+                            margin-left: 10px;
+                            margin-top: -5px;
 
                             &:hover {
                                 color: #f97373;
