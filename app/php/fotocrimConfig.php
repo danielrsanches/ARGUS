@@ -26,16 +26,6 @@ $tipo = (string) $tipo;
 
 
 // -----------------------------------------------------------------------------
-// Roteamento por tipo
-// -----------------------------------------------------------------------------
-$configMap = [
-    'viewConfig'           => $viewConfig,
-    'tableConfig'          => $tableConfig,
-    'tableConfigEnderecos' => $tableConfigEnderecos,
-];
-
-
-// -----------------------------------------------------------------------------
 // viewConfig: usado pelo dsPesquisa para montar o formulário de pesquisa
 // -----------------------------------------------------------------------------
 $viewConfig = [
@@ -89,6 +79,8 @@ $tableConfig = [
     ],
 ];
 
+
+
 // -----------------------------------------------------------------------------
 // tableConfigEnderecos: usado para tabela filha de endereços (exemplo)
 // -----------------------------------------------------------------------------
@@ -106,6 +98,16 @@ $tableConfigEnderecos = [
         // [ 'name' => 'uf',        'type' => 'string', 'label' => 'UF',          'editable' => true  ],
         // ...
     ],
+];
+
+
+// -----------------------------------------------------------------------------
+// Roteamento por tipo
+// -----------------------------------------------------------------------------
+$configMap = [
+    'viewConfig'           => $viewConfig,
+    'tableConfig'          => $tableConfig,
+    'tableConfigEnderecos' => $tableConfigEnderecos,
 ];
 
 

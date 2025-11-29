@@ -314,32 +314,37 @@
         loadCSS();
 
         loadTemplate($, function ($m) {
-            $.getJSON(configUrl).done(function (resp) {
-                var cfg = resp.data || resp;
-                if (!cfg || !cfg.viewName) {
-                    console.error("dsPesquisa: viewConfig inválido.");
-                    return;
-                }
+            $.getJSON(configUrl)
+                .done(function (resp) {
+                    var cfg = resp.data || resp;
+                    if (!cfg || !cfg.viewName) {
+                        console.error("dsPesquisa: viewConfig inválido.");
+                        return;
+                    }
 
-                var storageKey = lsPrefix + cfg.viewName;
-                var saved = loadSaved(storageKey);
+                    var storageKey = lsPrefix + cfg.viewName;
+                    var saved = loadSaved(storageKey);
 
-                var ctx = {
-                    viewConfig: cfg,
-                    callback: callback,
-                    storageKey: storageKey,
-                    pesquisaGlobal: saved.pesquisaGlobal,
-                    pesquisaPorCampo: saved.pesquisaPorCampo || {},
-                    currentField: null
-                };
+                    var ctx = {
+                        viewConfig: cfg,
+                        callback: callback,
+                        storageKey: storageKey,
+                        pesquisaGlobal: saved.pesquisaGlobal,
+                        pesquisaPorCampo: saved.pesquisaPorCampo || {},
+                        currentField: null
+                    };
 
-                $m.data("ctx", ctx);
-                render($, $m, ctx);
-                $m.addClass("aberta");
-            });
+                    $m.data("ctx", ctx);
+                    render($, $m, ctx);
+                    $m.addClass("aberta");
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error("Erro ao carregar configUrl:", textStatus, errorThrown);
+                });
         });
     }
 
     window.dsPesquisa = dsPesquisa;
 
 })(window, document);
+
