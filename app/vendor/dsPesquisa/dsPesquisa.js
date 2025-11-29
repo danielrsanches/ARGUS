@@ -95,7 +95,7 @@
             $list.empty();
             (ctx.viewConfig.fields || []).forEach(function (f) {
                 var lbl = f.label || f.name;
-                var $b = $('<button type="button" class="campoBtn"></button>');
+                var $b = $('<button type="button" class="campoBtn" id="campoBtn-' + f.name + '" data-field="' + f.name + '"></button>');
                 $b.text(lbl);
                 $b.attr("data-field", f.name);
                 $b.attr("data-label", lbl.toLowerCase());
@@ -153,6 +153,9 @@
             );
             $c.find("div.cardValue").text(ctx.pesquisaGlobal);
             $list.append($c);
+            $c.on("click", function() {
+                $("#dsPesquisaGlobalInput").select();
+            });
         }
 
         Object.keys(ctx.pesquisaPorCampo || {}).forEach(function (fn) {
@@ -176,6 +179,9 @@
             $c.find("div.cardLabel").text(lbl);
             $c.find("div.cardValue").text(val);
             $list.append($c);
+            $c.on("click", function() {
+                $("#campoBtn-"+fn).click();
+            });
         });
     }
 
@@ -224,6 +230,7 @@
             ctx.currentField = ctx.currentField === fn ? null : fn;
             $m.data("ctx", ctx);
             render($, $m, ctx);
+            $("#dsCampoValorInput").select();
         });
 
         // Enter no valor do campo

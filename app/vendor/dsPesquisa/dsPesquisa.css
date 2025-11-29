@@ -205,6 +205,7 @@ section#dsPesquisa {
                     background: #020617;
                     border: 1px solid #1f2937;
                     max-width: 220px;
+                    cursor: pointer !important;
 
                     div.cardHeader {
                         display: flex;
@@ -217,7 +218,7 @@ section#dsPesquisa {
                         button.remover {
                             background: transparent;
                             border: none;
-                            cursor: pointer;
+                            cursor: default;
                             padding: 0;
                             font-size: 1rem;
                             line-height: 1;
