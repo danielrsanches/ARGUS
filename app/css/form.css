@@ -1,5 +1,5 @@
 button {
-    padding: 7px 16px;
+    padding: 0px 16px;
     border-radius: 5px;
     border: 1px solid transparent;
     font-size: 0.85rem;
@@ -9,9 +9,10 @@ button {
     transition: 0.2s ease;
     background: #464b52;
     color: #ebebeb;
+    font-weight: 500;
 
     /* centralização perfeita */
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 

@@ -282,7 +282,7 @@
             if (ctx.storageKey) clearLS(ctx.storageKey);
             $m.data("ctx", ctx);
             render($, $m, ctx);
-            $("#dsPesquisaGlobalInput").focus();
+            $("#dsPesquisaGlobalInput").select();
         });
 
         // Pesquisar (POST -> dsPesquisa.php)
@@ -359,7 +359,7 @@
                     render($, $m, ctx);
                     $m.addClass("aberta");
 
-                    $("#dsPesquisaGlobalInput").focus();
+                    $("#dsPesquisaGlobalInput").select();
 
                     // Ativar arrastar no modal dsPesquisa
                     enableDrag();

@@ -84,10 +84,10 @@ header.topbar {
 /* ********************************* */
 aside.menuPrincipal {
     grid-area: sidebar;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 90px);
     overflow: auto;
     padding: 14px;
-    background: #171b21;
+    background: rgba(2, 6, 23, 0.5);
     border-right: 1px solid #232a33;
     user-select: none;
 
@@ -129,7 +129,8 @@ aside.menuPrincipal {
 main#modulo {
     height: calc(100vh - 90px);
     overflow: auto;
-    padding: 18px;
+    padding: 10px;
+    padding-top: 20px;
     position: relative;
     /*importante para alinhar os elementos do módulo dentro dele*/
     background: radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.04), transparent 45%), linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 120px);
@@ -139,10 +140,10 @@ main#modulo {
 footer#rodape{
     position: fixed;
     bottom: 0;
-    left: 280px;
+    left: 0px;
     z-index: 50;
     height: 26px;
-    width: calc(100vw - 280px);
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: end;

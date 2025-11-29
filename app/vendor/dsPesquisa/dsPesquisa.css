@@ -197,7 +197,8 @@ section#dsPesquisa {
                     gap: 0.2rem;
                     padding: 0.35rem 0.5rem;
                     border-radius: 8px;
-                    background: #020617;
+                    /*background: #020617;*/
+                    background: rgba(0, 255, 21, 0.1);
                     border: 1px solid #1f2937;
                     max-width: 220px;
                     cursor: pointer !important;
