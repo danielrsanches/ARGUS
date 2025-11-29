@@ -123,7 +123,6 @@ function loadJs(files, callback) {
      template: "../html/home.html section#home", // "URL seletor"
      css: "css/home.css" | ["css/home.css", ...],
      js: "js/home.js"   | ["js/home.js",   ...]
-     clearOld: boolean // limpa o CSS antigo que não contenha data-type: fixed...
    }
    Ordem: CSS -> Template -> JS
 */
@@ -137,7 +136,6 @@ function loadTemplate(data, callback) {
     var template = data.template || ""; // suporta "url seletor"
     var css = data.css || null; // string ou array
     var js = data.js || null; // string ou array
-    var clearOld = typeof data.clearOld === "boolean" ? data.clearOld : true;
 
     if (!template) {
         return callback(new Error("loadTemplate -> template não fornecido."));
