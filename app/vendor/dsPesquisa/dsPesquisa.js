@@ -15,9 +15,9 @@
     }
 
     var basePath = getBasePath();
-    var cssHref  = basePath + "dsPesquisa.css";
+    var cssHref = basePath + "dsPesquisa.css";
     var htmlPath = basePath + "dsPesquisa.html";
-    var phpPath  = basePath + "dsPesquisa.php";
+    var phpPath = basePath + "dsPesquisa.php";
     var lsPrefix = "dsPesquisa:";
 
     // ---------------------------------------------------------
@@ -25,7 +25,9 @@
     // ---------------------------------------------------------
     function ensureJQ() {
         if (!window.jQuery) {
-            console.error("dsPesquisa: jQuery não encontrado. Carregue-o antes deste script.");
+            console.error(
+                "dsPesquisa: jQuery não encontrado. Carregue-o antes deste script."
+            );
             return null;
         }
         return window.jQuery;
@@ -67,17 +69,21 @@
             var v = JSON.parse(localStorage.getItem(key) || "{}");
             return {
                 pesquisaGlobal: v.pesquisaGlobal || "",
-                pesquisaPorCampo: v.pesquisaPorCampo || {}
+                pesquisaPorCampo: v.pesquisaPorCampo || {},
             };
         } catch (e) {
             return { pesquisaGlobal: "", pesquisaPorCampo: {} };
         }
     }
     function saveLS(key, obj) {
-        try { localStorage.setItem(key, JSON.stringify(obj)); } catch (e) {}
+        try {
+            localStorage.setItem(key, JSON.stringify(obj));
+        } catch (e) {}
     }
     function clearLS(key) {
-        try { localStorage.removeItem(key); } catch (e) {}
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {}
     }
 
     // ---------------------------------------------------------
@@ -112,7 +118,7 @@
     }
 
     function renderValorCampo($, $m, ctx) {
-        var $box   = $m.find("div.dsCampoValor");
+        var $box = $m.find("div.dsCampoValor");
         var $label = $m.find("div.dsCampoValorLabel");
         var $input = $m.find("#dsCampoValorInput");
 
@@ -124,7 +130,7 @@
         var field = (ctx.viewConfig.fields || []).find(function (f) {
             return f.name === ctx.currentField;
         });
-        var text = field ? (field.label || field.name) : ctx.currentField;
+        var text = field ? field.label || field.name : ctx.currentField;
 
         $label.text('Digite o valor para "' + text + '":');
         $input.val(ctx.pesquisaPorCampo[ctx.currentField] || "");
@@ -142,8 +148,8 @@
                 '<div class="cardHeader">' +
                     '<div class="cardLabel">Pesquisa global</div>' +
                     '<button type="button" class="remover">×</button>' +
-                '</div>' +
-                '<div class="cardValue"></div>'
+                    "</div>" +
+                    '<div class="cardValue"></div>'
             );
             $c.find("div.cardValue").text(ctx.pesquisaGlobal);
             $list.append($c);
@@ -156,7 +162,7 @@
             var f = (ctx.viewConfig.fields || []).find(function (x) {
                 return x.name === fn;
             });
-            var lbl = f ? (f.label || f.name) : fn;
+            var lbl = f ? f.label || f.name : fn;
 
             var $c = $('<div class="filtroCard" data-role="campo"></div>');
             $c.attr("data-field", fn);
@@ -164,8 +170,8 @@
                 '<div class="cardHeader">' +
                     '<div class="cardLabel"></div>' +
                     '<button type="button" class="remover">×</button>' +
-                '</div>' +
-                '<div class="cardValue"></div>'
+                    "</div>" +
+                    '<div class="cardValue"></div>'
             );
             $c.find("div.cardLabel").text(lbl);
             $c.find("div.cardValue").text(val);
@@ -215,7 +221,7 @@
         $m.on("click", "button.campoBtn", function () {
             var fn = $(this).attr("data-field");
             var ctx = $m.data("ctx") || {};
-            ctx.currentField = (ctx.currentField === fn ? null : fn);
+            ctx.currentField = ctx.currentField === fn ? null : fn;
             $m.data("ctx", ctx);
             render($, $m, ctx);
         });
@@ -271,7 +277,7 @@
             var ctx = $m.data("ctx") || {};
             var filtros = {
                 pesquisaGlobal: ctx.pesquisaGlobal || "",
-                pesquisaPorCampo: ctx.pesquisaPorCampo || {}
+                pesquisaPorCampo: ctx.pesquisaPorCampo || {},
             };
 
             if (ctx.storageKey) saveLS(ctx.storageKey, filtros);
@@ -283,8 +289,10 @@
                 data: {
                     viewName: ctx.viewConfig.viewName,
                     pesquisaGlobal: filtros.pesquisaGlobal,
-                    pesquisaPorCampo: JSON.stringify(filtros.pesquisaPorCampo || {})
-                }
+                    pesquisaPorCampo: JSON.stringify(
+                        filtros.pesquisaPorCampo || {}
+                    ),
+                },
             })
                 .done(function (resp) {
                     if (typeof ctx.callback === "function") {
@@ -297,7 +305,7 @@
                         ctx.callback({
                             success: false,
                             message: "Erro ao comunicar com dsPesquisa.php",
-                            data: []
+                            data: [],
                         });
                     }
                 });
@@ -331,20 +339,86 @@
                         storageKey: storageKey,
                         pesquisaGlobal: saved.pesquisaGlobal,
                         pesquisaPorCampo: saved.pesquisaPorCampo || {},
-                        currentField: null
+                        currentField: null,
                     };
 
                     $m.data("ctx", ctx);
                     render($, $m, ctx);
                     $m.addClass("aberta");
+
+                    // Ativar arrastar no modal dsPesquisa
+                    enableDrag();
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error("Erro ao carregar configUrl:", textStatus, errorThrown);
+                    console.error(
+                        "Erro ao carregar configUrl:",
+                        textStatus,
+                        errorThrown
+                    );
                 });
         });
     }
 
+    // ---------------------------------------------------------
+    // Função para permitir arrastar o modal
+    // ---------------------------------------------------------
+    function enableDrag() {
+        var isDragging = false;
+        var offset = { x: 0, y: 0 };
+
+        $(document).on("mousedown", ".topBar", function (e) {
+            var $modal = $("#dsPesquisa");
+            if (!$modal.length) {
+                console.error("Erro: modal não encontrado no DOM.");
+                return;
+            }
+            if (!$modal.is(":visible")) {
+                console.error("Erro: modal não está visível.");
+                return;
+            }
+            if (!$modal.hasClass("aberta")) {
+                console.error("Erro: modal não está aberto.");
+                return;
+            }
+            var modalOffset = $modal.offset();
+            isDragging = true;
+            offset.x = e.clientX - modalOffset.left;
+            offset.y = e.clientY - modalOffset.top;
+            $modal.addClass("dragging");
+        });
+
+        $(document).on("mousemove", function (e) {
+            if (!isDragging) return;
+
+            var $modal = $("#dsPesquisa");
+            var modalWidth = $modal.outerWidth();
+            var modalHeight = $modal.outerHeight();
+            var windowWidth = $(window).width();
+            var windowHeight = $(window).height();
+
+            // Calcula as novas posições limitadas aos limites da tela
+            var newLeft = Math.min(
+                Math.max(0, e.clientX - offset.x),
+                windowWidth - modalWidth
+            );
+            var newTop = Math.min(
+                Math.max(0, e.clientY - offset.y),
+                windowHeight - modalHeight
+            );
+
+            $modal.css({
+                position: "absolute", // Garante que o modal seja posicionado corretamente
+                top: newTop + "px",
+                left: newLeft + "px",
+                transform: "none", // Remove o transform para permitir posicionamento livre
+            });
+        });
+
+        $(document).on("mouseup", function () {
+            isDragging = false;
+            $("#dsPesquisa").removeClass("dragging");
+        });
+    }
+
     window.dsPesquisa = dsPesquisa;
-
 })(window, document);
-
