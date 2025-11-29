@@ -104,9 +104,9 @@
             $list.data("done", 1);
         }
 
-        var termo = ($m.find("#dsCampoBuscaInput").val() || "").toLowerCase();
+        var termo = ($m.find("#dsCampoBuscaInput").val() || "").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
         $list.find("button.campoBtn").each(function () {
-            var txt = $(this).attr("data-label") || "";
+            var txt = ($(this).attr("data-label") || "").normalize("NFD").replace(/\p{Diacritic}/gu, "");
             var show = !termo || txt.indexOf(termo) !== -1;
             $(this).toggleClass("oculto", !show);
         });
@@ -207,6 +207,11 @@
         $(document).on("keydown.dsPesquisa", function (e) {
             if (e.key === "Escape") $m.removeClass("aberta");
         });
+        $(document).on("keydown.dsPesquisa", function (e) {
+            if (e.key === "Enter" && e.ctrlKey) {
+                $m.find("button.pesquisar").trigger("click"); // Aciona o botão "Pesquisar"
+            }
+        });
 
         // Pesquisa global (Enter)
         $m.on("keydown", "#dsPesquisaGlobalInput", function (e) {
@@ -277,6 +282,7 @@
             if (ctx.storageKey) clearLS(ctx.storageKey);
             $m.data("ctx", ctx);
             render($, $m, ctx);
+            $("#dsPesquisaGlobalInput").focus();
         });
 
         // Pesquisar (POST -> dsPesquisa.php)
@@ -352,6 +358,8 @@
                     $m.data("ctx", ctx);
                     render($, $m, ctx);
                     $m.addClass("aberta");
+
+                    $("#dsPesquisaGlobalInput").focus();
 
                     // Ativar arrastar no modal dsPesquisa
                     enableDrag();
