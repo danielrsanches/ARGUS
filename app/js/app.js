@@ -171,3 +171,46 @@ function loadTemplate(data, callback) {
     });
 }
 
+//****************************** */
+// Spinner de carregamento global
+//****************************** */
+function showSpinner() {
+    // Mostra o spinner
+    const spinner = $("div#spinner")[0];
+    if (spinner) {
+        spinner.classList.remove("hidden");
+    }
+}
+function hideSpinner() {
+    // Oculta o spinner
+    const spinner = $("div#spinner")[0];
+    if (spinner) {
+        spinner.classList.add("hidden");
+    }
+}
+
+// Carrega um template de um template HTML externo (sem inserir no DOM).
+// Retorna uma Promise que resolve com o elemento selecionado.
+async function loadCard(url, selector) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(
+                `Falha ao carregar ${url}: HTTP ${response.status}`
+            );
+        }
+
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const el = doc.querySelector(selector);
+
+        if (!el) {
+            throw new Error(`Selector '${selector}' não encontrado em ${url}`);
+        }
+
+        return el;
+    } catch (err) {
+        console.error("Erro no loadCard:", err);
+        throw err; // <-- devolve o erro para o .catch
+    }
+}

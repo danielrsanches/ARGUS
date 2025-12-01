@@ -313,6 +313,10 @@
 
         // BOTÃO "Pesquisar"
         $m.on("click", "button.pesquisar", function () {
+
+            $m.removeClass("aberta"); // fecha o modal ao iniciar a pesquisa
+            showSpinner(); // Mostra o spinner
+
             var ctx = $m.data("ctx") || {};
             var filtros = {
                 pesquisaGlobal: ctx.pesquisaGlobal || "",
@@ -334,12 +338,18 @@
                 },
             })
                 .done(function (resp) {
+                    
+                    hideSpinner(); // Esconde o spinner
+
                     if (typeof ctx.callback === "function") {
                         ctx.callback(resp); // resultado da pesquisa
                     }
                     $m.removeClass("aberta");
                 })
                 .fail(function () {
+
+                    hideSpinner(); // Esconde o spinner
+
                     if (typeof ctx.callback === "function") {
                         ctx.callback({
                             success: false,
@@ -354,9 +364,21 @@
     // ---------------------------------------------------------
     // Função pública PRINCIPAL
     // ---------------------------------------------------------
-    function dsPesquisa(viewName, endpointConfig, callback) {
+    function dsPesquisa(viewName, endpointConfig, callback, spinnerFunc = null) {
         var $ = ensureJQ();
         if (!$) return;
+
+        // Verifica se o spinnerFunc é um array válido
+        const isSpinnerValid =
+            Array.isArray(spinnerFunc) &&
+            typeof spinnerFunc[0] === 'function' &&
+            typeof spinnerFunc[1] === 'function';
+
+        // Funções do spinner (se válidas)
+        const showSpinner = isSpinnerValid ? spinnerFunc[0] : () => {};
+        const hideSpinner = isSpinnerValid ? spinnerFunc[1] : () => {};
+
+        showSpinner(); // Mostra o spinner
 
         loadCSS();
 
@@ -372,6 +394,9 @@
                 },
             })
                 .done(function (resp) {
+
+                    hideSpinner(); // Esconde o spinner
+
                     if (!resp || resp.success === false) {
                         console.error("dsPesquisa: erro ao obter config:", resp && resp.message);
                         if (typeof callback === "function") {
@@ -417,8 +442,13 @@
                     $m.addClass("aberta");
 
                     enableDrag();
+
+                    $m.find("#dsPesquisaGlobalInput").select();
                 })
                 .fail(function () {
+
+                    hideSpinner(); // Esconde o spinner
+
                     console.error("Erro ao carregar configurações da view.");
                     if (typeof callback === "function") {
                         callback({

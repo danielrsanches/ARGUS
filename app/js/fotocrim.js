@@ -20,19 +20,38 @@ loadTemplate(
 
         //aqui o template já foi totalmente carregado...
         $("button.pesquisa").on("click", function () {
-            dsPesquisa("viewFotocrim", "php/dsPesquisaConfig.php", function (resp) {
-                if (!resp.success) {
-                    alert(resp.message || "Erro ao pesquisar.");
-                    return;
-                }
+            dsPesquisa(
+                "viewFotocrim",
+                "php/dsPesquisaConfig.php",
+                function (resp) {
+                    if (!resp.success) {
+                        alert(resp.message || "Erro ao pesquisar.");
+                        return;
+                    }
 
-                // aqui você processa o resultado da pesquisa
-                console.log("Resultado da pesquisa Fotocrim:", resp);
-
-                // aqui você atualiza a grid/lista do módulo
-                // exemplo:
-                // atualizarGridFotocrim(resp.data);
-            });
+                    // carregua o template do card...
+                    loadCard("html/fotocrim.html", "section.card").then(
+                        (template) => {
+                            
+                            $("section#fotocrim div.content").hide();
+                            $("section#fotocrim div.content").empty();
+                            var cardTemplate = null;
+                            resp.data.forEach(element => {
+                                cardTemplate = template.outerHTML;
+                                cardTemplate = cardTemplate.replaceAll("${teste}", "Aqui é um placeholder");
+                                
+                                $("section#fotocrim div.content").append(cardTemplate);
+                                
+                            });
+                            $("section#fotocrim div.content").fadeIn();
+                        }
+                    );
+                },
+                [
+                    showSpinner,
+                    hideSpinner,
+                ] /* funções de callback para mostrar/esconder o spinner */
+            );
         });
     }
 );
