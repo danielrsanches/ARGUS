@@ -33,7 +33,7 @@ $viewConfig = [
     'orderByDefault' => 'nomeCompleto ASC',
     'limitDefault'   => 50,
     'fixedFilters'   => '', //filtros fixos aplicados em toda consulta. ex: status = "ativo"
-    'defaultFilters' => '', //filtros padrão aplicados na primeira carga. ex: dataCriacao >= "2023-01-01"
+    'defaultFilters' => '(id = (SELECT MAX(id) from viewFotocrim))', //filtros padrão aplicados na primeira carga. ex: dataCriacao >= "2023-01-01"
 
     'fields' => [
         [ 'name' => 'id',                    'type' => 'bigint',   'label' => 'ID' ],

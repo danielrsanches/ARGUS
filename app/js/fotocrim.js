@@ -26,8 +26,8 @@ loadTemplate(
                     return;
                 }
 
-                // resp.data = resultado do SELECT * da view
-                console.log("Resultado da pesquisa Fotocrim:", resp.data);
+                // aqui você processa o resultado da pesquisa
+                console.log("Resultado da pesquisa Fotocrim:", resp);
 
                 // aqui você atualiza a grid/lista do módulo
                 // exemplo:

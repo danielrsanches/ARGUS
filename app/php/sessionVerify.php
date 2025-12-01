@@ -13,6 +13,10 @@ function __auth_boot()
 // Retorna array do usuário logado ou null
 function current_user()
 {
+    //retirar essas 2 linhas abaixo quando integrar com sistema de autenticação real...
+    $user = ['id' => 1, 'nome' => 'Cb PM 116858-4 Daniel Rodrigo Sanches da Cruz']; //simula a função current_user()...
+    return $user;
+
     __auth_boot();
     if (!empty($_SESSION['idUsuario'])) {
         return [

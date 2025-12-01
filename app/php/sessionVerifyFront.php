@@ -8,8 +8,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 //verifica se está logado e retorna um JSON para o front-end
-//$user = current_user();
-$user = ['id' => 1, 'nome' => 'Cb PM 116858-4 Daniel Rodrigo Sanches da Cruz']; //simula a função current_user()...
+$user = current_user();
 if (!$user) {
     http_response_code(401);
     echo json_encode(['ok' => false]);
