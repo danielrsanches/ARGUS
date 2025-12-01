@@ -223,7 +223,7 @@ section#dsPesquisa {
                             margin-top: -5px;
 
                             &:hover {
-                                color: #f97373;
+                                background-color: #f97373;
                             }
                         }
                     }

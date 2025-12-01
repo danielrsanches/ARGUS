@@ -25,9 +25,7 @@
     // ---------------------------------------------------------
     function ensureJQ() {
         if (!window.jQuery) {
-            console.error(
-                "dsPesquisa: jQuery não encontrado. Carregue-o antes deste script."
-            );
+            console.error("dsPesquisa: jQuery não encontrado. Carregue-o antes deste script.");
             return null;
         }
         return window.jQuery;
@@ -75,11 +73,13 @@
             return { pesquisaGlobal: "", pesquisaPorCampo: {} };
         }
     }
+
     function saveLS(key, obj) {
         try {
             localStorage.setItem(key, JSON.stringify(obj));
         } catch (e) {}
     }
+
     function clearLS(key) {
         try {
             localStorage.removeItem(key);
@@ -104,9 +104,15 @@
             $list.data("done", 1);
         }
 
-        var termo = ($m.find("#dsCampoBuscaInput").val() || "").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+        var termo = ($m.find("#dsCampoBuscaInput").val() || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "");
+
         $list.find("button.campoBtn").each(function () {
-            var txt = ($(this).attr("data-label") || "").normalize("NFD").replace(/\p{Diacritic}/gu, "");
+            var txt = ($(this).attr("data-label") || "")
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "");
             var show = !termo || txt.indexOf(termo) !== -1;
             $(this).toggleClass("oculto", !show);
         });
@@ -142,22 +148,22 @@
         var $list = $m.find("div.dsFiltrosAtivosLista");
         $list.empty();
 
+        // Chip de pesquisa global
         if (ctx.pesquisaGlobal) {
             var $c = $('<div class="filtroCard" data-role="global"></div>');
             $c.append(
                 '<div class="cardHeader">' +
                     '<div class="cardLabel">Pesquisa global</div>' +
                     '<button type="button" class="remover">×</button>' +
-                    "</div>" +
-                    '<div class="cardValue"></div>'
+                '</div>' +
+                '<div class="cardValue"></div>'
             );
             $c.find("div.cardValue").text(ctx.pesquisaGlobal);
             $list.append($c);
-            $c.on("click", function() {
-                $("#dsPesquisaGlobalInput").select();
-            });
+            // OBS: não amarramos click aqui; delegamos em initEvents
         }
 
+        // Chips de filtros por campo
         Object.keys(ctx.pesquisaPorCampo || {}).forEach(function (fn) {
             var val = ctx.pesquisaPorCampo[fn];
             if (!val) return;
@@ -173,15 +179,13 @@
                 '<div class="cardHeader">' +
                     '<div class="cardLabel"></div>' +
                     '<button type="button" class="remover">×</button>' +
-                    "</div>" +
-                    '<div class="cardValue"></div>'
+                '</div>' +
+                '<div class="cardValue"></div>'
             );
             $c.find("div.cardLabel").text(lbl);
             $c.find("div.cardValue").text(val);
             $list.append($c);
-            $c.on("click", function() {
-                $("#campoBtn-"+fn).click();
-            });
+            // OBS: não amarramos click aqui; delegamos em initEvents
         });
     }
 
@@ -199,7 +203,7 @@
         if ($m.data("init")) return;
         $m.data("init", 1);
 
-        // Fechar
+        // Fechar modal
         $m.on("click", "button.fechar", function () {
             $m.removeClass("aberta");
         });
@@ -207,9 +211,10 @@
         $(document).on("keydown.dsPesquisa", function (e) {
             if (e.key === "Escape") $m.removeClass("aberta");
         });
+
         $(document).on("keydown.dsPesquisa", function (e) {
             if (e.key === "Enter" && e.ctrlKey) {
-                $m.find("button.pesquisar").trigger("click"); // Aciona o botão "Pesquisar"
+                $m.find("button.pesquisar").trigger("click");
             }
         });
 
@@ -222,7 +227,7 @@
             render($, $m, ctx);
         });
 
-        // Filtro de campos
+        // Filtro de campos (busca)
         $m.on("input", "#dsCampoBuscaInput", function () {
             var ctx = $m.data("ctx") || {};
             renderFieldButtons($, $m, ctx);
@@ -255,8 +260,11 @@
             render($, $m, ctx);
         });
 
-        // Remover chips
-        $m.on("click", "button.remover", function () {
+        // Remover chips (X)
+        $m.on("click", "button.remover", function (e) {
+            // IMPORTANTÍSSIMO: não deixar esse clique subir pro card
+            e.stopPropagation();
+
             var $c = $(this).closest("div.filtroCard");
             var ctx = $m.data("ctx") || {};
 
@@ -273,7 +281,25 @@
             render($, $m, ctx);
         });
 
-        // Limpar
+        // Clique no chip GLOBAL (fora do X)
+        $m.on("click", "div.filtroCard[data-role='global']", function (e) {
+            // se o clique veio do botão remover, ignora
+            if ($(e.target).closest("button.remover").length) return;
+            $("#dsPesquisaGlobalInput").select();
+        });
+
+        // Clique no chip de CAMPO (fora do X)
+        $m.on("click", "div.filtroCard[data-role='campo']", function (e) {
+            // se o clique veio do botão remover, ignora
+            if ($(e.target).closest("button.remover").length) return;
+
+            var fn = $(this).attr("data-field");
+            if (fn) {
+                $("#campoBtn-" + fn).click();
+            }
+        });
+
+        // Limpar filtros
         $m.on("click", "button.limpar", function () {
             var ctx = $m.data("ctx") || {};
             ctx.pesquisaGlobal = "";
@@ -285,7 +311,7 @@
             $("#dsPesquisaGlobalInput").select();
         });
 
-        // Pesquisar (POST -> dsPesquisa.php)
+        // BOTÃO "Pesquisar"
         $m.on("click", "button.pesquisar", function () {
             var ctx = $m.data("ctx") || {};
             var filtros = {
@@ -296,21 +322,20 @@
             if (ctx.storageKey) saveLS(ctx.storageKey, filtros);
 
             $.ajax({
-                url: phpPath, // Usa basePath para definir o caminho correto do servidor
+                url: phpPath,
                 method: "POST",
                 dataType: "json",
                 data: {
-                    viewName: ctx.viewConfig.viewName, // Nome da view
-                    endpoint: ctx.configUrl, // Endpoint completo fornecido ao chamar dsPesquisa
+                    action: "pesquisar", // FUTURO — implementar no PHP
+                    viewName: ctx.viewConfig.viewName || ctx.viewName,
+                    endpointConfig: ctx.endpointConfig,
                     pesquisaGlobal: filtros.pesquisaGlobal,
-                    pesquisaPorCampo: JSON.stringify(
-                        filtros.pesquisaPorCampo || {}
-                    ),
+                    pesquisaPorCampo: JSON.stringify(filtros.pesquisaPorCampo || {}),
                 },
             })
                 .done(function (resp) {
                     if (typeof ctx.callback === "function") {
-                        ctx.callback(resp); // {success, message, data}
+                        ctx.callback(resp); // resultado da pesquisa
                     }
                     $m.removeClass("aberta");
                 })
@@ -318,7 +343,7 @@
                     if (typeof ctx.callback === "function") {
                         ctx.callback({
                             success: false,
-                            message: "Erro ao comunicar com dsPesquisa.php",
+                            message: "Erro ao comunicar com dsPesquisa.php na pesquisa.",
                             data: [],
                         });
                     }
@@ -327,7 +352,7 @@
     }
 
     // ---------------------------------------------------------
-    // Função pública
+    // Função pública PRINCIPAL
     // ---------------------------------------------------------
     function dsPesquisa(viewName, endpointConfig, callback) {
         var $ = ensureJQ();
@@ -338,30 +363,75 @@
         loadTemplate($, function ($m) {
             $.ajax({
                 url: phpPath,
-                method: 'POST',
-                dataType: 'json',
-                data: { action: 'getConfig', viewName: viewName, endpointConfig: endpointConfig },
+                method: "POST",
+                dataType: "json",
+                data: {
+                    action: "getConfig",
+                    viewName: viewName,
+                    endpointConfig: endpointConfig,
+                },
             })
                 .done(function (resp) {
-                    if (resp && typeof resp.success !== 'undefined') {
-                        if (typeof callback === 'function') {
-                            callback(resp);
+                    if (!resp || resp.success === false) {
+                        console.error("dsPesquisa: erro ao obter config:", resp && resp.message);
+                        if (typeof callback === "function") {
+                            callback(
+                                resp || {
+                                    success: false,
+                                    message: "Falha ao carregar configuração da view.",
+                                }
+                            );
                         }
-                    } else {
-                        console.error('dsPesquisa: Resposta inválida do servidor.', resp);
+                        return;
                     }
+
+                    var viewConfig = resp.data || resp.viewConfig || null;
+
+                    if (!viewConfig) {
+                        console.error("dsPesquisa: config da view ausente:", resp);
+                        if (typeof callback === "function") {
+                            callback({
+                                success: false,
+                                message: "Configuração da view não encontrada.",
+                            });
+                        }
+                        return;
+                    }
+
+                    var storageKey = lsPrefix + (viewName || "default");
+                    var saved = loadSaved(storageKey);
+
+                    var ctx = {
+                        viewName: viewName,
+                        endpointConfig: endpointConfig,
+                        viewConfig: viewConfig,
+                        pesquisaGlobal: saved.pesquisaGlobal || "",
+                        pesquisaPorCampo: saved.pesquisaPorCampo || {},
+                        currentField: null,
+                        storageKey: storageKey,
+                        callback: callback, // callback final (somente após PESQUISAR)
+                    };
+
+                    $m.data("ctx", ctx);
+                    render($, $m, ctx);
+                    $m.addClass("aberta");
+
+                    enableDrag();
                 })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error('Erro ao carregar configurações da view:', textStatus, errorThrown);
-                    if (typeof callback === 'function') {
-                        callback({ success: false, message: 'Erro ao comunicar com o servidor.' });
+                .fail(function () {
+                    console.error("Erro ao carregar configurações da view.");
+                    if (typeof callback === "function") {
+                        callback({
+                            success: false,
+                            message: "Erro ao comunicar com dsPesquisa.php",
+                        });
                     }
                 });
         });
     }
 
     // ---------------------------------------------------------
-    // Função para permitir arrastar o modal
+    // Drag do modal
     // ---------------------------------------------------------
     function enableDrag() {
         var isDragging = false;
@@ -369,18 +439,8 @@
 
         $(document).on("mousedown", ".topBar", function (e) {
             var $modal = $("#dsPesquisa");
-            if (!$modal.length) {
-                console.error("Erro: modal não encontrado no DOM.");
-                return;
-            }
-            if (!$modal.is(":visible")) {
-                console.error("Erro: modal não está visível.");
-                return;
-            }
-            if (!$modal.hasClass("aberta")) {
-                console.error("Erro: modal não está aberto.");
-                return;
-            }
+            if (!$modal.length || !$modal.hasClass("aberta")) return;
+
             var modalOffset = $modal.offset();
             isDragging = true;
             offset.x = e.clientX - modalOffset.left;
@@ -397,21 +457,14 @@
             var windowWidth = $(window).width();
             var windowHeight = $(window).height();
 
-            // Calcula as novas posições limitadas aos limites da tela
-            var newLeft = Math.min(
-                Math.max(0, e.clientX - offset.x),
-                windowWidth - modalWidth
-            );
-            var newTop = Math.min(
-                Math.max(0, e.clientY - offset.y),
-                windowHeight - modalHeight
-            );
+            var newLeft = Math.min(Math.max(0, e.clientX - offset.x), windowWidth - modalWidth);
+            var newTop = Math.min(Math.max(0, e.clientY - offset.y), windowHeight - modalHeight);
 
             $modal.css({
-                position: "absolute", // Garante que o modal seja posicionado corretamente
+                position: "absolute",
                 top: newTop + "px",
                 left: newLeft + "px",
-                transform: "none", // Remove o transform para permitir posicionamento livre
+                transform: "none",
             });
         });
 
@@ -422,4 +475,5 @@
     }
 
     window.dsPesquisa = dsPesquisa;
+
 })(window, document);
