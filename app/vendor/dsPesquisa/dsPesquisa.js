@@ -296,11 +296,12 @@
             if (ctx.storageKey) saveLS(ctx.storageKey, filtros);
 
             $.ajax({
-                url: phpPath,
+                url: phpPath, // Usa basePath para definir o caminho correto do servidor
                 method: "POST",
                 dataType: "json",
                 data: {
-                    viewName: ctx.viewConfig.viewName,
+                    viewName: ctx.viewConfig.viewName, // Nome da view
+                    endpoint: ctx.configUrl, // Endpoint completo fornecido ao chamar dsPesquisa
                     pesquisaGlobal: filtros.pesquisaGlobal,
                     pesquisaPorCampo: JSON.stringify(
                         filtros.pesquisaPorCampo || {}
@@ -328,48 +329,33 @@
     // ---------------------------------------------------------
     // Função pública
     // ---------------------------------------------------------
-    function dsPesquisa(configUrl, callback) {
+    function dsPesquisa(viewName, endpointConfig, callback) {
         var $ = ensureJQ();
         if (!$) return;
 
         loadCSS();
 
         loadTemplate($, function ($m) {
-            $.getJSON(configUrl)
+            $.ajax({
+                url: phpPath,
+                method: 'POST',
+                dataType: 'json',
+                data: { action: 'getConfig', viewName: viewName, endpointConfig: endpointConfig },
+            })
                 .done(function (resp) {
-                    var cfg = resp.data || resp;
-                    if (!cfg || !cfg.viewName) {
-                        console.error("dsPesquisa: viewConfig inválido.");
-                        return;
+                    if (resp && typeof resp.success !== 'undefined') {
+                        if (typeof callback === 'function') {
+                            callback(resp);
+                        }
+                    } else {
+                        console.error('dsPesquisa: Resposta inválida do servidor.', resp);
                     }
-
-                    var storageKey = lsPrefix + cfg.viewName;
-                    var saved = loadSaved(storageKey);
-
-                    var ctx = {
-                        viewConfig: cfg,
-                        callback: callback,
-                        storageKey: storageKey,
-                        pesquisaGlobal: saved.pesquisaGlobal,
-                        pesquisaPorCampo: saved.pesquisaPorCampo || {},
-                        currentField: null,
-                    };
-
-                    $m.data("ctx", ctx);
-                    render($, $m, ctx);
-                    $m.addClass("aberta");
-
-                    $("#dsPesquisaGlobalInput").select();
-
-                    // Ativar arrastar no modal dsPesquisa
-                    enableDrag();
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error(
-                        "Erro ao carregar configUrl:",
-                        textStatus,
-                        errorThrown
-                    );
+                    console.error('Erro ao carregar configurações da view:', textStatus, errorThrown);
+                    if (typeof callback === 'function') {
+                        callback({ success: false, message: 'Erro ao comunicar com o servidor.' });
+                    }
                 });
         });
     }

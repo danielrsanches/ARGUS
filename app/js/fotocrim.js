@@ -20,7 +20,7 @@ loadTemplate(
 
         //aqui o template já foi totalmente carregado...
         $("button.pesquisa").on("click", function () {
-            dsPesquisa("php/fotocrimConfig.php?tipo=viewConfig", function (resp) {
+            dsPesquisa("viewFotocrim", "php/dsPesquisaConfig.php", function (resp) {
                 if (!resp.success) {
                     alert(resp.message || "Erro ao pesquisar.");
                     return;
