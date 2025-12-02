@@ -38,7 +38,16 @@ loadTemplate(
                             var cardTemplate = null;
                             resp.data.forEach(element => {
                                 cardTemplate = template.outerHTML;
-                                cardTemplate = cardTemplate.replaceAll("${teste}", "Aqui é um placeholder");
+                                cardTemplate = cardTemplate.replaceAll("${id}", element.id);
+                                cardTemplate = cardTemplate.replaceAll("${createdAt}", element.createdAt);
+                                cardTemplate = cardTemplate.replaceAll("${updatedAt}", element.updatedAt);
+                                cardTemplate = cardTemplate.replaceAll("${nomeCompleto}", element.nomeCompleto);
+                                cardTemplate = cardTemplate.replaceAll("${faccao}", element.faccao);
+                                cardTemplate = cardTemplate.replaceAll("${cpf}", element.cpf);
+                                cardTemplate = cardTemplate.replaceAll("${rg}", element.rg);
+                                cardTemplate = cardTemplate.replaceAll("${rgc}", element.rgc);
+                                cardTemplate = cardTemplate.replaceAll("${matricula}", element.matricula);
+                                cardTemplate = cardTemplate.replaceAll("${dataNascimento}", element.dataNascimento);
                                 
                                 $("section#fotocrim div.content").append(cardTemplate);
                                 

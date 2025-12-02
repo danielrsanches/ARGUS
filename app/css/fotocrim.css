@@ -1,0 +1,40 @@
+section.card {
+    border: 1px solid #374151;
+    border-radius: 8px;
+    background: #020617;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: 0.9rem;
+
+    div.topBar{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 0px;
+
+        div.left{
+            border: 0px;
+            span.campo{
+                border: 0px;
+                margin-right: 12px;
+            }
+        }
+    }
+
+    div.body{
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+
+        div.foto{
+            width: 150px;
+            height: 200px;
+            object-fit: contain; /* Manter proporção da imagem */
+            border: 2px solid #4a5568;
+            border-radius: 4px;    
+        }
+    }
+}

@@ -10,6 +10,7 @@ button {
     background: #464b52;
     color: #ebebeb;
     font-weight: 500;
+    height: 32px;
 
     /* centralização perfeita */
     display: flex;

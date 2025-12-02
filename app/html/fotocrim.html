@@ -21,7 +21,28 @@
 </section>
 
 
-<section class="card">
-    ${teste}<br>
-    Template do card: mantenha aqui todo o markup do card para centralizar o template no módulo
+<section class="card" data-id="${id}">
+    <div class="topBar">
+        <div class="left">
+            <span class="campo" data-field="id">#${id}</span>
+            <span class="campo" data-field="createdAt">Criado: ${createdAt}</span>
+            <span class="campo" data-field="updatedAt">Modificado: ${updatedAt}</span>
+        </div>
+    </div>
+    <div class="body">
+        <div class="foto" aria-hidden="true">
+            <img src="" alt="Foto" />
+        </div>
+        <div class="col1">
+            <div class="campo" data-field="nomeCompleto">${nomeCompleto}</div>
+            <div class="campo" data-field="faccao"><strong>Facção:</strong> ${faccao}</div>
+            <div class="campo" data-field="cpf"><strong>CPF:</strong> ${cpf}</div>
+            <div class="campo" data-field="rg"><strong>RG:</strong> ${rg}</div>
+            <div class="campo" data-field="rgc"><strong>RG Criminal:</strong> ${rgc}</div>
+            <div class="campo" data-field="matricula"><strong>Matrícula:</strong> ${matricula}</div>
+            <div class="campo" data-field="dataNascimento"><strong>Nascimento:</strong> ${dataNascimento}</div>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
 </section>
