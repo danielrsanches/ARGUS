@@ -1,60 +1,47 @@
-<section id="dsPesquisa" class="dsPesquisa">
-    <div class="topBar">
-        <div class="titulo">Pesquisa</div>
-        <button type="button" class="fechar">X</button>
-    </div>
-
-    <div class="content">
-        <!-- PESQUISA GLOBAL -->
-        <div class="dsPesquisaGlobal">
-            <label for="dsPesquisaGlobalInput" class="dsLabel">Pesquisa global</label>
-            <input
-                id="dsPesquisaGlobalInput"
-                class="dsInput"
-                type="text"
-                placeholder="Digite um texto para pesquisar em todos os campos..."
-            />
+<div id="dsPesquisaOverlay">
+    <section id="dsPesquisa" class="dsPesquisa">
+        <div class="topBar">
+            <div class="titulo">Pesquisa</div>
+            <button type="button" class="fechar">X</button>
         </div>
 
-        <!-- SELEÇÃO DE CAMPOS -->
-        <div class="dsPesquisaCampos">
-            <div class="dsCampoBusca">
-                <label for="dsCampoBuscaInput" class="dsLabel">Filtrar campos de pesquisa</label>
-                <input
-                    id="dsCampoBuscaInput"
-                    class="dsInput"
-                    type="text"
-                    placeholder="Digite parte do nome do campo (ex.: mãe, CPF, matrícula)..."
-                />
+        <div class="content">
+            <!-- PESQUISA GLOBAL -->
+            <div class="dsPesquisaGlobal">
+                <label for="dsPesquisaGlobalInput" class="dsLabel">Pesquisa global</label>
+                <input id="dsPesquisaGlobalInput" class="dsInput" type="text" placeholder="Digite um texto para pesquisar em todos os campos..." />
             </div>
 
-            <div class="dsCamposLista">
-                <!-- Botões dos campos via JS -->
+            <!-- SELEÇÃO DE CAMPOS -->
+            <div class="dsPesquisaCampos">
+                <div class="dsCampoBusca">
+                    <label for="dsCampoBuscaInput" class="dsLabel">Filtrar campos de pesquisa</label>
+                    <input id="dsCampoBuscaInput" class="dsInput" type="text" placeholder="Digite parte do nome do campo (ex.: mãe, CPF, matrícula)..." />
+                </div>
+
+                <div class="dsCamposLista">
+                    <!-- Botões dos campos via JS -->
+                </div>
+            </div>
+
+            <!-- VALOR DO CAMPO SELECIONADO -->
+            <div class="dsCampoValor">
+                <div class="dsCampoValorLabel"></div>
+                <input id="dsCampoValorInput" class="dsInput" type="text" placeholder="Digite o valor do filtro e pressione Enter..." />
+            </div>
+
+            <!-- FILTROS ATIVOS -->
+            <div class="dsFiltrosAtivos">
+                <div class="dsFiltrosAtivosTitulo">Filtros ativos</div>
+                <div class="dsFiltrosAtivosLista">
+                    <!-- Chips dos filtros ativos via JS -->
+                </div>
             </div>
         </div>
 
-        <!-- VALOR DO CAMPO SELECIONADO -->
-        <div class="dsCampoValor">
-            <div class="dsCampoValorLabel"></div>
-            <input
-                id="dsCampoValorInput"
-                class="dsInput"
-                type="text"
-                placeholder="Digite o valor do filtro e pressione Enter..."
-            />
+        <div class="menuBar">
+            <button type="button" class="pesquisar">Pesquisar</button>
+            <button type="button" class="limpar">Limpar</button>
         </div>
-
-        <!-- FILTROS ATIVOS -->
-        <div class="dsFiltrosAtivos">
-            <div class="dsFiltrosAtivosTitulo">Filtros ativos</div>
-            <div class="dsFiltrosAtivosLista">
-                <!-- Chips dos filtros ativos via JS -->
-            </div>
-        </div>
-    </div>
-
-    <div class="menuBar">
-        <button type="button" class="pesquisar">Pesquisar</button>
-        <button type="button" class="limpar">Limpar</button>
-    </div>
-</section>
+    </section>
+</div>

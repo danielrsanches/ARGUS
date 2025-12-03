@@ -1,8 +1,21 @@
+div#dsPesquisaOverlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 99998;
+}
+div#dsPesquisaOverlay.aberta {
+    display: flex;
+}
+
 section#dsPesquisa {
-    position: absolute; /* Alterado de fixed para absolute */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     width: 50vw;
     max-height: 70vh;
     background: #000000; /* fundo do modal mais escuro */

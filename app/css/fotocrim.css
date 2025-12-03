@@ -13,10 +13,14 @@ section.card {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border: 0px;
+        border-radius: 0px;
+        border-bottom: 1px solid #374151;
+        padding: 4px;
 
         div.left{
             border: 0px;
+            display: flex;
+            gap: 20px;
             span.campo{
                 border: 0px;
                 margin-right: 12px;

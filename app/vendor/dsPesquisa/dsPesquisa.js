@@ -110,9 +110,7 @@
             .replace(/\p{Diacritic}/gu, "");
 
         $list.find("button.campoBtn").each(function () {
-            var txt = ($(this).attr("data-label") || "")
-                .normalize("NFD")
-                .replace(/\p{Diacritic}/gu, "");
+            var txt = ($(this).attr("data-label") || "").normalize("NFD").replace(/\p{Diacritic}/gu, "");
             var show = !termo || txt.indexOf(termo) !== -1;
             $(this).toggleClass("oculto", !show);
         });
@@ -151,13 +149,7 @@
         // Chip de pesquisa global
         if (ctx.pesquisaGlobal) {
             var $c = $('<div class="filtroCard" data-role="global"></div>');
-            $c.append(
-                '<div class="cardHeader">' +
-                    '<div class="cardLabel">Pesquisa global</div>' +
-                    '<button type="button" class="remover">×</button>' +
-                '</div>' +
-                '<div class="cardValue"></div>'
-            );
+            $c.append('<div class="cardHeader">' + '<div class="cardLabel">Pesquisa global</div>' + '<button type="button" class="remover">×</button>' + "</div>" + '<div class="cardValue"></div>');
             $c.find("div.cardValue").text(ctx.pesquisaGlobal);
             $list.append($c);
             // OBS: não amarramos click aqui; delegamos em initEvents
@@ -175,13 +167,7 @@
 
             var $c = $('<div class="filtroCard" data-role="campo"></div>');
             $c.attr("data-field", fn);
-            $c.append(
-                '<div class="cardHeader">' +
-                    '<div class="cardLabel"></div>' +
-                    '<button type="button" class="remover">×</button>' +
-                '</div>' +
-                '<div class="cardValue"></div>'
-            );
+            $c.append('<div class="cardHeader">' + '<div class="cardLabel"></div>' + '<button type="button" class="remover">×</button>' + "</div>" + '<div class="cardValue"></div>');
             $c.find("div.cardLabel").text(lbl);
             $c.find("div.cardValue").text(val);
             $list.append($c);
@@ -206,10 +192,14 @@
         // Fechar modal
         $m.on("click", "button.fechar", function () {
             $m.removeClass("aberta");
+            $o.removeClass("aberta"); // esconde overlay
         });
 
         $(document).on("keydown.dsPesquisa", function (e) {
-            if (e.key === "Escape") $m.removeClass("aberta");
+            if (e.key === "Escape"){
+                $m.removeClass("aberta");
+                $o.removeClass("aberta"); // esconde overlay
+            }
         });
 
         $(document).on("keydown.dsPesquisa", function (e) {
@@ -313,8 +303,8 @@
 
         // BOTÃO "Pesquisar"
         $m.on("click", "button.pesquisar", function () {
-
             $m.removeClass("aberta"); // fecha o modal ao iniciar a pesquisa
+            $o.removeClass("aberta"); // esconde overlay
             showSpinner(); // Mostra o spinner
 
             var ctx = $m.data("ctx") || {};
@@ -338,16 +328,15 @@
                 },
             })
                 .done(function (resp) {
-                    
                     hideSpinner(); // Esconde o spinner
 
                     if (typeof ctx.callback === "function") {
                         ctx.callback(resp); // resultado da pesquisa
                     }
                     $m.removeClass("aberta");
+                    $o.removeClass("aberta"); // esconde overlay
                 })
                 .fail(function () {
-
                     hideSpinner(); // Esconde o spinner
 
                     if (typeof ctx.callback === "function") {
@@ -369,10 +358,7 @@
         if (!$) return;
 
         // Verifica se o spinnerFunc é um array válido
-        const isSpinnerValid =
-            Array.isArray(spinnerFunc) &&
-            typeof spinnerFunc[0] === 'function' &&
-            typeof spinnerFunc[1] === 'function';
+        const isSpinnerValid = Array.isArray(spinnerFunc) && typeof spinnerFunc[0] === "function" && typeof spinnerFunc[1] === "function";
 
         // Funções do spinner (se válidas)
         const showSpinner = isSpinnerValid ? spinnerFunc[0] : () => {};
@@ -394,7 +380,6 @@
                 },
             })
                 .done(function (resp) {
-
                     hideSpinner(); // Esconde o spinner
 
                     if (!resp || resp.success === false) {
@@ -440,13 +425,14 @@
                     $m.data("ctx", ctx);
                     render($, $m, ctx);
                     $m.addClass("aberta");
+                    $m.parent("div#dsPesquisaOverlay").addClass("aberta"); // mostra overlay
+
 
                     enableDrag();
 
                     $m.find("#dsPesquisaGlobalInput").select();
                 })
                 .fail(function () {
-
                     hideSpinner(); // Esconde o spinner
 
                     console.error("Erro ao carregar configurações da view.");
@@ -491,7 +477,7 @@
             var newTop = Math.min(Math.max(0, e.clientY - offset.y), windowHeight - modalHeight);
 
             $modal.css({
-                position: "absolute",
+                position: "fixed",
                 top: newTop + "px",
                 left: newLeft + "px",
                 transform: "none",
@@ -504,6 +490,48 @@
         });
     }
 
+    //executa a pesquisa imediatamente, sem abrir o modal
+    function dsPesquisaExec(viewName, endpointConfig, callback, spinnerFunc = null) {
+        var $ = ensureJQ();
+        if (!$) return;
+        const ok = Array.isArray(spinnerFunc) && typeof spinnerFunc[0] === "function" && typeof spinnerFunc[1] === "function";
+        const showSpinner = ok ? spinnerFunc[0] : () => {};
+        const hideSpinner = ok ? spinnerFunc[1] : () => {};
+        var storageKey = lsPrefix + (viewName || "default"),
+            saved = loadSaved(storageKey),
+            filtros = {
+                pesquisaGlobal: saved.pesquisaGlobal || "",
+                pesquisaPorCampo: saved.pesquisaPorCampo || {},
+            };
+        showSpinner();
+        $.ajax({
+            url: phpPath,
+            method: "POST",
+            dataType: "json",
+            data: {
+                action: "pesquisar",
+                viewName,
+                endpointConfig,
+                pesquisaGlobal: filtros.pesquisaGlobal,
+                pesquisaPorCampo: JSON.stringify(filtros.pesquisaPorCampo || {}),
+            },
+        })
+            .done(function (resp) {
+                hideSpinner();
+                if (typeof callback === "function") callback(resp);
+            })
+            .fail(function () {
+                hideSpinner();
+                if (typeof callback === "function")
+                    callback({
+                        success: false,
+                        message: "Erro ao comunicar com dsPesquisa.php na pesquisa.",
+                        data: [],
+                    });
+            });
+    }
+
     window.dsPesquisa = dsPesquisa;
+    window.dsPesquisa.exec = dsPesquisaExec;
 
 })(window, document);
