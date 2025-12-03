@@ -1,5 +1,5 @@
 <section id="fotocrim" class="modulo fotocrim">
-    <div class="topBar">
+    <div class="topBarModulo">
         <div class="titulo">
             <strong>Fotocrim</strong>
             <div class="menuModulo">
@@ -15,34 +15,55 @@
         </div>
     </div>
 
-    <div class="content">
-
-    </div>
+    <div class="content"></div>
 </section>
 
-
-<section class="card" data-id="${id}">
+<section class="card ${red}" data-id="${id}">
     <div class="topBar">
         <div class="left">
-            <span class="campo" data-field="id">#${id}</span>
+            <span class="campo" data-field="id" data-selected="false">#${id}</span>
             <span class="campo" data-field="createdAt">Criado: ${createdAt}</span>
             <span class="campo" data-field="updatedAt">Modificado: ${updatedAt}</span>
         </div>
+        <div class="right">
+            <div class="campo" data-field="periculosidade"><strong>Periculosidade: </strong><span class="${periculosidadeClass}">${periculosidade}</span></div>
+        </div>
     </div>
     <div class="body">
+        <div class="campo" data-field="nomeCompleto">${nomeCompleto} ${vulgosResumo}</div>
         <div class="foto" aria-hidden="true">
             <img src="" alt="Foto" />
         </div>
-        <div class="col1">
-            <div class="campo" data-field="nomeCompleto">${nomeCompleto}</div>
-            <div class="campo" data-field="faccao"><strong>Facção:</strong> ${faccao}</div>
+        <div class="col col1">
             <div class="campo" data-field="cpf"><strong>CPF:</strong> ${cpf}</div>
             <div class="campo" data-field="rg"><strong>RG:</strong> ${rg}</div>
             <div class="campo" data-field="rgc"><strong>RG Criminal:</strong> ${rgc}</div>
             <div class="campo" data-field="matricula"><strong>Matrícula:</strong> ${matricula}</div>
             <div class="campo" data-field="dataNascimento"><strong>Nascimento:</strong> ${dataNascimento}</div>
         </div>
+        <div class="col col2">
+            <div class="campo" data-field="sexo"><strong>Sexo:</strong> ${sexo}</div>
+            <div class="campo" data-field="faccao"><strong>Facção:</strong> <span class="red">${faccao}</span></div>
+            <div class="campo" data-field="naturalidade"><strong>Naturalidade:</strong> ${naturalidade}</div>
+            <div class="campo" data-field="nomeMae"><strong>Mãe:</strong> ${nomeMae}</div>
+            <div class="campo" data-field="nomePai"><strong>Pai:</strong> ${nomePai}</div>
+        </div>
+        <div class="col col3">
+            <button class="antecedentes ${antecedentesQuantidade}">Antecedentes</button>
+            <button class="enderecos ${enderecosQuantidade}">Endereços</button>
+            <button class="tatuagens ${tatuagensQuantidade}">Tatuagens</button>
+            <button class="comparsas ${comparsasJson}">Comparsas</button>
+            <button class="fotos ${fotosQuantidade}">Fotos</button>
+            <button class="arquivos ${arquivosQuantidade}">Arquivos</button>
+        </div>
     </div>
     <div class="footer">
+        <button class="editar">Editar</button>
+        <button class="excluir">Excluir</button>
+        <select name="relatorioIndividual" class="relatorioIndividual">
+            <option value="">Relatório individual...</option>
+            <option value="dossie">Dossiê</option>
+            <option value="dossieAr">Dossiê AR</option>
+        </select>
     </div>
 </section>

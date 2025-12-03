@@ -189,16 +189,18 @@
         if ($m.data("init")) return;
         $m.data("init", 1);
 
+        var $overlay = $m.parent("div#dsPesquisaOverlay");
+
         // Fechar modal
         $m.on("click", "button.fechar", function () {
             $m.removeClass("aberta");
-            $o.removeClass("aberta"); // esconde overlay
+            $overlay.removeClass("aberta"); // Esconde overlay junto com o modal
         });
 
         $(document).on("keydown.dsPesquisa", function (e) {
-            if (e.key === "Escape"){
+            if (e.key === "Escape") {
                 $m.removeClass("aberta");
-                $o.removeClass("aberta"); // esconde overlay
+                $overlay.removeClass("aberta"); // Esconde overlay junto com o modal
             }
         });
 
@@ -304,7 +306,7 @@
         // BOTÃO "Pesquisar"
         $m.on("click", "button.pesquisar", function () {
             $m.removeClass("aberta"); // fecha o modal ao iniciar a pesquisa
-            $o.removeClass("aberta"); // esconde overlay
+            $overlay.removeClass("aberta"); // esconde overlay
             showSpinner(); // Mostra o spinner
 
             var ctx = $m.data("ctx") || {};
@@ -334,7 +336,7 @@
                         ctx.callback(resp); // resultado da pesquisa
                     }
                     $m.removeClass("aberta");
-                    $o.removeClass("aberta"); // esconde overlay
+                    $overlay.removeClass("aberta"); // esconde overlay
                 })
                 .fail(function () {
                     hideSpinner(); // Esconde o spinner
@@ -427,6 +429,7 @@
                     $m.addClass("aberta");
                     $m.parent("div#dsPesquisaOverlay").addClass("aberta"); // mostra overlay
 
+                    centerModal(); // Centraliza o modal na abertura inicial
 
                     enableDrag();
 
@@ -447,6 +450,29 @@
     }
 
     // ---------------------------------------------------------
+    // Centraliza o modal na abertura inicial
+    // ---------------------------------------------------------
+    function centerModal() {
+        var $modal = $("#dsPesquisa");
+        if (!$modal.length) return;
+
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        var modalWidth = $modal.outerWidth();
+        var modalHeight = $modal.outerHeight();
+
+        var newLeft = (windowWidth - modalWidth) / 2;
+        var newTop = (windowHeight - modalHeight) / 2;
+
+        $modal.css({
+            top: newTop + "px",
+            left: newLeft + "px",
+        });
+
+        console.log("Modal centralizado", { newLeft, newTop }); // Log para depuração
+    }
+
+    // ---------------------------------------------------------
     // Drag do modal
     // ---------------------------------------------------------
     function enableDrag() {
@@ -459,9 +485,14 @@
 
             var modalOffset = $modal.offset();
             isDragging = true;
-            offset.x = e.clientX - modalOffset.left;
-            offset.y = e.clientY - modalOffset.top;
+            offset.x = e.pageX - modalOffset.left;
+            offset.y = e.pageY - modalOffset.top;
             $modal.addClass("dragging");
+
+            console.log("Drag iniciado", { offset, modalOffset }); // Log para depuração
+
+            // Previne seleção de texto durante o arraste
+            e.preventDefault();
         });
 
         $(document).on("mousemove", function (e) {
@@ -473,18 +504,21 @@
             var windowWidth = $(window).width();
             var windowHeight = $(window).height();
 
-            var newLeft = Math.min(Math.max(0, e.clientX - offset.x), windowWidth - modalWidth);
-            var newTop = Math.min(Math.max(0, e.clientY - offset.y), windowHeight - modalHeight);
+            var newLeft = Math.min(Math.max(0, e.pageX - offset.x), windowWidth - modalWidth);
+            var newTop = Math.min(Math.max(0, e.pageY - offset.y), windowHeight - modalHeight);
 
             $modal.css({
-                position: "fixed",
                 top: newTop + "px",
                 left: newLeft + "px",
-                transform: "none",
             });
+
+            console.log("Drag em andamento", { newLeft, newTop }); // Log para depuração
         });
 
         $(document).on("mouseup", function () {
+            if (isDragging) {
+                console.log("Drag finalizado"); // Log para depuração
+            }
             isDragging = false;
             $("#dsPesquisa").removeClass("dragging");
         });

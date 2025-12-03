@@ -27,11 +27,7 @@ function loadCss(files, callback) {
 
     list.forEach(function (href) {
         // Evita duplicar
-        if (
-            document.querySelector(
-                'link[rel="stylesheet"][href="' + href + '"]'
-            )
-        ) {
+        if (document.querySelector('link[rel="stylesheet"][href="' + href + '"]')) {
             return done(null);
         }
 
@@ -151,13 +147,7 @@ function loadTemplate(data, callback) {
         // 2) template no alvo (jQuery aceita "url seletor")
         $(alvo).load(template, function (response, status, xhr) {
             if (status !== "success") {
-                return callback(
-                    new Error(
-                        "loadTemplate -> falha ao carregar template (" +
-                            (xhr && xhr.status) +
-                            ")"
-                    )
-                );
+                return callback(new Error("loadTemplate -> falha ao carregar template (" + (xhr && xhr.status) + ")"));
             }
 
             // 3) JS por último
@@ -195,9 +185,7 @@ async function loadCard(url, selector) {
     try {
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(
-                `Falha ao carregar ${url}: HTTP ${response.status}`
-            );
+            throw new Error(`Falha ao carregar ${url}: HTTP ${response.status}`);
         }
 
         const html = await response.text();
@@ -213,4 +201,31 @@ async function loadCard(url, selector) {
         console.error("Erro no loadCard:", err);
         throw err; // <-- devolve o erro para o .catch
     }
+}
+
+/**
+ * Inverte data BR⇄DB e opcionalmente inclui hora.
+ * @param {string} data - "dd/mm/aaaa", "aaaa-mm-dd", com ou sem hora.
+ * @param {boolean} withTime - true = retorna com hh:mm:ss.
+ */
+function dateInvert(data, withTime = false) {
+    if (!data) return "";
+
+    // separa data e hora
+    let [dstr, hstr] = data.split(" ");
+    hstr = hstr || "00:00:00";
+
+    // DB → BR
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dstr)) {
+        const [a, m, d] = dstr.split("-");
+        return withTime ? `${d}/${m}/${a} ${hstr}` : `${d}/${m}/${a}`;
+    }
+
+    // BR → DB
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dstr)) {
+        const [d, m, a] = dstr.split("/");
+        return withTime ? `${a}-${m}-${d} ${hstr}` : `${a}-${m}-${d}`;
+    }
+
+    return "";
 }

@@ -12,10 +12,10 @@ div#dsPesquisaOverlay.aberta {
 }
 
 section#dsPesquisa {
-    position: fixed;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
+    position: absolute; /* Alterado para permitir arraste */
+    top: 50%;
+    left: 50%;
+    transform: none; /* Removido para evitar conflitos */
     width: 50vw;
     max-height: 70vh;
     background: #000000; /* fundo do modal mais escuro */

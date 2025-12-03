@@ -7,38 +7,159 @@ section.card {
     flex-direction: column;
     gap: 12px;
     margin-top: 12px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    width: 790px;
 
-    div.topBar{
+    div.topBar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-radius: 0px;
-        border-bottom: 1px solid #374151;
         padding: 4px;
+        margin-top: -5px;
+        border-bottom: 1px solid #333;
 
-        div.left{
+        div.left {
             border: 0px;
             display: flex;
             gap: 20px;
-            span.campo{
+
+            span.campo {
                 border: 0px;
                 margin-right: 12px;
+            }
+
+            span.campo[data-field="id"] {
+                font-size: 1rem;
+                font-weight: 700;
+                color: #ffffff;
+                cursor: pointer;
+
+                &:hover{
+                    color: rgba(42, 151, 62, 1);
+                }
+
+                &[data-selected="true"] {
+                    color: rgba(42, 151, 62, 1);
+                    font-size: 1.3rem;
+                }
+            }
+        }
+
+        div.right {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            align-items: center;
+            border: 0px;
+            font-size: 0.75rem;
+
+            span.periculosidadeAlta {
+                color: #f87171;
+                font-weight: 600;
+            }
+
+            span.periculosidadeMedia {
+                color: green;
+                font-weight: 600;
+            }
+
+            div.campo[data-field="faccao"] {
+                color: #f87171;
+                font-weight: 600;
+                border-left: 2px solid;
+                padding-left: 10px;
             }
         }
     }
 
-    div.body{
+    div.body {
         display: flex;
-        flex-direction: row;
-        gap: 8px;
+        flex-wrap: wrap; /* permite quebra de linha se necessário */
+        gap: 10px;
+        line-height: 33px;
+        user-select: text;
 
-        div.foto{
-            width: 150px;
-            height: 200px;
+        div.campo[data-field="nomeCompleto"] {
+            flex: 1 1 100%; /* ocupa toda a largura */
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        div.foto {
+            width: 120px;
+            height: 160px;
             object-fit: contain; /* Manter proporção da imagem */
             border: 2px solid #4a5568;
-            border-radius: 4px;    
+            border-radius: 4px;
         }
+
+        div.col {
+            div.campo[data-field="faccao"] span {
+                color: #f87171;
+                font-weight: 600;
+            }
+        }
+
+        div.col2 {
+            padding-left: 20px;
+        }
+
+        div.col3 {
+            display: flex; /* Define um layout flexível */
+            flex-direction: column; /* Organiza os itens em uma coluna */
+            align-items: flex-end; /* Alinha os itens à direita */
+            gap: 3px;
+            flex: 1; /* Faz o div.col3 ocupar todo o espaço restante */
+            user-select: none; /* Impede a seleção de texto */
+
+            button {
+                min-width: 120px;
+                height: 25px;
+                font-size: 0.75rem;
+                background-color: rgba(143, 143, 143, 0.3);
+
+                &:hover {
+                    background-color: rgba(143, 143, 143, 0.5);
+                }
+            }
+
+            button.green {
+                background-color: rgba(42, 151, 62, 0.3);
+
+                &:hover {
+                    background-color: rgba(42, 151, 62, 0.5);
+                }
+            }
+        }
+    }
+
+    div.footer {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 5px;
+        border-top: 1px solid #333;
+
+        button.editar {
+            background-color: rgba(37, 99, 235, 0.3);
+
+            &:hover {
+                background-color: rgba(37, 99, 235, 0.5);
+            }
+        }
+
+        button.excluir {
+            background-color: rgba(239, 68, 68, 0.3);
+
+            &:hover {
+                background-color: rgba(239, 68, 68, 0.5);
+            }
+        }
+    }
+
+    &.red {
+        /* destaque em vermelho no card inteiro (quando é facção criminosa) */
+        border-top: 3px solid #f87171;
     }
 }
