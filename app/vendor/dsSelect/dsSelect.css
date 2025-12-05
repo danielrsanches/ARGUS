@@ -58,6 +58,7 @@ div.dsSelectWrapper {
 
     &.dsSelectOpen {
         box-shadow: 0 0 0 2px var(--ds-accent-color);
+        border-radius: var(--ds-select-radius);
     }
 
     /* Área visível (parte que fica fechada) */

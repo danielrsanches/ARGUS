@@ -257,10 +257,8 @@
             console.log('Tecla pressionada:', e.key, 'Foco no input de busca:', isSearchFocused);
 
             if (isSearchFocused) {
-                // Permite que o input de busca lide com setas e espaço
-                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
-                    e.preventDefault();
-                    moveActiveOption(optionsList, e.key === 'ArrowDown' ? 1 : -1);
+                if (e.key === 'Delete') {
+                    // Permite que o input de busca lide com a tecla Delete normalmente
                     return;
                 }
             }
@@ -299,6 +297,24 @@
                     moveActiveOption(optionsList, e.key === 'ArrowDown' ? 1 : -1);
                     break;
 
+                // Adiciona comportamento para a tecla Delete
+                case 'Delete':
+                    e.preventDefault();
+
+                    // Limpa o valor do select nativo
+                    nativeSelect.value = '';
+                    nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+
+                    // Atualiza o display para o placeholder
+                    const placeholderSpan = displayElement.querySelector('.dsSelectPlaceholder');
+                    placeholderSpan.textContent = nativeSelect.getAttribute('data-ds-placeholder') || 'Selecione...';
+                    placeholderSpan.classList.remove('dsSelectPlaceholderFilled');
+
+                    // Remove a seleção visual
+                    const allOptions = optionsList.querySelectorAll('.dsSelectOption');
+                    allOptions.forEach(o => o.classList.remove('dsSelectSelected'));
+                    break;
+
                 default:
                     break;
             }
@@ -317,8 +333,6 @@
         wrapper.classList.add('dsSelectOpen');
         optionsList.style.display = 'block';
 
-        console.log('Abrindo dropdown:', wrapper, optionsList);
-
         const searchInput = optionsList.querySelector('.dsSelectSearchInput');
         if (searchInput) {
             searchInput.focus();
@@ -332,11 +346,7 @@
             active.scrollIntoView({ block: 'nearest' });
         }
 
-        // Remove qualquer estilo inline que possa sobrescrever o CSS
-        // Aplica o estilo correto baseado no CSS
-        const computedStyle = getComputedStyle(wrapper);
-        // wrapper.style.borderRadius = computedStyle.borderRadius;
-        // wrapper.style.boxShadow = computedStyle.boxShadow;
+
     }
 
     function closeDropdown(wrapper, optionsList) {
