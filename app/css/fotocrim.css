@@ -30,9 +30,6 @@ section.card {
             }
 
             span.campo[data-field="id"] {
-                font-size: 1rem;
-                font-weight: 700;
-                color: #ffffff;
                 cursor: pointer;
 
                 &:hover{
@@ -42,6 +39,7 @@ section.card {
                 &[data-selected="true"] {
                     color: rgba(42, 151, 62, 1);
                     font-size: 1.3rem;
+                    font-weight: 700;
                 }
             }
         }

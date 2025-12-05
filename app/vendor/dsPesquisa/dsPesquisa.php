@@ -272,6 +272,18 @@ function pesquisar(): void
             $orderBy = $cfg['orderBy'];
         }
 
+        // ORDER BY enviado pelo front-end
+        $orderByPost = trim((string)($_POST['orderBy'] ?? ''));
+        if ($orderByPost !== '') {
+            // Sanitiza o campo e a direção (ASC/DESC)
+            $parts = preg_split('/\s+/', $orderByPost);
+            $field = dsUtil::sanitizeFieldName($parts[0] ?? '');
+            $direction = strtoupper($parts[1] ?? 'ASC');
+            if ($field && in_array($direction, ['ASC', 'DESC'], true)) {
+                $orderBy = "$field $direction";
+            }
+        }
+
         // ---------------------------------------------------------
         // 4) Campos da view e definição de quais participam da global
         // ---------------------------------------------------------

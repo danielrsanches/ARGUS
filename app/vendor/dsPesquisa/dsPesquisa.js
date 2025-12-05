@@ -175,11 +175,55 @@
         });
     }
 
-    function render($, $m, ctx) {
+    function renderOrdenacao($, $m, ctx) {
+        var $select = $m.find("#dsPesquisaOrdenacao");
+        // Evita repopular desnecessariamente
+        if ($select.data("populated")) return;
+
+        var fields = ctx.viewConfig.fields || [];
+        var defaultOrder = ctx.viewConfig.orderByDefault || "";
+
+        // Guarda o primeiro option ("Selecione...") e limpa o select
+        var $firstOption = $select.find("option:first");
+        $select.empty().append($firstOption);
+
+        // Ordena os campos em ordem alfabética pelo label
+        fields.sort((a, b) => (a.label || a.name).localeCompare(b.label || b.name));
+
+        // Popula o select com os campos da configuração (ASC e DESC)
+        fields.forEach(function (field) {
+            // ASC
+            var $optionAsc = $("<option></option>");
+            $optionAsc.val(`${field.name} ASC`);
+            $optionAsc.text(`${field.label || field.name} ↑`); // Substituído por seta ASCII para cima
+            $select.append($optionAsc);
+
+            // DESC
+            var $optionDesc = $("<option></option>");
+            $optionDesc.val(`${field.name} DESC`);
+            $optionDesc.text(`${field.label || field.name} ↓`); // Substituído por seta ASCII para baixo
+            $select.append($optionDesc);
+        });
+
+        // Pré-seleciona a ordenação padrão (defaultOrder)
+        if (defaultOrder) {
+            $select.val(defaultOrder);
+        }
+
+        // Marca o select como populado para evitar retrabalho
+        $select.data("populated", true);
+    }
+
+    function renderFilters($, $m, ctx) {
         $m.find("#dsPesquisaGlobalInput").val(ctx.pesquisaGlobal || "");
         renderFieldButtons($, $m, ctx);
         renderValorCampo($, $m, ctx);
         renderAtivos($, $m, ctx);
+    }
+
+    function render($, $m, ctx) {
+        renderOrdenacao($, $m, ctx);
+        renderFilters($, $m, ctx);
     }
 
     // ---------------------------------------------------------
@@ -313,7 +357,10 @@
             var filtros = {
                 pesquisaGlobal: ctx.pesquisaGlobal || "",
                 pesquisaPorCampo: ctx.pesquisaPorCampo || {},
+                orderBy: $m.find("#dsPesquisaOrdenacao").val() || ctx.viewConfig.orderByDefault // Ordenação
             };
+
+            console.log("Filtros enviados ao endpoint:", filtros); // Log para depuração
 
             if (ctx.storageKey) saveLS(ctx.storageKey, filtros);
 
@@ -327,6 +374,7 @@
                     endpointConfig: ctx.endpointConfig,
                     pesquisaGlobal: filtros.pesquisaGlobal,
                     pesquisaPorCampo: JSON.stringify(filtros.pesquisaPorCampo || {}),
+                    orderBy: filtros.orderBy
                 },
             })
                 .done(function (resp) {

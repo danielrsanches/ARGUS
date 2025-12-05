@@ -112,11 +112,23 @@ section#dsPesquisa {
         }
 
         /* PESQUISA GLOBAL */
-        div.dsPesquisaGlobal {
+        /* Para que os campos fiquem lado a lado, cada par (label e input) deve ser envolvido por uma div. */
+        div.dsPesquisaGlobalOrdenacao {
             display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
+            flex-direction: row; /* Coloca os elementos filhos (as divs que você vai criar) em linha */
+            gap: 1rem; /* Cria um espaço entre os campos */
+            align-items: flex-start; /* Alinha os itens no topo */
+
+            & div.dsPesquisaGlobal {
+                flex: 1; /* Ocupa o espaço restante */
+            }
+
+            .dsPesquisaOrdenacao {
+                flex: 0 1 auto; /* Não cresce, encolhe se necessário, baseia-se no conteúdo */
+                min-width: 200px; /* Garante uma largura mínima para o select */
+            }
         }
+
 
         /* FILTRO POR CAMPOS */
         div.dsPesquisaCampos {
