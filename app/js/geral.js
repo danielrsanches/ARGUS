@@ -1,4 +1,9 @@
 /**
+ * Neste arquivo ficam funções gerais de uso de todo o sistema.
+ */
+
+
+/**
  * Carrega arquivos CSS dinamicamente.
  * @param {(string|string[]|null)} files Caminho único ou lista de caminhos CSS.
  * @param {Function} [callback] Função chamada ao finalizar (callback(err)).

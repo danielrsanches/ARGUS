@@ -5,10 +5,10 @@ clearJs();
 //carrega o template do módulo...
 loadTemplate(
     {
-        alvo: "main#modulo",
-        template: "html/fotocrim.html section#fotocrim",
-        css: "css/fotocrim.css",
-        js: ["vendor/dsPesquisa/dsPesquisa.js","js/modulo.js"],
+        alvo: "main#modulo", //alvo onde o template será inserido...
+        template: "html/fotocrim.html section#fotocrim", //template a ser carregado...
+        css: "css/fotocrim.css", //CSS específico do módulo + outros CSS necessários...
+        js: ["vendor/dsPesquisa/dsPesquisa.js","js/modulo.js"], //arquivos JS necessários (exceto do próprio módulo, pq é este arquivo aqui)...
     },
     function (err) {
         if (err) {
@@ -47,6 +47,8 @@ loadTemplate(
     }
 );
 
+
+//função para renderizar os cards na tela...
 function renderizaCards(dados) {
 
     // carregua o template do card em 'template'...

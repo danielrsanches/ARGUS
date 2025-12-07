@@ -83,7 +83,6 @@ section.card {
         flex-wrap: wrap; /* permite quebra de linha se necessário */
         gap: 10px;
         line-height: 33px;
-        user-select: text;
 
         div.campo[data-field="nomeCompleto"] {
             flex: 1 1 100%; /* ocupa toda a largura */

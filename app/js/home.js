@@ -3,9 +3,18 @@ clearCss();
 clearJs();
 
 //carrega o template do módulo...
-loadTemplate({alvo: "main#modulo", template: "html/home.html section#home", css: "css/home.css", js: ""}, function(err){
-    if(err){
-        console.error("Erro ao carregar o módulo home -> " + err);
-        return alert("Erro ao carregar o módulo home -> " + err);
+loadTemplate(
+    {
+        alvo: "main#modulo", //alvo onde o template será inserido...
+        template: "html/home.html section#home", //template a ser carregado...
+        css: "css/home.css", //CSS específico do módulo + outros CSS necessários...
+        js: "", // arquivos JS necessários (exceto do próprio módulo, pq é este arquivo aqui)...
+    },
+    function (err) {
+        if (err) {
+            let msg = "❌ Erro ao carregar o módulo home -> " + err;
+            console.error(msg);
+            return alert(msg);
+        }
     }
-})
+);

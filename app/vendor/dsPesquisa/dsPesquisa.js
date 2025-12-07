@@ -375,8 +375,6 @@
                 orderBy: $m.find("#dsPesquisaOrdenacao").val() || ctx.viewConfig.orderByDefault, // Ordenação
             };
 
-            console.log("Filtros enviados ao endpoint:", filtros); // Log para depuração
-
             if (ctx.storageKey) saveLS(ctx.storageKey, filtros);
 
             $.ajax({
@@ -531,8 +529,6 @@
             top: newTop + "px",
             left: newLeft + "px",
         });
-
-        console.log("Modal centralizado", { newLeft, newTop }); // Log para depuração
     }
 
     // ---------------------------------------------------------

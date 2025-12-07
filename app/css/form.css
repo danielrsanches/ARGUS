@@ -82,3 +82,12 @@ label {
     font-size: 0.82rem;
     color: #bfc4cc;
 }
+
+
+div.campo{
+    user-select: text;
+
+    & strong{
+        user-select: none;
+    }
+}
