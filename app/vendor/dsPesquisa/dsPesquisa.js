@@ -104,14 +104,24 @@
             $list.data("done", 1);
         }
 
+        // Ajuste na função de busca para permitir correspondência em qualquer ordem de caracteres
         var termo = ($m.find("#dsCampoBuscaInput").val() || "")
             .toLowerCase()
             .normalize("NFD")
-            .replace(/\p{Diacritic}/gu, "");
+            .replace(/[^\w\s]/g, ""); // Remove caracteres especiais
+
+        var termos = termo.split(" ").filter(Boolean); // Divide o termo em palavras
 
         $list.find("button.campoBtn").each(function () {
-            var txt = ($(this).attr("data-label") || "").normalize("NFD").replace(/\p{Diacritic}/gu, "");
-            var show = !termo || txt.indexOf(termo) !== -1;
+            var txt = ($(this).attr("data-label") || "")
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[^\w\s]/g, ""); // Remove caracteres especiais
+
+            var show = termos.every(function (t) {
+                return txt.includes(t); // Verifica se todas as palavras estão presentes
+            });
+
             $(this).toggleClass("oculto", !show);
         });
 
@@ -212,6 +222,11 @@
 
         // Marca o select como populado para evitar retrabalho
         $select.data("populated", true);
+
+        // Inicializa o TomSelect após o select estar pronto
+        if ($select.length) {
+            new TomSelect("#dsPesquisaOrdenacao");
+        }
     }
 
     function renderFilters($, $m, ctx) {
@@ -357,7 +372,7 @@
             var filtros = {
                 pesquisaGlobal: ctx.pesquisaGlobal || "",
                 pesquisaPorCampo: ctx.pesquisaPorCampo || {},
-                orderBy: $m.find("#dsPesquisaOrdenacao").val() || ctx.viewConfig.orderByDefault // Ordenação
+                orderBy: $m.find("#dsPesquisaOrdenacao").val() || ctx.viewConfig.orderByDefault, // Ordenação
             };
 
             console.log("Filtros enviados ao endpoint:", filtros); // Log para depuração
@@ -374,7 +389,7 @@
                     endpointConfig: ctx.endpointConfig,
                     pesquisaGlobal: filtros.pesquisaGlobal,
                     pesquisaPorCampo: JSON.stringify(filtros.pesquisaPorCampo || {}),
-                    orderBy: filtros.orderBy
+                    orderBy: filtros.orderBy,
                 },
             })
                 .done(function (resp) {
@@ -615,5 +630,4 @@
 
     window.dsPesquisa = dsPesquisa;
     window.dsPesquisa.exec = dsPesquisaExec;
-
 })(window, document);

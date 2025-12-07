@@ -20,6 +20,8 @@ section.card {
         border-bottom: 1px solid #333;
 
         div.left {
+            display: flex;
+            align-items: center;
             border: 0px;
             display: flex;
             gap: 20px;
@@ -32,7 +34,7 @@ section.card {
             span.campo[data-field="id"] {
                 cursor: pointer;
 
-                &:hover{
+                &:hover {
                     color: rgba(42, 151, 62, 1);
                 }
 
@@ -40,6 +42,11 @@ section.card {
                     color: rgba(42, 151, 62, 1);
                     font-size: 1.3rem;
                     font-weight: 700;
+                }
+
+                /* destaca a borda inferior do topBar quando selecionado */
+                div.topBar:has(&[data-selected="true"]) {
+                    border-bottom: 1px solid rgba(42, 151, 62, 1);
                 }
             }
         }

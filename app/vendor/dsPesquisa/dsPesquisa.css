@@ -239,16 +239,24 @@ section#dsPesquisa {
                         button.remover {
                             background: transparent;
                             border: none;
-                            cursor: default;
+                            cursor: pointer;
                             padding: 0;
+                            padding-bottom: 5px;
+                            padding-right: 1px;
                             font-size: 1rem;
-                            line-height: 1;
                             color: #9ca3af;
                             margin-left: 10px;
                             margin-top: -5px;
+                            width: 15px; /* Define largura fixa */
+                            height: 15px; /* Define altura fixa */
+                            border-radius: 8px; /* Aplica bordas arredondadas suaves */
+                            display: flex;
+                            justify-content: center; /* Centraliza horizontalmente o conteúdo */
+                            align-items: center; /* Centraliza verticalmente o conteúdo */
 
                             &:hover {
                                 background-color: #f97373;
+                                color: white;
                             }
                         }
                     }
