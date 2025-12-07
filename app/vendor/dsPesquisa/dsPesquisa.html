@@ -36,7 +36,14 @@
             <!-- VALOR DO CAMPO SELECIONADO -->
             <div class="dsCampoValor">
                 <div class="dsCampoValorLabel"></div>
-                <input id="dsCampoValorInput" class="dsInput" type="text" placeholder="Digite o valor do filtro e pressione Enter..." />
+                <input id="dsCampoValorInput" class="dsInput" type="text" autocomplete="off" placeholder="Digite o valor do filtro e pressione Enter..." />
+                <div class="help">
+                    <p>• "frase exata" -> busca a frase exatamente como digitada</p>
+                    <p>• -palavra -> desconsidera registros que contenham esta palavra</p>
+                    <p>• valor1,valor2,valor3 -> busca qualquer um dos valores entre as vírgulas</p>
+                    <p>• valor1..valor2 -> intervalo de números, textos ou datas (de valor1 até valor2)</p>
+                    <p>• datas -> reconhece automaticamente formatos como 01/05/2025, 05/2025, 01/05, 01, 2025, completandos mês e ano com os valores atuais, quando ocultados</p>
+                </div>
             </div>
 
             <!-- FILTROS ATIVOS -->

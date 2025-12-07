@@ -9,9 +9,7 @@ header('Content-Type: application/json; charset=utf-8');
 class dsUtil
 {
     /**
-     * Raiz da aplicação no filesystem:
-     * sobe 2 níveis a partir de vendor/dsPesquisa/dsPesquisa.php
-     * => .../ (onde ficam "php", "index.php", etc.)
+     * Raiz da aplicação (sobe 2 níveis a partir de vendor/dsPesquisa/dsPesquisa.php).
      */
     public static function getAppBaseDir(): string
     {
@@ -22,7 +20,6 @@ class dsUtil
     /**
      * Monta a URL HTTP da aplicação a partir de um path relativo.
      * Ex.: "php/fotocrimConfig.php?tipo=viewConfig"
-     *      → "https://host/app/php/fotocrimConfig.php?tipo=viewConfig"
      */
     public static function makeAppUrl(string $relativePath): string
     {
@@ -31,7 +28,6 @@ class dsUtil
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-        // Diretório do script atual, ex.: "/app/vendor/dsPesquisa"
         $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
         $scriptDir = rtrim(str_replace('\\', '/', $scriptDir), '/');
 
@@ -46,7 +42,6 @@ class dsUtil
 
     /**
      * Valida nomes de campos/tabelas para evitar injection em identificadores.
-     * Permite: letras, números, underscore, ponto (ex.: alias.campo).
      */
     public static function sanitizeFieldName(string $name): ?string
     {
@@ -83,7 +78,7 @@ class dsUtil
             throw new RuntimeException("Arquivo de config '$endpointConfig' não encontrado.");
         }
 
-        // dsPesquisaConfig.php deve retornar APENAS o mapa (sem __pdo)
+        // dsPesquisaConfig.php deve retornar o mapa de views (sem $__pdo no return)
         $map = require $configFullPath;
         if (!is_array($map)) {
             throw new RuntimeException("dsPesquisaConfig.php deve retornar um array.");
@@ -121,13 +116,10 @@ class dsUtil
     /**
      * Obtém o PDO a partir do dsPesquisaConfig.php.
      *
-     * Regras:
-     *  - dsPesquisaConfig.php faz:
-     *        require_once __DIR__ . '/db.php';
-     *        $__pdo = db(); // ou minhaConexao(), tanto faz
-     *        return [ 'viewName' => '...' , ... ];
-     *
-     *  - Aqui usamos require para ter acesso a $__pdo.
+     * dsPesquisaConfig.php:
+     *   require_once __DIR__ . '/db.php';
+     *   $__pdo = db(); // ou minhaConexao();
+     *   return [ 'viewFotocrim' => 'php/fotocrimConfig.php?tipo=viewConfig', ... ];
      */
     public static function getPdoFromConfig(string $endpointConfig): PDO
     {
@@ -142,11 +134,8 @@ class dsUtil
             throw new RuntimeException("Arquivo de config '$endpointConfig' não encontrado.");
         }
 
-        // Garante que uma eventual $__pdo antiga não "suje" o resultado
-        unset($__pdo);
+        unset($__pdo); // evita sujeira de execuções anteriores
 
-        // Executa o dsPesquisaConfig.php.
-        // Ele define $__pdo e retorna o mapa de views, que aqui é ignorado.
         require $configFullPath;
 
         if (!isset($__pdo) || !$__pdo instanceof PDO) {
@@ -155,13 +144,383 @@ class dsUtil
 
         return $__pdo;
     }
+
+    /**
+     * Interpreta um valor de data "simples" e devolve intervalo [fromYmd, toYmd].
+     *
+     * Regras:
+     *  - "1" ou "01"         => dia 01 do mês/ano correntes
+     *  - "01/05"             => 01/05 do ANO corrente
+     *  - "05/2025"           => mês 05 do ano 2025 (mês inteiro)
+     *  - "2025"              => ano inteiro 2025
+     *  - "01/05/2025"        => dia exato 01/05/2025
+     */
+    public static function parseSingleDateToken(string $value): ?array
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+
+        $now = new DateTimeImmutable('now');
+        $cy  = (int)$now->format('Y');
+        $cm  = (int)$now->format('m');
+
+        // 01/05/2025
+        if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $value, $m)) {
+            $d   = (int)$m[1];
+            $mth = (int)$m[2];
+            $y   = (int)$m[3];
+
+            $dt = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $y, $mth, $d));
+            if (!$dt) {
+                return null;
+            }
+            $ymd = $dt->format('Y-m-d');
+            return [$ymd, $ymd];
+        }
+
+        // 05/2025  → mês/ano
+        if (preg_match('/^(\d{1,2})\/(\d{4})$/', $value, $m)) {
+            $mth = (int)$m[1];
+            $y   = (int)$m[2];
+
+            $first = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-01', $y, $mth));
+            if (!$first) {
+                return null;
+            }
+            $last = $first->modify('last day of this month');
+            return [$first->format('Y-m-d'), $last->format('Y-m-d')];
+        }
+
+        // 01/05  → dia/mês do ano corrente
+        if (preg_match('/^(\d{1,2})\/(\d{1,2})$/', $value, $m)) {
+            $d   = (int)$m[1];
+            $mth = (int)$m[2];
+            $dt  = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $cy, $mth, $d));
+            if (!$dt) {
+                return null;
+            }
+            $ymd = $dt->format('Y-m-d');
+            return [$ymd, $ymd];
+        }
+
+        // 1 ou 01 → dia do mês/ano correntes
+        if (preg_match('/^(\d{1,2})$/', $value, $m)) {
+            $d  = (int)$m[1];
+            $dt = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $cy, $cm, $d));
+            if (!$dt) {
+                return null;
+            }
+            $ymd = $dt->format('Y-m-d');
+            return [$ymd, $ymd];
+        }
+
+        // 2025 → ano inteiro
+        if (preg_match('/^(\d{4})$/', $value, $m)) {
+            $y = (int)$m[1];
+            $from = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-01-01', $y));
+            $to   = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-12-31', $y));
+            if (!$from || !$to) {
+                return null;
+            }
+            return [$from->format('Y-m-d'), $to->format('Y-m-d')];
+        }
+
+        return null;
+    }
+
+    /**
+     * Interpreta um intervalo de datas "left..right" e devolve [fromYmd, toYmd].
+     *
+     * Regras:
+     *  - "01..05"         → dia 01 ao 05 do mês/ano correntes
+     *  - "05..06/2025"    → dia 05 do mês/ano correntes até último dia de 06/2025
+     */
+    public static function parseDateIntervalTokens(string $left, string $right): ?array
+    {
+        $left  = trim($left);
+        $right = trim($right);
+        if ($left === '' || $right === '') {
+            return null;
+        }
+
+        $now = new DateTimeImmutable('now');
+        $cy  = (int)$now->format('Y');
+        $cm  = (int)$now->format('m');
+
+        // 01..05 (dias do mesmo mês/ano correntes)
+        if (preg_match('/^(\d{1,2})$/', $left, $m1) && preg_match('/^(\d{1,2})$/', $right, $m2)) {
+            $d1 = (int)$m1[1];
+            $d2 = (int)$m2[1];
+            if ($d1 > $d2) {
+                [$d1, $d2] = [$d2, $d1];
+            }
+
+            $from = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $cy, $cm, $d1));
+            $to   = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $cy, $cm, $d2));
+            if (!$from || !$to) {
+                return null;
+            }
+            return [$from->format('Y-m-d'), $to->format('Y-m-d')];
+        }
+
+        // 05..06/2025 (dia do mês/ano correntes até fim de mês/ano específico)
+        if (preg_match('/^(\d{1,2})$/', $left, $mL) && preg_match('/^(\d{1,2})\/(\d{4})$/', $right, $mR)) {
+            $d1 = (int)$mL[1];
+            $m2 = (int)$mR[1];
+            $y2 = (int)$mR[2];
+
+            $from = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $cy, $cm, $d1));
+            if (!$from) {
+                return null;
+            }
+
+            $firstDayEnd = DateTimeImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-01', $y2, $m2));
+            if (!$firstDayEnd) {
+                return null;
+            }
+            $lastDayEnd  = $firstDayEnd->modify('last day of this month');
+
+            return [$from->format('Y-m-d'), $lastDayEnd->format('Y-m-d')];
+        }
+
+        // Fallback genérico:
+        // Tenta interpretar cada lado com parseSingleDateToken(), usando o início do lado
+        // esquerdo e o fim do lado direito como limites globais.
+        $leftRange  = self::parseSingleDateToken($left);
+        $rightRange = self::parseSingleDateToken($right);
+        if ($leftRange && $rightRange) {
+            [$lfFrom, $lfTo] = $leftRange;
+            [$rtFrom, $rtTo] = $rightRange;
+
+            // Em ordem "natural": início = from do esquerdo, fim = to do direito,
+            // se isso fizer sentido cronológico.
+            if ($lfFrom <= $rtTo) {
+                $start = $lfFrom;
+                $end   = $rtTo;
+            } else {
+                // Usuário inverteu a ordem; garante intervalo cobrindo ambos lados.
+                $start = $rtFrom;
+                $end   = $lfTo;
+            }
+
+            if ($start > $end) {
+                [$start, $end] = [$end, $start];
+            }
+
+            return [$start, $end];
+        }
+
+        return null;
+    }
+
+    /**
+     * Monta condição de UM campo da pesquisaPorCampo, com suporte a listas separadas
+     * por vírgula (OR) e delega para buildCampoConditionSingle por item.
+     *
+     * Ex.: "1,2,5"  → cond(1) OR cond(2) OR cond(5)
+     */
+    public static function buildCampoCondition(
+        string $col,
+        string $rawValue,
+        string $fieldType,
+        int $campoIdx,
+        array &$params
+    ): ?string {
+        $value = trim($rawValue);
+        if ($value === '') {
+            return null;
+        }
+
+        // Listas separadas por vírgula → OR entre subcondições
+        if (strpos($value, ',') !== false) {
+            $parts = array_filter(array_map('trim', explode(',', $value)), 'strlen');
+            if (!$parts) {
+                return null;
+            }
+
+            $subConds = [];
+            $alt      = 0;
+
+            foreach ($parts as $p) {
+                $alt++;
+                // ajusta índice pra evitar colisão de parâmetros
+                $single = self::buildCampoConditionSingle($col, $p, $fieldType, ($campoIdx * 100) + $alt, $params);
+                if ($single !== null) {
+                    $subConds[] = $single;
+                }
+            }
+
+            if (!$subConds) {
+                return null;
+            }
+
+            return '(' . implode(' OR ', $subConds) . ')';
+        }
+
+        // Sem vírgulas, trata como um valor único
+        return self::buildCampoConditionSingle($col, $value, $fieldType, $campoIdx, $params);
+    }
+
+    /**
+     * Condição de um campo para UM valor (sem vírgulas).
+     * Aplica:
+     *  - datas/intervalos (date/datetime/timestamp)
+     *  - intervalo genérico "a..b"
+     *  - "frase exata"
+     *  - -palavra   → NOT LIKE
+     *  - palavra    → LIKE
+     */
+    protected static function buildCampoConditionSingle(
+        string $col,
+        string $value,
+        string $fieldType,
+        int $campoIdx,
+        array &$params
+    ): ?string {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+
+        $fieldTypeLower = strtolower($fieldType);
+        $isDateType     = in_array($fieldTypeLower, ['date', 'datetime', 'timestamp'], true);
+
+        // Datas primeiro
+        if ($isDateType) {
+            $cond = self::buildDateCondition($col, $value, $fieldTypeLower, $campoIdx, $params);
+            if ($cond !== null) {
+                return $cond;
+            }
+        }
+
+        // Intervalo genérico para não-data: "valor1..valor2"
+        if (!$isDateType && strpos($value, '..') !== false && substr_count($value, '"') === 0) {
+            [$v1, $v2] = explode('..', $value, 2);
+            $v1 = trim((string)$v1);
+            $v2 = trim((string)$v2);
+
+            if ($v1 !== '' && $v2 !== '') {
+                $p1 = ':c' . $campoIdx . '_i1';
+                $p2 = ':c' . $campoIdx . '_i2';
+
+                $params[$p1] = $v1;
+                $params[$p2] = $v2;
+
+                return sprintf("`%s` BETWEEN %s AND %s", $col, $p1, $p2);
+            }
+        }
+
+        // Frases / negativas / palavras soltas
+        $tokens = [];
+        if (preg_match_all('/"([^"]+)"|(\S+)/u', $value, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $m) {
+                if ($m[1] !== '') {
+                    $tokens[] = ['kind' => 'phrase', 'value' => $m[1]];
+                } else {
+                    $t = $m[2];
+                    if (strlen($t) > 1 && $t[0] === '-') {
+                        $tokens[] = ['kind' => 'neg', 'value' => substr($t, 1)];
+                    } else {
+                        $tokens[] = ['kind' => 'word', 'value' => $t];
+                    }
+                }
+            }
+        }
+
+        $parts = [];
+        $idx   = 0;
+
+        foreach ($tokens as $tk) {
+            $word = trim((string)$tk['value']);
+            if ($word === '') {
+                continue;
+            }
+            $idx++;
+            $p = ':c' . $campoIdx . '_w' . $idx;
+
+            if ($tk['kind'] === 'neg') {
+                $parts[]    = sprintf("`%s` NOT LIKE %s", $col, $p);
+                $params[$p] = '%' . $word . '%';
+            } else {
+                $parts[]    = sprintf("`%s` LIKE %s", $col, $p);
+                $params[$p] = '%' . $word . '%';
+            }
+        }
+
+        if (!$parts) {
+            return null;
+        }
+
+        return '(' . implode(' AND ', $parts) . ')';
+    }
+
+    /**
+     * Condição específica para campos de data/datetime.
+     */
+    protected static function buildDateCondition(
+        string $col,
+        string $value,
+        string $fieldTypeLower,
+        int $campoIdx,
+        array &$params
+    ): ?string {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+
+        $isDateTime = in_array($fieldTypeLower, ['datetime', 'timestamp'], true);
+
+        // Intervalo "left..right"
+        if (strpos($value, '..') !== false && substr_count($value, '"') === 0) {
+            [$left, $right] = explode('..', $value, 2);
+            $range = self::parseDateIntervalTokens((string)$left, (string)$right);
+            if ($range) {
+                [$fromYmd, $toYmd] = $range;
+                $p1 = ':c' . $campoIdx . '_d1';
+                $p2 = ':c' . $campoIdx . '_d2';
+
+                if ($isDateTime) {
+                    $params[$p1] = $fromYmd . ' 00:00:00';
+                    $params[$p2] = $toYmd   . ' 23:59:59';
+                } else {
+                    $params[$p1] = $fromYmd;
+                    $params[$p2] = $toYmd;
+                }
+
+                return sprintf("`%s` BETWEEN %s AND %s", $col, $p1, $p2);
+            }
+        }
+
+        // Data simples (dia, dia/mês, mês/ano, ano, dia/mês/ano)
+        $range = self::parseSingleDateToken($value);
+        if ($range) {
+            [$fromYmd, $toYmd] = $range;
+            $p1 = ':c' . $campoIdx . '_d1';
+            $p2 = ':c' . $campoIdx . '_d2';
+
+            if ($isDateTime) {
+                $params[$p1] = $fromYmd . ' 00:00:00';
+                $params[$p2] = $toYmd   . ' 23:59:59';
+            } else {
+                $params[$p1] = $fromYmd;
+                $params[$p2] = $toYmd;
+            }
+
+            return sprintf("`%s` BETWEEN %s AND %s", $col, $p1, $p2);
+        }
+
+        return null;
+    }
 }
 
 /* ============================================================
    Roteamento da ação
    ============================================================ */
 
-$action = $_POST['action'] ?? ''; // captura a ação
+$action = $_POST['action'] ?? '';
 
 switch ($action) {
     case 'getConfig':
@@ -183,7 +542,6 @@ switch ($action) {
 
 /* ============================================================
    AÇÃO: getConfig
-   - Apenas devolve a viewConfig pro front (metadados)
    ============================================================ */
 function getConfig(): void
 {
@@ -211,60 +569,41 @@ function getConfig(): void
 
 /* ============================================================
    AÇÃO: pesquisar
-   Versão 1 (sem hacks de intervalo/aspas/negativo/datas ainda)
-   - pesquisaGlobal: palavras AND entre si, campos OR
-   - pesquisaPorCampo: campoX: palavras AND dentro do campo
-   - fixedFilters: sempre AND
-   - defaultFilters: só quando não há global nem campos;
-       se não houver defaultFilters → fallback MAX(PK)
-   - __totalRegistros: COUNT(*) geral
-   - __totalPesquisa: COUNT(*) com WHERE
-   - data: SELECT * com WHERE + ORDER + LIMIT
    ============================================================ */
 function pesquisar(): void
 {
     try {
-        // ---------------------------------------------------------
-        // 1) Entrada bruta do POST
-        // ---------------------------------------------------------
         $viewName       = trim((string)($_POST['viewName']        ?? ''));
         $endpointConfig = trim((string)($_POST['endpointConfig']  ?? ''));
         $pesqGlobal     = trim((string)($_POST['pesquisaGlobal']  ?? ''));
         $pesqCamposJson = (string)($_POST['pesquisaPorCampo']     ?? '{}');
+        $orderByPost    = trim((string)($_POST['orderBy']         ?? ''));
 
-        // Decodifica pesquisaPorCampo (sempre array)
         $pesqCampos = json_decode($pesqCamposJson, true);
         if (!is_array($pesqCampos)) {
             $pesqCampos = [];
         }
 
-        // ---------------------------------------------------------
-        // 2) Carrega viewConfig (metadados) e PDO da aplicação
-        // ---------------------------------------------------------
         $cfg = dsUtil::loadConfig($viewName, $endpointConfig);
         $pdo = dsUtil::getPdoFromConfig($endpointConfig);
 
-        // ---------------------------------------------------------
-        // 3) Extrai informações básicas da viewConfig
-        // ---------------------------------------------------------
-        // Nome da tabela/view base
+        // Tabela/view base
         $table = (string)($cfg['from'] ?? $cfg['tableName'] ?? $cfg['viewName'] ?? $viewName);
         $table = dsUtil::sanitizeFieldName($table) ?? $viewName;
 
-        // PK usada para fallback MAX(pk) e ORDER BY default
+        // PK
         $pk = (string)($cfg['primaryKey'] ?? 'id');
         $pk = dsUtil::sanitizeFieldName($pk) ?? 'id';
 
-        // LIMIT padrão
+        // LIMIT
         $limit = isset($cfg['limitDefault'])
             ? (int)$cfg['limitDefault']
             : (isset($cfg['limit']) ? (int)$cfg['limit'] : 50);
-
         if ($limit <= 0) {
             $limit = 50;
         }
 
-        // ORDER BY padrão
+        // ORDER BY padrão da view
         $orderBy = '';
         if (!empty($cfg['orderByDefault']) && is_string($cfg['orderByDefault'])) {
             $orderBy = $cfg['orderByDefault'];
@@ -272,28 +611,15 @@ function pesquisar(): void
             $orderBy = $cfg['orderBy'];
         }
 
-        // ORDER BY enviado pelo front-end
-        $orderByPost = trim((string)($_POST['orderBy'] ?? ''));
-        if ($orderByPost !== '') {
-            // Sanitiza o campo e a direção (ASC/DESC)
-            $parts = preg_split('/\s+/', $orderByPost);
-            $field = dsUtil::sanitizeFieldName($parts[0] ?? '');
-            $direction = strtoupper($parts[1] ?? 'ASC');
-            if ($field && in_array($direction, ['ASC', 'DESC'], true)) {
-                $orderBy = "$field $direction";
-            }
-        }
-
-        // ---------------------------------------------------------
-        // 4) Campos da view e definição de quais participam da global
-        // ---------------------------------------------------------
+        // Campos
         $fieldsCfg = $cfg['fields'] ?? [];
         if (!is_array($fieldsCfg)) {
             $fieldsCfg = [];
         }
 
-        $allFields          = []; // todos os campos conhecidos
-        $globalSearchFields = []; // campos elegíveis para pesquisaGlobal
+        $allFields          = [];
+        $globalSearchFields = [];
+        $fieldTypes         = [];
 
         foreach ($fieldsCfg as $f) {
             if (!is_array($f)) {
@@ -303,32 +629,44 @@ function pesquisar(): void
             $name = isset($f['name']) ? (string)$f['name'] : '';
             $col  = dsUtil::sanitizeFieldName($name);
             if ($col === null) {
-                continue; // ignora nomes suspeitos
+                continue;
             }
 
             $allFields[] = $col;
 
-            // Se não houver flag, consideramos que participa da global
+            $fieldType = strtolower((string)($f['type'] ?? 'text'));
+            $fieldTypes[$col] = $fieldType;
+
             $searchGlobal = $f['searchGlobal'] ?? $f['search_global'] ?? null;
             if ($searchGlobal === null || $searchGlobal === true || $searchGlobal === 1 || $searchGlobal === '1') {
                 $globalSearchFields[] = $col;
             }
         }
 
-        // Se ninguém foi marcado, usa todos os campos como globais
         if (!$globalSearchFields && $allFields) {
             $globalSearchFields = $allFields;
         }
 
-        // ---------------------------------------------------------
-        // 5) Montagem dinâmica do WHERE
-        // ---------------------------------------------------------
-        $conditions = []; // lista de fragmentos "campo LIKE :param"
-        $params     = []; // :param => valor
+        // ORDER BY do front
+        if ($orderByPost !== '') {
+            if (preg_match('/^([A-Za-z0-9_\.]+)\s+(ASC|DESC)$/i', $orderByPost, $m)) {
+                $campo   = dsUtil::sanitizeFieldName($m[1]);
+                $dir     = strtoupper($m[2]);
+                $isValid = $campo !== null && (in_array($campo, $allFields, true) || $campo === $pk);
+
+                if ($isValid && ($dir === 'ASC' || $dir === 'DESC')) {
+                    $orderBy = sprintf('`%s` %s', $campo, $dir);
+                }
+            }
+        }
+
+        // WHERE dinâmico
+        $conditions = [];
+        $params     = [];
         $hasGlobal  = $pesqGlobal !== '';
         $hasCampos  = false;
 
-        // 5.1) Pesquisa GLOBAL (estilo Google: palavras AND, campos OR por palavra)
+        // GLOBAL: palavras AND, campos OR
         if ($hasGlobal && $globalSearchFields) {
             $words   = preg_split('/\s+/', $pesqGlobal);
             $wordIdx = 0;
@@ -347,20 +685,18 @@ function pesquisar(): void
                     $fieldIdx++;
                     $paramName = ':g' . $wordIdx . '_' . $fieldIdx;
 
-                    $orParts[]           = "`$col` LIKE $paramName";
-                    $params[$paramName]  = '%' . $w . '%';
+                    $orParts[]          = "`$col` LIKE $paramName";
+                    $params[$paramName] = '%' . $w . '%';
                 }
 
                 if ($orParts) {
-                    // palavras entre si → AND
                     $conditions[] = '(' . implode(' OR ', $orParts) . ')';
                 }
             }
         }
 
-        // 5.2) Pesquisa POR CAMPO (campoX: palavras AND dentro do campo, campos AND entre si)
+        // POR CAMPO
         if (!empty($pesqCampos)) {
-            // índice rápido de campos válidos
             $validFields = [];
             foreach ($allFields as $col) {
                 $validFields[$col] = true;
@@ -376,37 +712,23 @@ function pesquisar(): void
 
                 $col = dsUtil::sanitizeFieldName((string)$fieldName);
                 if ($col === null || !isset($validFields[$col])) {
-                    // ignora campos que não existem na view
                     continue;
                 }
 
                 $hasCampos = true;
                 $campoIdx++;
 
-                $words      = preg_split('/\s+/', $value);
-                $wordIdx    = 0;
-                $fieldParts = [];
+                $fieldType = strtolower((string)($fieldTypes[$col] ?? 'text'));
 
-                foreach ($words as $w) {
-                    $w = trim($w);
-                    if ($w === '') {
-                        continue;
-                    }
-                    $wordIdx++;
+                $fieldCond = dsUtil::buildCampoCondition($col, $value, $fieldType, $campoIdx, $params);
 
-                    $paramName           = ':c' . $campoIdx . '_' . $wordIdx;
-                    $fieldParts[]        = "`$col` LIKE $paramName";
-                    $params[$paramName]  = '%' . $w . '%';
-                }
-
-                if ($fieldParts) {
-                    // cada campo gera um bloco AND extra
-                    $conditions[] = '(' . implode(' AND ', $fieldParts) . ')';
+                if ($fieldCond !== null) {
+                    $conditions[] = $fieldCond;
                 }
             }
         }
 
-        // 5.3) fixedFilters (sempre AND)
+        // fixedFilters
         $fixedFilters = $cfg['fixedFilters'] ?? [];
         if (is_string($fixedFilters)) {
             $fixedFilters = [$fixedFilters];
@@ -421,7 +743,7 @@ function pesquisar(): void
             }
         }
 
-        // 5.4) defaultFilters / fallback MAX(PK)
+        // defaultFilters / fallback MAX(PK)
         if (!$hasGlobal && !$hasCampos) {
             $defaultFilters = $cfg['defaultFilters'] ?? [];
             if (is_string($defaultFilters)) {
@@ -437,7 +759,6 @@ function pesquisar(): void
                     $conditions[] = '(' . $frag . ')';
                 }
             } else {
-                // fallback: apenas o último registro cadastrado
                 $conditions[] = sprintf(
                     "`%s` = (SELECT MAX(`%s`) FROM `%s`)",
                     $pk,
@@ -447,60 +768,42 @@ function pesquisar(): void
             }
         }
 
-        // WHERE final
-        $whereSql = '';
-        if ($conditions) {
-            $whereSql = ' WHERE ' . implode(' AND ', $conditions);
-        }
+        $whereSql = $conditions ? ' WHERE ' . implode(' AND ', $conditions) : '';
 
-        // ---------------------------------------------------------
-        // 6) ORDER BY
-        // ---------------------------------------------------------
-        $orderSql = '';
-        if ($orderBy !== '') {
-            $orderSql = ' ORDER BY ' . $orderBy;
-        } else {
-            $orderSql = ' ORDER BY `' . $pk . '` DESC';
-        }
+        // ORDER BY final
+        $orderSql = $orderBy !== ''
+            ? ' ORDER BY ' . $orderBy
+            : ' ORDER BY `' . $pk . '` DESC';
 
-        // ---------------------------------------------------------
-        // 7) Execução das queries
-        // ---------------------------------------------------------
-
-        // 7.1) total geral de registros
+        // total geral
         $sqlTotal  = "SELECT COUNT(*) AS c FROM `$table`";
         $stmtTotal = $pdo->query($sqlTotal);
         $totalReg  = (int)($stmtTotal ? $stmtTotal->fetchColumn() : 0);
 
-        // 7.2) total de registros que satisfazem a pesquisa
+        // total pesquisa
         $sqlCount  = "SELECT COUNT(*) AS c FROM `$table`" . $whereSql;
         $stmtCount = $pdo->prepare($sqlCount);
         $stmtCount->execute($params);
         $totalPesquisa = (int)$stmtCount->fetchColumn();
 
-        // 7.3) dados com LIMIT
+        // dados
         $sqlData  = "SELECT * FROM `$table`" . $whereSql . $orderSql . " LIMIT :__limit";
         $stmtData = $pdo->prepare($sqlData);
 
-        // vincula parâmetros de texto (LIKE)
         foreach ($params as $k => $v) {
             $stmtData->bindValue($k, $v, PDO::PARAM_STR);
         }
-        // vincula LIMIT como inteiro
         $stmtData->bindValue(':__limit', $limit, PDO::PARAM_INT);
 
         $stmtData->execute();
         $rows = $stmtData->fetchAll(PDO::FETCH_ASSOC);
 
-        // ---------------------------------------------------------
-        // 8) Resposta final
-        // ---------------------------------------------------------
         echo json_encode([
             'success'          => true,
             'message'          => '',
-            '__totalRegistros' => $totalReg,      // total de registros na tabela
-            '__totalPesquisa'  => $totalPesquisa, // total que atende à pesquisa
-            'data'             => $rows,          // linhas retornadas (limit)
+            '__totalRegistros' => $totalReg,
+            '__totalPesquisa'  => $totalPesquisa,
+            'data'             => $rows,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     } catch (Throwable $e) {

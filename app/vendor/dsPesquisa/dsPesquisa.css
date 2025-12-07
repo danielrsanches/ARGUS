@@ -196,6 +196,18 @@ section#dsPesquisa {
                 font-size: 0.85rem;
                 color: #e5e7eb;
             }
+
+            div.help{
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: #576987;
+
+                & p {
+                    margin: 2px 0;
+                    text-indent: -60px;
+                    padding-left: 60px;
+                }
+            }
         }
 
         /* FILTROS ATIVOS */
