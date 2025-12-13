@@ -548,8 +548,6 @@
             offset.y = e.pageY - modalOffset.top;
             $modal.addClass("dragging");
 
-            console.log("Drag iniciado", { offset, modalOffset }); // Log para depuração
-
             // Previne seleção de texto durante o arraste
             e.preventDefault();
         });
@@ -571,13 +569,9 @@
                 left: newLeft + "px",
             });
 
-            console.log("Drag em andamento", { newLeft, newTop }); // Log para depuração
         });
 
         $(document).on("mouseup", function () {
-            if (isDragging) {
-                console.log("Drag finalizado"); // Log para depuração
-            }
             isDragging = false;
             $("#dsPesquisa").removeClass("dragging");
         });

@@ -3,6 +3,7 @@ section.card {
     border-radius: 8px;
     background: #020617;
     padding: 12px;
+    padding-bottom: 0px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -80,41 +81,69 @@ section.card {
 
     div.body {
         display: flex;
-        flex-wrap: wrap; /* permite quebra de linha se necessário */
+        flex-wrap: nowrap; /* <- aqui */
         gap: 10px;
-        line-height: 33px;
+        line-height: 27px;
+        width: 100%;
+        box-sizing: border-box;
 
-        div.campo[data-field="nomeCompleto"] {
-            flex: 1 1 100%; /* ocupa toda a largura */
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
+        div.colInfo {
+            width: calc(100% - 130px); /* ocupa todo o espaço menos o da coluna do menu */
+            user-select: text; /* permite seleção de texto */
 
-        div.foto {
-            width: 120px;
-            height: 160px;
-            object-fit: contain; /* Manter proporção da imagem */
-            border: 2px solid #4a5568;
-            border-radius: 4px;
-        }
+            div.campo[data-field="nomeCompleto"] {
+                flex: 1 1 100%; /* ocupa toda a largura */
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
 
-        div.col {
+            div.campo[data-field="documentosResumo"] {
+                flex: 1 1 100%; /* ocupa toda a largura */
+                font-size: 0.8rem;
+                line-height: 0.9rem;
+                padding: 0px !important;
+                padding-left: 10px !important;
+                margin: 0px !important;
+                margin-top: -12px !important;
+                color: gray;
+            }
+
+            div.colFoto {
+                width: 120px;
+                padding: 0px;
+
+                div.fotoContainer {
+                    width: 100%;
+                    height: 160px;
+                    object-fit: contain; /* Manter proporção da imagem */
+                    border: 2px solid #4a5568;
+                    border-radius: 4px;
+                    background-image: url('../img/semFoto.jpeg'); /* Avatar padrão */
+                }
+
+                img {
+                    display: none;
+                }
+            }
+
+            div.colDados{
+                width: calc(100% - 125px - 20px); /* ocupa o restante do espaço ao lado da foto */
+                line-height: 16px;
+            }
+
             div.campo[data-field="faccao"] span {
                 color: #f87171;
                 font-weight: 600;
             }
         }
 
-        div.col2 {
-            padding-left: 20px;
-        }
-
-        div.col3 {
+        div.colMenu {
             display: flex; /* Define um layout flexível */
             flex-direction: column; /* Organiza os itens em uma coluna */
-            align-items: flex-end; /* Alinha os itens à direita */
+            flex: 0 0 130px; /* Largura fixa de 130px */
+            align-items: center; /* Alinha os itens no centro horizontalmente */
+            justify-content: space-between; /* Distribui os itens igualmente na vertical */
             gap: 3px;
-            flex: 1; /* Faz o div.col3 ocupar todo o espaço restante */
             user-select: none; /* Impede a seleção de texto */
 
             button {
@@ -165,5 +194,19 @@ section.card {
     &.red {
         /* destaque em vermelho no card inteiro (quando é facção criminosa) */
         border-top: 3px solid #f87171;
+    }
+}
+
+section.fotocrimForm {
+    div.modalBackdrop {
+        div.modal {
+            width: 900px;
+
+            form.fotocrim {
+                input.nomeCompleto {
+                    width: 800px;
+                }
+            }
+        }
     }
 }

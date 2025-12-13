@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -34,36 +35,32 @@ $viewConfig = [
     'limitDefault'   => 50,
     'fixedFilters'   => '', //filtros fixos aplicados em toda consulta. ex: status = "ativo"
     'defaultFilters' => '(id = (SELECT MAX(id) from viewFotocrim))', //filtros padrão aplicados na primeira carga. ex: dataCriacao >= "2023-01-01"
-
     'fields' => [
-        [ 'name' => 'id',                    'type' => 'bigint',   'label' => 'ID' ],
-        [ 'name' => 'nomeCompleto',          'type' => 'string',   'label' => 'Nome Completo' ],
-        [ 'name' => 'rg',                    'type' => 'string',   'label' => 'RG' ],
-        [ 'name' => 'cpf',                   'type' => 'string',   'label' => 'CPF' ],
-        [ 'name' => 'rgc',                   'type' => 'string',   'label' => 'RG Criminal' ],
-        [ 'name' => 'matricula',             'type' => 'string',   'label' => 'Matrícula' ],
-        [ 'name' => 'dataNascimento',        'type' => 'date',     'label' => 'Data de Nascimento' ],
-        [ 'name' => 'sexo',                  'type' => 'enum',     'label' => 'Sexo' ],
-        [ 'name' => 'nomeMae',               'type' => 'string',   'label' => 'Nome da Mãe' ],
-        [ 'name' => 'nomePai',               'type' => 'string',   'label' => 'Nome do Pai' ],
-        [ 'name' => 'naturalidadeEstado',    'type' => 'enum',     'label' => 'Naturalidade (UF)' ],
-        [ 'name' => 'periculosidade',        'type' => 'enum',     'label' => 'Periculosidade' ],
-        [ 'name' => 'observacoes',           'type' => 'text',     'label' => 'Observações' ],
-        [ 'name' => 'observacoesReservadas', 'type' => 'text',     'label' => 'Observações Reservadas' ],
-        [ 'name' => 'createdAt',             'type' => 'datetime', 'label' => 'Criado em' ],
-        [ 'name' => 'updatedAt',             'type' => 'datetime', 'label' => 'Atualizado em' ],
-        [ 'name' => 'faccaoResumo',          'type' => 'string',   'label' => 'Facção' ],
-        [ 'name' => 'enderecosResumo',       'type' => 'text',     'label' => 'Endereços' ],
-        [ 'name' => 'enderecosQuantidade',   'type' => 'bigint',   'label' => 'Endereços (quantidade)' ],
-        [ 'name' => 'vulgosResumo',          'type' => 'text',     'label' => 'Vulgos' ],
-        [ 'name' => 'tatuagensResumo',       'type' => 'text',     'label' => 'Tatuagens' ],
-        [ 'name' => 'tatuagensQuantidade',   'type' => 'bigint',   'label' => 'Tatuagens (quantidade)' ],
-        [ 'name' => 'antecedentesResumo',    'type' => 'text',     'label' => 'Antecedentes Criminais' ],
-        [ 'name' => 'antecedentesQuantidade','type' => 'bigint',   'label' => 'Antecedentes (quantidade)' ],
-        [ 'name' => 'alertasQuantidade',     'type' => 'bigint',   'label' => 'Alertas (quantidade)' ],
-        [ 'name' => 'arquivosQuantidade',    'type' => 'bigint',   'label' => 'Arquivos (quantidade)' ],
-        [ 'name' => 'fotosQuantidade',       'type' => 'bigint',   'label' => 'Fotos (quantidade)' ],
-        [ 'name' => 'comparsasJson',         'type' => 'json',     'label' => 'Comparsas' ],
+        ['name' => 'id',                    'type' => 'bigint',   'label' => 'ID'],
+        ['name' => 'nomeCompleto',          'type' => 'string',   'label' => 'Nome Completo'],
+        ['name' => 'documentosResumo',      'type' => 'text',     'label' => 'Documentos'],
+        ['name' => 'dataNascimento',        'type' => 'date',     'label' => 'Data de Nascimento'],
+        ['name' => 'sexo',                  'type' => 'enum',     'label' => 'Sexo'],
+        ['name' => 'nomeMae',               'type' => 'string',   'label' => 'Nome da Mãe'],
+        ['name' => 'nomePai',               'type' => 'string',   'label' => 'Nome do Pai'],
+        ['name' => 'naturalidadeEstado',    'type' => 'enum',     'label' => 'Naturalidade (UF)'],
+        ['name' => 'periculosidade',        'type' => 'enum',     'label' => 'Periculosidade'],
+        ['name' => 'observacoes',           'type' => 'text',     'label' => 'Observações'],
+        ['name' => 'observacoesReservadas', 'type' => 'text',     'label' => 'Observações Reservadas'],
+        ['name' => 'createdAt',             'type' => 'datetime', 'label' => 'Criado em'],
+        ['name' => 'updatedAt',             'type' => 'datetime', 'label' => 'Atualizado em'],
+        ['name' => 'faccaoResumo',          'type' => 'string',   'label' => 'Facção'],
+        ['name' => 'enderecosResumo',       'type' => 'text',     'label' => 'Endereços'],
+        ['name' => 'enderecosQuantidade',   'type' => 'bigint',   'label' => 'Endereços (quantidade)'],
+        ['name' => 'vulgosResumo',          'type' => 'text',     'label' => 'Vulgos'],
+        ['name' => 'tatuagensResumo',       'type' => 'text',     'label' => 'Tatuagens'],
+        ['name' => 'tatuagensQuantidade',   'type' => 'bigint',   'label' => 'Tatuagens (quantidade)'],
+        ['name' => 'antecedentesResumo',    'type' => 'text',     'label' => 'Antecedentes Criminais'],
+        ['name' => 'antecedentesQuantidade', 'type' => 'bigint',   'label' => 'Antecedentes (quantidade)'],
+        ['name' => 'alertasQuantidade',     'type' => 'bigint',   'label' => 'Alertas (quantidade)'],
+        ['name' => 'arquivosQuantidade',    'type' => 'bigint',   'label' => 'Arquivos (quantidade)'],
+        ['name' => 'fotosQuantidade',       'type' => 'bigint',   'label' => 'Fotos (quantidade)'],
+        ['name' => 'comparsasJson',         'type' => 'json',     'label' => 'Comparsas'],
     ],
 ];
 

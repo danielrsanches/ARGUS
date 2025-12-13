@@ -2,7 +2,6 @@
  * Neste arquivo ficam funções gerais de uso de todo o sistema.
  */
 
-
 /**
  * Carrega arquivos CSS dinamicamente.
  * @param {(string|string[]|null)} files Caminho único ou lista de caminhos CSS.
@@ -233,4 +232,144 @@ function dateInvert(data, withTime = false) {
     }
 
     return "";
+}
+
+/**
+ * Renderiza cards em um container HTML com base em um template e dados fornecidos.
+ *
+ * @param {Object} options - Configurações para renderização dos cards.
+ * @param {string} options.templatePath - Caminho para o arquivo HTML contendo o template.
+ * @param {string} options.templateSelector - Seletor CSS para o elemento do template dentro do arquivo.
+ * @param {string} options.templateTarget - Seletor CSS do container onde os cards serão inseridos.
+ * @param {Array<Object>} options.dados - Array de objetos contendo os dados para preencher os cards.
+ * @param {boolean} [options.renderTotal=true] - Define se todos os cards devem ser renderizados ou apenas atualizados.
+ * @param {Function} [options.showSpinner] - Função opcional para exibir um spinner de carregamento.
+ * @param {Function} [options.hideSpinner] - Função opcional para ocultar o spinner de carregamento.
+ */
+function renderizaCards(config) {
+    // validação completa de config (tipo + campos obrigatórios)
+    if (!config || typeof config !== "object" || Array.isArray(config) || !config.dados || !config.templatePath || !config.templateSelector || !config.templateTarget) {
+        throw new Error("func renderizaCards: parâmetro 'config' não é um objeto ou está incompleto");
+    }
+
+    // verifica os parâmetros opcionais e define valores padrão...
+    config.renderTotal = config.renderTotal ?? true;
+
+    // Verifica se as funções dependentes existem...
+    if (typeof gerarCardHTML !== "function" || typeof aplicaEventos !== "function") {
+        throw new Error("As funções 'gerarCardHTML' e/ou 'aplicaEventos' não estão definidas.");
+    }
+
+    // Carrega o template do card uma vez
+    loadCard(config.templatePath, config.templateSelector).then((template) => {
+        // Seleciona o alvo onde os cards serão renderizados
+        const $content = $(config.templateTarget);
+
+        // Verifica se é renderização total ou parcial
+        if (config.renderTotal) {
+            $content.hide().empty(); // Esconde e limpa o conteúdo atual
+
+            //percorre todos os dados e gera os cards...
+            config.dados.forEach((element) => {
+                const cardHTML = gerarCardHTML(template, element); // Gera o HTML do card
+                $content.append(cardHTML); // Adiciona o card ao conteúdo
+
+                aplicaEventos(element.id); // Aplica os eventos ao card recém-criado
+            });
+
+            $content.fadeIn(); // Mostra o conteúdo com efeito de fade-in
+        } else {
+            // Renderização parcial: atualiza ou cria cards individualmente
+
+            //percorre todos os dados e atualiza ou cria os cards...
+            config.dados.forEach((element) => {
+                const $card = $(`section.card[data-id='${element.id}']`);
+
+                if ($card.length) {
+                    //se o card já existe, atualiza...
+                    const cardHTML = gerarCardHTML(template, element);
+                    $card.replaceWith(cardHTML);
+                } else {
+                    //se o card não existe, cria...
+                    const cardHTML = gerarCardHTML(template, element);
+                    $content.append(cardHTML);
+
+                    aplicaEventos(element.id); // Aplica os eventos ao card recém-criado
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Permite arrastar um elemento (target) usando um "handle" (área de arrasto).
+ * @param {string} handleSeletor  Seletor do elemento que inicia o drag (ex: ".modalTitulo")
+ * @param {string} targetSeletor  Seletor do elemento que será movido (ex: ".modal")
+ * @param {boolean} screenLimit   Limita o target dentro da viewport
+ */
+function elementDrag(handleSeletor, targetSeletor, screenLimit = true) {
+    const handle = document.querySelector(handleSeletor);
+    const target = document.querySelector(targetSeletor);
+
+    if (!handle || !target) {
+        console.warn("elementDrag: handle/target não encontrado:", handleSeletor, targetSeletor);
+        return;
+    }
+
+    let arrastando = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    function onMouseDown(event) {
+        // só botão esquerdo
+        if (event.button !== 0) return;
+
+        arrastando = true;
+
+        const rect = target.getBoundingClientRect();
+        offsetX = event.clientX - rect.left;
+        offsetY = event.clientY - rect.top;
+
+        target.style.position = "fixed";
+        target.style.margin = "0";
+        target.style.left = rect.left + "px";
+        target.style.top = rect.top + "px";
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+
+        event.preventDefault();
+    }
+
+    function onMouseMove(event) {
+        if (!arrastando) return;
+
+        let left = event.clientX - offsetX;
+        let top = event.clientY - offsetY;
+
+        if (screenLimit) {
+            const w = target.offsetWidth;
+            const h = target.offsetHeight;
+
+            left = clamp(left, 0, window.innerWidth - w);
+            top = clamp(top, 0, window.innerHeight - h);
+        }
+
+        target.style.left = left + "px";
+        target.style.top = top + "px";
+    }
+
+    function onMouseUp() {
+        arrastando = false;
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+    }
+
+    // importante: só o "handle" inicia o drag
+    handle.style.cursor = "move";
+    handle.addEventListener("mousedown", onMouseDown);
 }

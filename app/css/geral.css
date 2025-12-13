@@ -1,0 +1,120 @@
+/***********************************/
+/********* SPINNER GLOBAL ***********/
+/***********************************/
+div#spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+
+    &.hidden {
+        display: none;
+    }
+
+    div.spinner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    div.spinner-content {
+        position: relative;
+        z-index: 10000;
+        text-align: center;
+        color: #fff;
+
+        img.spinner-logo-pulse {
+            width: 150px;
+            animation: pulse 1.5s ease-in-out infinite;
+            filter: invert(1) brightness(2); /* Inverte as cores e aumenta o brilho */
+        }
+    }
+}
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+section.modulo {
+    div.topBarModulo {
+        position: sticky;
+        top: -20px;
+        margin-left: -5px;
+        margin-top: -20px;
+        background: rgba(2, 6, 23, 1);
+        color: #f1f1f1;
+        padding: 10px;
+        border-bottom: 1px solid #333;
+        border-radius: 10px;
+        user-select: none;
+
+        /* Linha 1: título + menu */
+        div.titulo {
+            display: flex;
+            justify-content: space-between; /* título à esquerda, menu à direita */
+            align-items: center; /* alinhamento vertical */
+            width: 100%;
+
+            strong {
+                font-size: 1.5rem;
+                color: #f1f1f1;
+                font-weight: 500;
+                margin-left: 10px;
+            }
+
+            div.menuModulo {
+                display: flex;
+                gap: 10px;
+            }
+        }
+    }
+
+    div.content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+    }
+
+    section.forms {
+        display: none;
+    }
+}
+
+
+
+/* Scroll global — fino e escuro */
+html {
+  scrollbar-width: thin;                 /* Firefox */
+  scrollbar-color: #444 #1e1e1e;
+}
+/* WebKit (Chrome, Edge, Safari) */
+html::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+html::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 6px;
+  border: 2px solid #1e1e1e;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background-color: #666;
+}
+

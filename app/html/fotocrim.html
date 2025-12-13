@@ -16,6 +16,162 @@
     </div>
 
     <div class="content"></div>
+
+    <section class="forms fotocrimForm">
+        <div class="modalBackdrop">
+            <div class="modal">
+                <div class="modalTitulo">
+                    <div class="texto">Dados Fotocrim</div>
+                    <button class="fechar">X</button>
+                </div>
+                <div class="modalContent">
+                    <form id="fotocrim" class="fotocrim" method="post" enctype="multipart/form-data" autocomplete="off">
+                        <!-- ocultos -->
+                        <input type="hidden" id="id" name="id" value="" />
+
+                        <div class="linha">
+                            <div class="coluna">
+                                <div class="fotoPerfil"></div>
+                            </div>
+                            <div class="coluna">
+                                <div class="linha">
+                                    <div class="campo">
+                                        <label for="rg">RG Civil SP</label>
+                                        <input type="text" id="rg" name="rg" maxlength="20" />
+                                    </div>
+                                    <div class="campo">
+                                        <label for="cpf">CPF</label>
+                                        <input type="text" id="cpf" name="cpf" maxlength="14" />
+                                    </div>
+                                    <div class="campo">
+                                        <label for="rgc">RG Criminal</label>
+                                        <input type="text" id="rgc" name="rgc" maxlength="20" />
+                                    </div>
+                                    <div class="campo">
+                                        <label for="matricula">Matrícula</label>
+                                        <input type="text" id="matricula" name="matricula" maxlength="20" />
+                                    </div>
+                                    <div class="campo">
+                                        <label for="dataNascimento">Data de nascimento</label>
+                                        <input type="date" id="dataNascimento" name="dataNascimento" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="linha">
+                            <div class="campo">
+                                <label for="nomeCompleto">Nome completo</label>
+                                <input type="text" id="nomeCompleto" name="nomeCompleto" maxlength="150" required />
+                            </div>
+                        </div>
+
+                        <div class="linha">
+                            <div class="campo">
+                                <label for="sexo">Sexo</label>
+                                <select id="sexo" name="sexo">
+                                    <option value="">—</option>
+                                    <option value="M">M</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="linha">
+                            <div class="campo">
+                                <label for="nomeMae">Nome da mãe</label>
+                                <input type="text" id="nomeMae" name="nomeMae" maxlength="150" />
+                            </div>
+
+                            <div class="campo">
+                                <label for="nomePai">Nome do pai</label>
+                                <input type="text" id="nomePai" name="nomePai" maxlength="150" />
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="naturalidadeEstado">Naturalidade (UF)</label>
+                            <select id="naturalidadeEstado" name="naturalidadeEstado">
+                                <option value="">—</option>
+                                <option value="Acre">Acre</option>
+                                <option value="Alagoas">Alagoas</option>
+                                <option value="Amapá">Amapá</option>
+                                <option value="Amazonas">Amazonas</option>
+                                <option value="Bahia">Bahia</option>
+                                <option value="Ceará">Ceará</option>
+                                <option value="Distrito Federal">Distrito Federal</option>
+                                <option value="Espírito Santo">Espírito Santo</option>
+                                <option value="Goiás">Goiás</option>
+                                <option value="Maranhão">Maranhão</option>
+                                <option value="Mato Grosso">Mato Grosso</option>
+                                <option value="Mato Grosso do Sul">Mato Grosso do Sul</option>
+                                <option value="Minas Gerais">Minas Gerais</option>
+                                <option value="Pará">Pará</option>
+                                <option value="Paraíba">Paraíba</option>
+                                <option value="Paraná">Paraná</option>
+                                <option value="Pernambuco">Pernambuco</option>
+                                <option value="Piauí">Piauí</option>
+                                <option value="Rio de Janeiro">Rio de Janeiro</option>
+                                <option value="Rio Grande do Norte">Rio Grande do Norte</option>
+                                <option value="Rio Grande do Sul">Rio Grande do Sul</option>
+                                <option value="Rondônia">Rondônia</option>
+                                <option value="Roraima">Roraima</option>
+                                <option value="Santa Catarina">Santa Catarina</option>
+                                <option value="São Paulo">São Paulo</option>
+                                <option value="Sergipe">Sergipe</option>
+                                <option value="Tocantins">Tocantins</option>
+                            </select>
+                        </div>
+
+                        <div class="linha">
+                            <div class="campo">
+                                <label for="idFaccao">Facção</label>
+                                <select id="idFaccao" name="idFaccao">
+                                    <option value="">— selecione —</option>
+                                    <!-- preencher via JS/backend -->
+                                </select>
+                            </div>
+
+                            <div class="campo">
+                                <label for="faccaoFuncao">Função na facção</label>
+                                <input type="text" id="faccaoFuncao" name="faccaoFuncao" maxlength="255" />
+                            </div>
+                        </div>
+
+                        <div class="linha">
+                            <div class="campo">
+                                <label for="fotoPerfil">Foto de perfil</label>
+                                <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*" />
+                                <!-- depois a gente faz preview/edição -->
+                            </div>
+
+                            <div class="campo">
+                                <label for="periculosidade">Periculosidade</label>
+                                <select id="periculosidade" name="periculosidade" required>
+                                    <option value="Média" selected>Média</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="observacoes">Observações</label>
+                            <textarea id="observacoes" name="observacoes" rows="4"></textarea>
+                        </div>
+
+                        <div class="campo">
+                            <label for="observacoesReservadas">Observações reservadas</label>
+                            <textarea id="observacoesReservadas" name="observacoesReservadas" rows="4"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modalRodape">
+                    <button class="salvar primario">Salvar</button>
+                    <button class="cancelar">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </section>
 </section>
 
 <section class="card ${red}" data-id="${id}">
@@ -30,25 +186,31 @@
         </div>
     </div>
     <div class="body">
-        <div class="campo" data-field="nomeCompleto">${nomeCompleto} ${vulgosResumo}</div>
-        <div class="foto" aria-hidden="true">
-            <img src="" alt="Foto" />
+        <div class="coluna colInfo">
+            <div class="linha">
+                <div class="campo" data-field="nomeCompleto">${nomeCompleto} ${vulgosResumo}</div>
+            </div>
+            <div class="linha">
+                <div class="campo" data-field="documentosResumo">${documentosResumo}</div>
+            </div>
+            <div class="linha">
+                <div class="coluna colFoto">
+                    <div class="fotoContainer">
+                        <img src="" alt="Foto" />
+                    </div>
+                </div>
+
+                <div class="coluna colDados">
+                    <div class="campo" data-field="dataNascimento"><strong>Nascimento:</strong> ${dataNascimento}</div>
+                    <div class="campo" data-field="sexo"><strong>Sexo:</strong> ${sexo}</div>
+                    <div class="campo" data-field="faccao"><strong>Facção:</strong> <span class="red">${faccao}</span></div>
+                    <div class="campo" data-field="naturalidade"><strong>Naturalidade:</strong> ${naturalidade}</div>
+                    <div class="campo" data-field="nomeMae"><strong>Mãe:</strong> ${nomeMae}</div>
+                    <div class="campo" data-field="nomePai"><strong>Pai:</strong> ${nomePai}</div>
+                </div>
+            </div>
         </div>
-        <div class="col col1">
-            <div class="campo" data-field="cpf"><strong>CPF:</strong> ${cpf}</div>
-            <div class="campo" data-field="rg"><strong>RG:</strong> ${rg}</div>
-            <div class="campo" data-field="rgc"><strong>RG Criminal:</strong> ${rgc}</div>
-            <div class="campo" data-field="matricula"><strong>Matrícula:</strong> ${matricula}</div>
-            <div class="campo" data-field="dataNascimento"><strong>Nascimento:</strong> ${dataNascimento}</div>
-        </div>
-        <div class="col col2">
-            <div class="campo" data-field="sexo"><strong>Sexo:</strong> ${sexo}</div>
-            <div class="campo" data-field="faccao"><strong>Facção:</strong> <span class="red">${faccao}</span></div>
-            <div class="campo" data-field="naturalidade"><strong>Naturalidade:</strong> ${naturalidade}</div>
-            <div class="campo" data-field="nomeMae"><strong>Mãe:</strong> ${nomeMae}</div>
-            <div class="campo" data-field="nomePai"><strong>Pai:</strong> ${nomePai}</div>
-        </div>
-        <div class="col col3">
+        <div class="coluna colMenu">
             <button class="antecedentes ${antecedentesQuantidade}">Antecedentes</button>
             <button class="enderecos ${enderecosQuantidade}">Endereços</button>
             <button class="tatuagens ${tatuagensQuantidade}">Tatuagens</button>

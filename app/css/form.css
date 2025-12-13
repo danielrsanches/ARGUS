@@ -83,11 +83,31 @@ label {
     color: #bfc4cc;
 }
 
+/* LINHA: organiza colunas horizontalmente */
+div.linha {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebra de linha se necessário */
+    gap: 12px; /* Espaçamento entre colunas */
+    width: 100%;
+    box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura total */
+}
 
-div.campo{
-    user-select: text;
+/* COLUNA: sempre empilha conteúdo verticalmente */
+div.coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0; /* Evita estouro de largura */
+    flex: 0 0 auto; /* Por padrão, largura automática */
 
-    & strong{
-        user-select: none;
+    /* COLUNA que ocupa o espaço restante */
+    &[style*="width: 100%"] {
+        flex: 1 1 0; /* Permite ocupar o espaço restante */
     }
+}
+
+/* CAMPO (texto no card) */
+div.campo {
+    width: 100%;
+    display: block;
 }
