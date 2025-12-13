@@ -33,7 +33,7 @@ button {
 
 select {
     appearance: auto; /* Restaura a seta padrão do select */
-    background-color: #2b2b2b; /* Fundo neutro e agradável */
+    background: #2a2d32;
     color: #f0f0f0; /* Texto claro para contraste */
     border: 1px solid #444; /* Borda sutil para destaque */
     padding: 8px;
@@ -56,9 +56,9 @@ select {
     }
 }
 
-input {
+input, textarea {
     width: 100%;
-    padding: 9px 11px;
+    padding: 5px 11px;
     border-radius: 6px;
     border: 1px solid #3a3e45;
     background: #2a2d32;
@@ -78,6 +78,10 @@ input {
     }
 }
 
+input[type="file"] {
+    display: none; /* Oculta o input de arquivo padrão */
+}
+
 label {
     font-size: 0.82rem;
     color: #bfc4cc;
@@ -90,6 +94,8 @@ div.linha {
     gap: 12px; /* Espaçamento entre colunas */
     width: 100%;
     box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura total */
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 /* COLUNA: sempre empilha conteúdo verticalmente */
@@ -108,6 +114,7 @@ div.coluna {
 
 /* CAMPO (texto no card) */
 div.campo {
-    width: 100%;
-    display: block;
+    display: flex;
+    flex-direction: column; /* Garante que os filhos fiquem empilhados */
+    gap: 2px; /* Espaçamento entre o label e o input */
 }

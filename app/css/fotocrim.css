@@ -11,6 +11,11 @@ section.card {
     font-size: 0.8rem;
     width: 790px;
 
+    div.campo {
+        width: 100%;
+        display: block;
+    }
+
     div.topBar {
         display: flex;
         justify-content: space-between;
@@ -118,7 +123,7 @@ section.card {
                     object-fit: contain; /* Manter proporção da imagem */
                     border: 2px solid #4a5568;
                     border-radius: 4px;
-                    background-image: url('../img/semFoto.jpeg'); /* Avatar padrão */
+                    background-image: url("../img/semFoto.jpeg"); /* Avatar padrão */
                 }
 
                 img {
@@ -126,7 +131,7 @@ section.card {
                 }
             }
 
-            div.colDados{
+            div.colDados {
                 width: calc(100% - 125px - 20px); /* ocupa o restante do espaço ao lado da foto */
                 line-height: 16px;
             }
@@ -198,14 +203,45 @@ section.card {
 }
 
 section.fotocrimForm {
-    div.modalBackdrop {
-        div.modal {
-            width: 900px;
+    div.modalBackdrop div.modal {
+        width: 900px;
 
-            form.fotocrim {
-                input.nomeCompleto {
-                    width: 800px;
+        form.fotocrim {
+            div.colFotoPerfil {
+                width: 180px;
+                margin-bottom: 10px;
+
+                div.fotoPerfil {
+                    width: 180px;
+                    height: 240px;
+                    object-fit: contain; /* Manter proporção da imagem */
+                    border: 2px solid #4a5568;
+                    border-radius: 4px;
+                    background-image: url("../img/semFoto.jpeg"); /* Avatar padrão */
+                    background-size: 100% 100%;
+                    background-repeat: no-repeat;
+                    background-position: center;
                 }
+            }
+
+            div.colDadosBasicos {
+                width: 660px;
+
+                div.campoNascimento small {
+                    align-self: center;
+                    color: gray;
+                }
+            }
+
+            input#nomeCompleto {
+                width: 660px;
+            }
+
+            input#nomeMae,
+            input#nomePai,
+            textarea#observacoes,
+            textarea#observacoesReservadas {
+                width: 860px;
             }
         }
     }
