@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        $pdo = db(); // Get the PDO instance
         // Seleciona bairros que estão associados a ruas naquela cidade
         $stmt = $pdo->prepare("
             SELECT DISTINCT eb.id, eb.nomeBairro 

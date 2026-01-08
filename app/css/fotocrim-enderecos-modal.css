@@ -117,6 +117,7 @@ div.modalBackdrop#enderecosModal div.modalRodape {
 #enderecosModal .enderecos-fieldset .linha .campo {
     flex-grow: 1;
 }
+/* Original definition for adicionar-endereco button */
 #enderecosModal button.adicionar-endereco {
     height: 38px;
     margin-left: 10px;
@@ -168,4 +169,39 @@ div.modalBackdrop#enderecosModal div.modalRodape {
 }
 .endereco-gerencia-card .actions button:hover {
     border-color: #4a5568;
+}
+
+/* Custom styles for TomSelect selected item */
+.ts-wrapper.single .ts-control .item {
+    background-color: #1a202c; /* Cor cinza escuro do endereco-gerencia-card */
+    border-color: #2d3748; /* Usar a mesma borda do endereco-gerencia-card para consistência */
+    padding: 6px 10px; /* Ajustar padding para melhor visual */
+    border-radius: 4px; /* Manter borda arredondada */
+}
+
+/* Forçar a cor do texto para ser legível no fundo escuro, caso não esteja herdando */
+.ts-wrapper.single .ts-control .item .fw-bold {
+    color: #eee;
+}
+.ts-wrapper.single .ts-control .item .text-muted {
+    color: #a0aec0; /* Cor de texto mutado do endereco-gerencia-card */
+}
+
+/* Margin superior para o botão Salvar/Adicionar Endereço */
+#enderecosModal button.adicionar-endereco {
+    height: 38px;
+    margin-left: 10px;
+    flex-shrink: 0;
+    margin-top: 15px; /* Ensure margin-top is applied */
+}
+
+/* Ajustes de layout para os campos de número e complemento específicos no modal de endereços */
+#enderecosModal .add-endereco-form .linha:nth-of-type(2) > div.campo:nth-child(1) { /* For Numero field */
+    flex-basis: 20%;
+    max-width: 20%;
+}
+
+#enderecosModal .add-endereco-form .linha:nth-of-type(2) > div.campo:nth-child(2) { /* For Complemento field */
+    flex-basis: calc(80% - 12px); /* 80% minus the gap to ensure it fits on one line */
+    max-width: calc(80% - 12px);
 }

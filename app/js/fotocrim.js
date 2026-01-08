@@ -38,8 +38,8 @@ loadTemplate(
     {
         alvo: "main#modulo", //alvo onde o template será inserido...
         template: "html/fotocrim.html section#fotocrim", //template a ser carregado...
-                css: ["css/fotocrim.css", "css/modal.css", "css/fotocrim-documentos-modal.css", "css/fotocrim-enderecos-modal.css"], // CSS específico do módulo + outros CSS necessários...
-        js: ["vendor/dsPesquisa/dsPesquisa.js"], //arquivos JS necessários (exceto do próprio módulo, pq é este arquivo aqui)...
+        css: ["css/fotocrim.css", "css/modal.css", "css/fotocrim-documentos-modal.css", "vendor/tomSelect/tom-select.css", "css/fotocrim-enderecos-modal.css"], // CSS específico do módulo + outros CSS necessários...
+        js: ["vendor/dsPesquisa/dsPesquisa.js", "vendor/tomSelect/tom-select.complete.js"], //arquivos JS necessários (exceto do próprio módulo, pq é este arquivo aqui)...
     },
     function (err) {
         if (err) {
@@ -48,297 +48,318 @@ loadTemplate(
             return alert(msg);
         }
 
-                // Carrega o modal de documentos dinamicamente
-                loadHtml("html/modalDocumentos.html", "#modal-documentos-container", "div#documentosModal", function(err) {
-                    if (err) {
-                        console.error("❌ Erro ao carregar o modal de documentos: ", err);
+        // Carrega o modal de documentos dinamicamente
+        loadHtml("html/modalDocumentos.html", "#modal-documentos-container", "div#documentosModal", function(err) {
+            if (err) {
+                console.error("❌ Erro ao carregar o modal de documentos: ", err);
+                return;
+            }
+            // Anexa o handler de arrastar APÓS o modal ser carregado
+            elementDrag("#documentosModal div.modal div.modalTitulo", "#documentosModal div.modal");
+        });
+        
+        // Popula o select de facções
+        function popularFaccoes() {
+            fetch('php/getFaccoes.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na resposta do servidor: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (!result.success) {
+                        alert('Erro ao buscar facções: ' + (result.message || 'Erro desconhecido.'));
+                        console.error('Erro ao buscar facções:', result.message);
                         return;
                     }
-                    // Anexa o handler de arrastar APÓS o modal ser carregado
-                    elementDrag("#documentosModal div.modal div.modalTitulo", "#documentosModal div.modal");
-                });
-        
 
-                
-                // Popula o select de facções
-                function popularFaccoes() {
-                    fetch('php/getFaccoes.php')
+                    const select = $('#idFaccao');
+                    select.empty();
+                    select.append('<option value="">— selecione —</option>');
+
+                    result.data.forEach(faccao => {
+                        select.append(new Option(faccao.nome, faccao.id));
+                    });
+                })
+                .catch(error => {
+                    alert('Falha ao carregar a lista de facções. Verifique o console para mais detalhes.');
+                    console.error('Erro na requisição para buscar facções:', error);
+                });
+        }
+        popularFaccoes();
+
+        let endSearchTomSelect; // Declare the Tom Select instance variable
+        let selectedAddressData = null; // Variable to hold the currently selected address from Tom Select
+
+        // Tom Select para pesquisa de endereços
+        function initEnderecosTomSelect() {
+            // Check if TomSelect is already initialized on the element
+            // If it is, destroy the existing instance to prevent re-initialization issues
+            const el = document.getElementById('end_search_logradouro');
+            if (el && el.tomselect) {
+                el.tomselect.destroy();
+            }
+
+            endSearchTomSelect = new TomSelect("#end_search_logradouro", {
+                valueField: 'idRua',
+                labelField: 'display', // Custom field for display
+                searchField: ['logradouro', 'bairro', 'cidade', 'uf'], // Search across these fields (removed cep)
+                create: true, // Allow user to type freely
+                createFilter: function(input) {
+                    // Always return false to prevent actual new option creation
+                    return false;
+                },
+                persist: false,
+                highlight: true,      // Highlight matched terms
+                diacritics: true,     // Handle accented characters
+                openOnFocus: true,    // Open dropdown on focus
+                closeAfterSelect: true, // Keep dropdown open after selection for continued editing
+                maxItems: 1,
+
+                render: {
+                    option: function(item, escape) {
+                        return `<div class="py-2 d-flex"><span class="fw-bold">${escape(item.logradouro)}</span>&nbsp;<span class="text-muted">, ${escape(item.bairro)}, ${escape(item.cidade)}/${escape(item.uf)}</span></div>`; // Removed CEP
+                    },
+                    item: function(item, escape) {
+                        return `<div class="py-2 d-flex"><span class="fw-bold">${escape(item.logradouro)}</span>&nbsp;<span class="text-muted">, ${escape(item.bairro)}, ${escape(item.cidade)}/${escape(item.uf)}</span></div>`; // Removed CEP
+                    },
+                    no_results: function(data, escape) {
+                        return `<div class="no-results">Nenhum resultado encontrado para "${escape(data.input)}".</div>`;
+                    }
+                },
+                load: function(query, callback) {
+                    console.log('Tom Select: Loading data for query:', query); // Log query
+                    if (!query.length || query.length < 3) {
+                        console.log('Tom Select: Query too short or empty.');
+                        return callback(); // Only search if more than 2 characters
+                    }
+                    fetch(`php/searchEnderecos.php?search_term=${encodeURIComponent(query)}`)
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Erro na resposta do servidor: ' + response.statusText);
-                            }
+                            console.log('Tom Select: Raw response status:', response.status); // Log response status
                             return response.json();
                         })
-                        .then(result => {
-                            if (!result.success) {
-                                alert('Erro ao buscar facções: ' + (result.message || 'Erro desconhecido.'));
-                                console.error('Erro ao buscar facções:', result.message);
-                                return;
+                        .then(data => {
+                            console.log('Tom Select: Data received from server:', data); // Log raw data from server
+                            if (data.success && data.data && data.data.length > 0) {
+                                // Add a 'display' field for Tom Select
+                                const formattedData = data.data.map(item => ({
+                                    ...item,
+                                    display: `${item.logradouro}, ${item.bairro}, ${item.cidade}/${item.uf}` // Removed CEP
+                                }));
+                                console.log('Tom Select: Formatted data for display:', formattedData); // Log formatted data
+                                callback(formattedData);
+                            } else {
+                                console.log('Tom Select: No data or data not successful.');
+                                callback();
                             }
-        
-                            const select = $('#idFaccao');
-                            select.empty();
-                            select.append('<option value="">— selecione —</option>');
-        
-                            result.data.forEach(faccao => {
-                                select.append(new Option(faccao.nome, faccao.id));
-                            });
                         })
                         .catch(error => {
-                            alert('Falha ao carregar a lista de facções. Verifique o console para mais detalhes.');
-                            console.error('Erro na requisição para buscar facções:', error);
+                            console.error("Erro na busca de endereços (Tom Select):", error);
+                            callback();
                         });
+                },
+                onItemAdd: function(value, item) {
+                    selectedAddressData = this.options[value];
+                },
+                onItemRemove: function() {
+                    selectedAddressData = null;
                 }
-                popularFaccoes();
+            });
+        }
+
+
+        let enderecos = [];  // Array para armazenar os endereços em memória
+        let enderecosModalLoaded = false; // Flag para controlar se o modal de endereços já foi carregado
+
+        const mapaTiposDocumento = {
+            cpf: "CPF",
+            rgSp: "RG/SP",
+            rgCriminal: "RG Criminal",
+            rgOutroEstado: "RG (outro Estado)",
+            matricula: "Matrícula",
+            outro: "Outro",
+        };
+
+        // ===== Funções de Renderização =====
         
-                let enderecos = [];  // Array para armazenar os endereços em memória
-                let enderecosModalLoaded = false; // Flag para controlar se o modal de endereços já foi carregado
+        const renderDocumentosDisplay = () => {
+            const container = $(".documentos-display-container");
+            container.empty();
+            if (documentos.length === 0) {
+                container.html('<span class="nenhum-documento">Nenhum documento adicionado.</span>');
+                return;
+            }
+            documentos.forEach(doc => {
+                const tipoDisplay = mapaTiposDocumento[doc.tipo] || doc.tipo;
+                container.append(`<span class="documento-pill">${tipoDisplay}: ${doc.valor}</span>`);
+            });
+        };
+
+        const renderDocumentosGerenciamento = () => {
+            const container = $(".documentos-container-gerenciamento");
+            container.empty();
+
+            documentos.forEach((doc, index) => {
+                const tipoDisplay = mapaTiposDocumento[doc.tipo] || doc.tipo;
+                const cardHtml = `
+                    <div class="documento-gerencia-card" data-index="${index}">
+                        <div class="info">
+                            <span>${tipoDisplay}: ${doc.valor}</span>
+                            ${doc.observacao ? `<small>Obs: ${doc.observacao}</small>` : ''}
+                        </div>
+                        <div class="actions">
+                            <button type="button" class="remover-documento">Remover</button>
+                        </div>
+                    </div>
+                `;
+                container.append(cardHtml);
+            });
+        };
+
+        const renderEnderecosDisplay = () => {
+            // Implementação futura, se necessário exibir endereços diretamente no card principal
+        };
+
+        const renderEnderecosGerenciamento = () => {
+            const container = $(".enderecos-container-gerenciamento");
+            container.empty();
+            if (enderecos.length === 0) {
+                container.html('<span class="nenhum-endereco">Nenhum endereço adicionado.</span>');
+                return;
+            }
+            enderecos.forEach((end, index) => {
+                const cardHtml = `
+                    <div class="endereco-gerencia-card" data-index="${index}">
+                        <div class="info">
+                            <span>${end.logradouro}, ${end.numero} - ${end.bairro} (${end.cidade}/${end.uf})</span>
+                            ${end.complemento ? `<small>Comp: ${end.complemento}</small>` : ''}
+                            ${end.cep ? `<small>CEP: ${end.cep}</small>` : ''}
+                            ${end.observacao ? `<small>Obs: ${end.observacao}</small>` : ''}
+                        </div>
+                        <div class="actions">
+                            <button type="button" class="editar-endereco">Editar</button>
+                            <button type="button" class="remover-endereco">Remover</button>
+                        </div>
+                    </div>
+                `;
+                container.append(cardHtml);
+            });
+        };
         
-                const mapaTiposDocumento = {
-                    cpf: "CPF",
-                    rgSp: "RG/SP",
-                    rgCriminal: "RG Criminal",
-                    rgOutroEstado: "RG (outro Estado)",
-                    matricula: "Matrícula",
-                    outro: "Outro",
-                };
-        
-                // ===== Funções de Renderização =====
-                
-                const renderDocumentosDisplay = () => {
-                    const container = $(".documentos-display-container");
-                    container.empty();
-                    if (documentos.length === 0) {
-                        container.html('<span class="nenhum-documento">Nenhum documento adicionado.</span>');
-                        return;
-                    }
-                    documentos.forEach(doc => {
-                        const tipoDisplay = mapaTiposDocumento[doc.tipo] || doc.tipo;
-                        container.append(`<span class="documento-pill">${tipoDisplay}: ${doc.valor}</span>`);
-                    });
-                };
-        
-                const renderDocumentosGerenciamento = () => {
-                    const container = $(".documentos-container-gerenciamento");
-                    container.empty();
-        
-                    documentos.forEach((doc, index) => {
-                        const tipoDisplay = mapaTiposDocumento[doc.tipo] || doc.tipo;
-                        const cardHtml = `
-                            <div class="documento-gerencia-card" data-index="${index}">
-                                <div class="info">
-                                    <span>${tipoDisplay}: ${doc.valor}</span>
-                                    ${doc.observacao ? `<small>Obs: ${doc.observacao}</small>` : ''}
-                                </div>
-                                <div class="actions">
-                                    <button type="button" class="remover-documento">Remover</button>
-                                </div>
-                            </div>
-                        `;
-                        container.append(cardHtml);
-                    });
-                };
-        
-                const renderEnderecosDisplay = () => {
-                    // Implementação futura, se necessário exibir endereços diretamente no card principal
-                };
-        
-                const renderEnderecosGerenciamento = () => {
-                    const container = $(".enderecos-container-gerenciamento");
-                    container.empty();
-                    if (enderecos.length === 0) {
-                        container.html('<span class="nenhum-endereco">Nenhum endereço adicionado.</span>');
-                        return;
-                    }
-                    enderecos.forEach((end, index) => {
-                        const cardHtml = `
-                            <div class="endereco-gerencia-card" data-index="${index}">
-                                <div class="info">
-                                    <span>${end.logradouro}, ${end.numero} - ${end.bairro} (${end.cidade}/${end.uf})</span>
-                                    ${end.complemento ? `<small>Comp: ${end.complemento}</small>` : ''}
-                                    ${end.cep ? `<small>CEP: ${end.cep}</small>` : ''}
-                                    ${end.observacao ? `<small>Obs: ${end.observacao}</small>` : ''}
-                                </div>
-                                <div class="actions">
-                                    <button type="button" class="editar-endereco">Editar</button>
-                                    <button type="button" class="remover-endereco">Remover</button>
-                                </div>
-                            </div>
-                        `;
-                        container.append(cardHtml);
-                    });
-                };
-                
-                const resetDocumentos = () => {
-                    documentos = [];
-                    renderDocumentosDisplay();
-                    renderDocumentosGerenciamento();
-                    $("#doc_valor").val("");
-                    $("#doc_observacao").val("");
-                    $("#doc_tipo").val("cpf").trigger("change"); // Trigger change to apply mask
-                };
-        
-                                        const resetEnderecos = () => {
-                                            enderecos = [];
-                                            renderEnderecosDisplay(); // Se houver display no card
-                                            renderEnderecosGerenciamento();
-                                            $("#end_id").val("");
-                                            $("#end_logradouro").val("");
-                                            $("#end_numero").val("");
-                                            $("#end_complemento").val("");
-                                            $("#end_bairro").empty().append('<option value="">— selecione —</option>');
-                                            $("#end_cidade").empty().append('<option value="">— selecione —</option>');
-                                            $("#end_uf").val("");
-                                            $("#end_cep").val("");
-                                            $("#end_observacao").val("");
-                                        };
+        const resetDocumentos = () => {
+            documentos = [];
+            renderDocumentosDisplay();
+            renderDocumentosGerenciamento();
+            $("#doc_valor").val("");
+            $("#doc_observacao").val("");
+            $("#doc_tipo").val("cpf").trigger("change"); // Trigger change to apply mask
+        };
+
+        // Função auxiliar para limpar os campos do formulário de adição/edição de endereço
+        function resetEnderecosFormFields() {
+            $("#end_id").val("");
+            $("#end_search_logradouro").val("");
+            $("#end_numero").val("");
+            $("#end_complemento").val("");
+            $("#end_observacao").val("");
+            $("#end_search_logradouro").focus(); // Focus on the new search field
+            if (endSearchTomSelect) {
+                endSearchTomSelect.clear(); // Clear Tom Select selection
+                selectedAddressData = null; // Clear the stored selected address data
+            }
+        }
                                 
-                                        // Função para popular o select de cidades baseado na UF
-                                        const populateCidades = (uf, selectedCidadeId = null) => {
-                                            const $endCidade = $("#end_cidade");
-                                            $endCidade.empty().append('<option value="">— selecione —</option>');
-                                            $("#end_bairro").empty().append('<option value="">— selecione —</option>'); // Limpa bairros ao mudar cidade
-                                            if (!uf) {
-                                                return;
-                                            }
-                                            fetch('php/getCidadesByUf.php', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                                body: `uf=${uf}`
-                                            })
-                                            .then(response => response.json())
-                                            .then(result => {
-                                                if (result.success && result.data.length > 0) {
-                                                    result.data.forEach(cidade => {
-                                                        $endCidade.append(new Option(cidade.nomeCidade, cidade.id));
-                                                    });
-                                                    if (selectedCidadeId) {
-                                                        $endCidade.val(selectedCidadeId).trigger('change');
-                                                    }
-                                                }
-                                            })
-                                            .catch(error => console.error("Erro ao carregar cidades:", error));
-                                        };
+        const resetEnderecos = () => {
+            enderecos = [];
+            renderEnderecosDisplay(); // Se houver display no card
+            renderEnderecosGerenciamento();
+            resetEnderecosFormFields(); // Call the new reset function
+        };
+
+        // Função para carregar e exibir os endereços para gerenciamento
+        function carregaEnderecosParaGerenciamento(idFotocrim) {
+            const loadAndShow = () => {
+                showSpinner();
+                resetEnderecos(); // Limpa antes de carregar
+                $("#enderecos_idFotocrim").val(idFotocrim); // Define o ID do fotocrim pai
+    
+                const formData = new FormData();
+                formData.append('idFotocrim', idFotocrim);
+    
+                fetch("php/getFotocrimEnderecos.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideSpinner();
+                    if (data.success && data.data) {
+                        enderecos = data.data; // Atualiza o array de endereços global
+                        renderEnderecosGerenciamento();
+                        $("#enderecosModal").addClass('visible'); // Exibe o modal
                         
-                                        // Função para popular o select de bairros baseado na Cidade
-                                        const populateBairros = (idCidade, selectedBairroId = null) => {
-                                            const $endBairro = $("#end_bairro");
-                                            $endBairro.empty().append('<option value="">— selecione —</option>');
-                                            if (!idCidade) {
-                                                return;
-                                            }
-                                            fetch('php/getBairrosByCidade.php', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                                body: `idCidade=${idCidade}`
-                                            })
-                                            .then(response => response.json())
-                                            .then(result => {
-                                                if (result.success && result.data.length > 0) {
-                                                    result.data.forEach(bairro => {
-                                                        $endBairro.append(new Option(bairro.nomeBairro, bairro.id));
-                                                    });
-                                                    if (selectedBairroId) {
-                                                        $endBairro.val(selectedBairroId);
-                                                    }
-                                                }
-                                            })
-                                            .catch(error => console.error("Erro ao carregar bairros:", error));
-                                        };
-                        
-                                                                        
-                                        // Função para carregar e exibir os endereços para gerenciamento
-                                        function carregaEnderecosParaGerenciamento(idFotocrim) {
-                                            const loadAndShow = () => {
-                                                showSpinner();
-                                                resetEnderecos(); // Limpa antes de carregar
-                                                $("#enderecos_idFotocrim").val(idFotocrim); // Define o ID do fotocrim pai
-                                    
-                                                const formData = new FormData();
-                                                formData.append('idFotocrim', idFotocrim);
-                                    
-                                                fetch("php/getFotocrimEnderecos.php", {
-                                                    method: "POST",
-                                                    body: formData
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    hideSpinner();
-                                                                                if (data.success && data.data) {
-                                                                                    enderecos = data.data; // Atualiza o array de endereços global
-                                                                                    renderEnderecosGerenciamento();
-                                                                                    $("#enderecosModal").addClass('visible'); // Exibe o modal
-                                                                                    
-                                                                                    // Reset fields, ensuring a clean state for new input or editing
-                                                                                    $("#end_id").val("");
-                                                                                    $("#end_logradouro").val("");
-                                                                                    $("#end_numero").val("");
-                                                                                    $("#end_complemento").val("");
-                                                                                    $("#end_observacao").val("");
-                                                                                    $("#end_uf").val("").trigger('change'); // Clear UF and trigger change to clear cities/bairros
-                                                                                } else {                                                        alert(data.message || "Erro ao carregar endereços.");
-                                                        $("#enderecosModal").removeClass('visible');
-                                                    }
-                                                })
-                                                .catch(error => {
-                                                    hideSpinner();
-                                                    console.error("Erro ao carregar endereços:", error);
-                                                    alert("Erro ao carregar os endereços. Verifique o console.");
-                                                    $("#enderecosModal").addClass('hidden');
-                                                });
-                                            };
-                        
-                                            if (!enderecosModalLoaded) {
-                                                loadHtml("html/modalEnderecos.html", "#modal-enderecos-container", "div#enderecosModal", function(err) {
-                                                    if (err) {
-                                                        console.error("❌ Erro ao carregar o modal de endereços: ", err);
-                                                        return;
-                                                    }
-                                                    enderecosModalLoaded = true;
-                                                    // Anexa o handler de arrastar APÓS o modal ser carregado
-                                                    elementDrag("#enderecosModal div.modal div.modalTitulo", "#enderecosModal div.modal");
-                                                    // Esconde o modal inicialmente, ele será exibido por loadAndShow
-                                                    // $("#enderecosModal").addClass('hidden'); // Removido: CSS agora gerencia o estado inicial
-                                                    loadAndShow();
-                                                });
-                                            } else {
-                                                loadAndShow();
-                                            }
-                                        }
+                        // Reset fields, ensuring a clean state for new input or editing
+                        $("#end_id").val("");
+                        $("#end_numero").val(""); // Keep numero input
+                        $("#end_complemento").val(""); // Keep complemento input
+                    } else {                                                        
+                        alert(data.message || "Erro ao carregar endereços.");
+                        $("#enderecosModal").removeClass('visible');
+                    }
+                })
+                .catch(error => {
+                    hideSpinner();
+                    console.error("Erro ao carregar endereços:", error);
+                    alert("Erro ao carregar os endereços. Verifique o console.");
+                    $("#enderecosModal").addClass('hidden');
+                });
+            };
+
+            if (!enderecosModalLoaded) {
+                loadHtml("html/modalEnderecos.html", "#modal-enderecos-container", "div#enderecosModal", function(err) {
+                    if (err) {
+                        console.error("❌ Erro ao carregar o modal de endereços: ", err);
+                        return;
+                    }
+                    enderecosModalLoaded = true;
+                    // Anexa o handler de arrastar APÓS o modal ser carregado
+                    elementDrag("#enderecosModal div.modal div.modalTitulo", "#enderecosModal div.modal");
+                    initEnderecosTomSelect(); // Initialize Tom Select here
+                    loadAndShow();
+                });
+            } else {
+                loadAndShow();
+            }
+        }
                                                 
-                                            const renderConfig = {
-                                                templatePath: "html/fotocrim.html",
-                                                templateSelector: "section.card",
-                                                templateTarget: "section#fotocrim div.content",
-                                                populateCardFn: populateFotocrimCard, // Passa a função de população
-                                                eventHandlerFn: aplicaEventos,       // Passa a função de tratamento de eventos
-                                            };        // Carrega os dados iniciais na tela
+        const renderConfig = {
+            templatePath: "html/fotocrim.html",
+            templateSelector: "section.card",
+            templateTarget: "section#fotocrim div.content",
+            populateCardFn: populateFotocrimCard, // Passa a função de população
+            eventHandlerFn: aplicaEventos,       // Passa a função de tratamento de eventos
+        };        // Carrega os dados iniciais na tela
         dsPesquisa.exec("viewFotocrim", "php/dsPesquisaConfig.php", function (resp) {
             if (!resp.success) return alert(resp.message || "Erro ao pesquisar.");
             renderizaCards({ ...renderConfig, dados: resp.data, renderTotal: true });
-                }, [showSpinner, hideSpinner]);
+        }, [showSpinner, hideSpinner]);
         
-                const $modulo = $("main#modulo");
+        const $modulo = $("main#modulo");
+
+
         
-                // Aplica/remove a máscara quando o tipo de documento muda
-                $modulo.on("change", "#doc_tipo", toggleCpfMask);
+        // Aplica/remove a máscara quando o tipo de documento muda
+        $modulo.on("change", "#doc_tipo", toggleCpfMask);
         
-                // Abrir modal de gerenciamento de documentos
-                $modulo.on("click", "button.gerenciar-documentos", function() {
-                    renderDocumentosGerenciamento();
-                    $("#documentosModal").addClass('visible');
-                                $("#doc_tipo").trigger("change").focus(); // Garante que a máscara seja aplicada ao abrir
-                            });
-                    
-                            // Event listeners para UF e Cidade
-                            $modulo.on('change', '#end_uf', function() {
-                                populateCidades($(this).val());
-                            });
-                            $modulo.on('change', '#end_cidade', function() {
-                                populateBairros($(this).val());
-                            });
-                    
-                            // Fechar/Concluir modal de gerenciamento de documentos        // Drag handlers - eles precisam ser re-anexados se o modal for recriado.
+        // Abrir modal de gerenciamento de documentos
+        $modulo.on("click", "button.gerenciar-documentos", function() {
+            renderDocumentosGerenciamento();
+            $("#documentosModal").addClass('visible');
+                        $("#doc_tipo").trigger("change").focus(); // Garante que a máscara seja aplicada ao abrir
+                    });
+            
+        // Drag handlers - eles precisam ser re-anexados se o modal for recriado.
         // A delegação de evento não funciona bem para eventos de arrastar (mousedown, mousemove, mouseup).
         // A abordagem atual de anexar diretamente após o loadTemplate é mantida.
         elementDrag("#fotocrimModal div.modal div.modalTitulo", "#fotocrimModal div.modal");
@@ -372,15 +393,12 @@ loadTemplate(
         // Fechar/Cancelar Modal Principal
         $modulo.on("click", "#fotocrimModal .fechar, #fotocrimModal .cancelar", function () {
             const modalBackdrop = $("#fotocrimModal");
-            const modalFormSection = $("section.forms.fotocrimForm");
-
-            // Apply fade-out animation
             modalBackdrop.addClass('fade-out');
             
             // Wait for the transition to complete before setting display: none
             modalBackdrop.one('transitionend', () => { // Use transitionend
                 modalBackdrop.addClass('hidden').removeClass('fade-out');
-                modalFormSection.removeClass("visible");
+                $("section.forms.fotocrimForm").removeClass("visible");
                 resetDocumentos();
             });
         });
@@ -495,11 +513,7 @@ loadTemplate(
             );
         }
         
-
-
-        
-
-                // Fechar/Concluir modal de gerenciamento de documentos
+        // Fechar/Concluir modal de gerenciamento de documentos
         $modulo.on("click", "#documentosModal .fechar-secundario, #documentosModal .concluir-documentos", function() {
             $("#documentosModal").removeClass('visible');
             renderDocumentosDisplay(); 
@@ -543,76 +557,62 @@ loadTemplate(
             $("#doc_tipo").focus();
         });
 
-            // Adicionar novo endereço
-            $modulo.on("click", "#enderecosModal button.adicionar-endereco", function() {
-                const id = $("#end_id").val(); // idEndereco, se for edição
-                const logradouro = $("#end_logradouro").val().trim();
-                const numero = $("#end_numero").val().trim();
-                const complemento = $("#end_complemento").val().trim();
-                const idBairro = $("#end_bairro").val();
-                const nomeBairro = $("#end_bairro option:selected").text();
-                const idCidade = $("#end_cidade").val();
-                const nomeCidade = $("#end_cidade option:selected").text();
-                const uf = $("#end_uf").val();
-                const observacao = $("#end_observacao").val().trim();
+        // Adicionar novo endereço
+        $modulo.on("click", "#enderecosModal button.adicionar-endereco", function() {
+            const id = $("#end_id").val(); // idEndereco, se for edição
+            const numero = $("#end_numero").val().trim();
+            const complemento = $("#end_complemento").val().trim();
+            const observacao = $("#end_observacao").val().trim();
 
-                if (!logradouro || !numero || !idBairro || !idCidade || !uf) {
-                    alert("Os campos Logradouro, Número, Bairro, Cidade e UF são obrigatórios para o endereço.");
+            if (!selectedAddressData) {
+                alert("Por favor, selecione um logradouro válido.");
+                return;
+            }
+            if (!numero) {
+                alert("O campo 'Número' é obrigatório.");
+                return;
+            }
+
+            const novoEndereco = {
+                id: id || null, // Se id for preenchido, é edição
+                idRua: selectedAddressData.idRua,
+                logradouro: selectedAddressData.logradouro,
+                numero,
+                complemento,
+                bairro: selectedAddressData.bairro,
+                idBairro: selectedAddressData.idBairro,
+                cidade: selectedAddressData.cidade,
+                idCidade: selectedAddressData.idCidade,
+                uf: selectedAddressData.uf,
+                cep: selectedAddressData.cep,
+                observacao,
+            };
+
+            if (id) {
+                // Edição de um endereço existente
+                const index = enderecos.findIndex(end => end.id == id); // Assuming 'id' is unique for existing entries
+                if (index !== -1) {
+                    enderecos[index] = { ...enderecos[index], ...novoEndereco };
+                }
+            } else {
+                // Adição de um novo endereço
+                // Verificação de duplicidade (considerando idRua e numero, como um endereço deve ser único)
+                const isDuplicate = enderecos.some(end => 
+                    end.idRua === novoEndereco.idRua &&
+                    end.numero === novoEndereco.numero &&
+                    end.complemento === novoEndereco.complemento // Also check complement for uniqueness
+                );
+                if (isDuplicate) {
+                    alert("Este endereço (rua, número e complemento) já foi adicionado.");
                     return;
                 }
-
-                const novoEndereco = {
-                    id: id || null, // Se id for preenchido, é edição
-                    logradouro,
-                    numero,
-                    complemento,
-                    idBairro: idBairro,
-                    bairro: nomeBairro,
-                    idCidade: idCidade,
-                    cidade: nomeCidade,
-                    uf,
-                    observacao,
-                };
-
-                if (id) {
-                    // Edição de um endereço existente
-                    const index = enderecos.findIndex(end => end.id == id);
-                    if (index !== -1) {
-                        enderecos[index] = { ...enderecos[index], ...novoEndereco };
-                    }
-                } else {
-                    // Adição de um novo endereço
-                    // Verificação de duplicidade (considerando logradouro, numero, cidade, uf)
-                    const isDuplicate = enderecos.some(end => 
-                        end.logradouro === novoEndereco.logradouro &&
-                        end.numero === novoEndereco.numero &&
-                        end.cidade === novoEndereco.cidade &&
-                        end.uf === novoEndereco.uf
-                    );
-                    if (isDuplicate) {
-                        alert("Este endereço já foi adicionado.");
-                        return;
-                    }
-                    enderecos.push(novoEndereco);
-                }
-                
-                renderEnderecosGerenciamento();
-                resetEnderecosFormFields(); // Limpa o formulário de adição/edição
-            });
-
-            // Função auxiliar para limpar os campos do formulário de adição/edição de endereço
-            function resetEnderecosFormFields() {
-                $("#end_id").val("");
-                $("#end_logradouro").val("");
-                $("#end_numero").val("");
-                $("#end_complemento").val("");
-                $("#end_bairro").empty().append('<option value="">— selecione —</option>');
-                $("#end_cidade").empty().append('<option value="">— selecione —</option>');
-                $("#end_uf").val("");
-                $("#end_observacao").val("");
-                $("#end_logradouro").focus();
+                enderecos.push(novoEndereco);
             }
-        
+            
+            renderEnderecosGerenciamento();
+            resetEnderecosFormFields(); // Limpa o formulário de adição/edição
+        });
+
         // Adicionar novo documento com Enter
         $modulo.on("keyup", "#doc_valor, #doc_observacao", function(e) {
             if (e.keyCode === 13) { // 13 é o código para Enter
@@ -621,8 +621,18 @@ loadTemplate(
             }
         });
 
-        // Adicionar novo endereço com Enter nos campos relevantes
-        $modulo.on("keyup", "#end_logradouro, #end_numero, #end_complemento, #end_bairro, #end_cidade, #end_uf, #end_observacao", function(e) {
+        // Adicionar novo endereço com Enter nos campos relevantes (exceto observação)
+        $modulo.on("keyup", "#end_logradouro, #end_numero, #end_complemento, #end_bairro, #end_cidade, #end_uf", function(e) {
+            if (e.keyCode === 13) { // 13 é o código para Enter
+                e.preventDefault();
+                $("#enderecosModal button.adicionar-endereco").trigger("click");
+            }
+        });
+
+
+
+        // Novo: Adicionar novo endereço com Enter no campo número
+        $modulo.on("keyup", "#end_numero", function(e) {
             if (e.keyCode === 13) { // 13 é o código para Enter
                 e.preventDefault();
                 $("#enderecosModal button.adicionar-endereco").trigger("click");
@@ -650,24 +660,37 @@ loadTemplate(
             const index = $(this).closest(".endereco-gerencia-card").data("index");
             const endereco = enderecos[index];
 
+            resetEnderecosFormFields(); // Clear the form first, including Tom Select
+
             $("#end_id").val(endereco.id || ""); // Pode ser um ID temporário ou real
-            $("#end_logradouro").val(endereco.logradouro);
             $("#end_numero").val(endereco.numero);
             $("#end_complemento").val(endereco.complemento);
             $("#end_observacao").val(endereco.observacao);
 
-            // Populate UF, then trigger change to populate Cidades
-            $("#end_uf").val(endereco.uf).trigger('change'); 
-            
-            // Wait for cities to load before trying to select city and then bairros
-            setTimeout(() => {
-                $("#end_cidade").val(endereco.idCidade).trigger('change'); // Trigger change to populate bairros
-                setTimeout(() => {
-                    $("#end_bairro").val(endereco.idBairro); // Select the bairro
-                }, 100); // Small delay for bairros to load
-            }, 100); // Small delay for cities to load
+            // Populate Tom Select with the existing address
+            if (endSearchTomSelect) {
+                // Tom Select expects an item with at least valueField and labelField
+                const itemToSelect = {
+                    idRua: endereco.idRua,
+                    logradouro: endereco.logradouro,
+                    bairro: endereco.bairro,
+                    idBairro: endereco.idBairro,
+                    cidade: endereco.cidade,
+                    idCidade: endereco.idCidade,
+                    uf: endereco.uf,
+                    cep: endereco.cep,
+                    display: `${endereco.logradouro}, ${endereco.bairro}, ${endereco.cidade}/${endereco.uf} - CEP: ${endereco.cep}`
+                };
+                // Add the item to Tom Select options if not already there and select it
+                if (!endSearchTomSelect.options[itemToSelect.idRua]) {
+                    endSearchTomSelect.addOption(itemToSelect);
+                }
+                endSearchTomSelect.setValue(itemToSelect.idRua);
+                // Manually set selectedAddressData as onItemAdd might not fire for setValue
+                selectedAddressData = itemToSelect;
+            }
 
-            $("#end_logradouro").focus(); // Foca no primeiro campo para edição
+            $("#end_numero").focus(); // Focus on numero field for editing
         });
 
         // Clicar na foto para abrir seleção de arquivo

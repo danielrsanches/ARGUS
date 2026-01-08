@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        $pdo = db(); // Get the PDO instance
         $stmt = $pdo->prepare("SELECT id, nomeCidade FROM enderecoCidades WHERE uf = :uf ORDER BY nomeCidade ASC");
         $stmt->execute([':uf' => $uf]);
         $cidades = $stmt->fetchAll(PDO::FETCH_ASSOC);

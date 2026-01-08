@@ -223,3 +223,66 @@ Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
 Fotocrim record fetched.
 Documents fetched. Count: 2
 Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 05:14:13
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 05:17:37
+Includes loaded.
+User authenticated.
+Record ID received: 2
+Database connection established. ID: 2
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":2,"nomeCompleto":"Maria Oliveira","dataNascimento":"1990-11-05","sexo":"F","nomeMae":"Ana Oliveira","nomePai":"Paulo Oliveira","naturalidadeEstado":"Santa Catarina","idFaccao":3,"faccaoFuncao":"Linha","periculosidade":"Alta","observacoes":"Registro de teste 2 - usado em buscas e fotos","observacoesReservadas":null,"createdAt":"2025-11-21 08:51:23","updatedAt":"2025-11-23 13:59:07","fotoPerfil":null,"documentosResumo":"cpf: 987.654.321-00\nrgSp: 98.765.432-1\nmatricula: MTR67890","faccaoResumo":"Bonde do Magrelo (Linha)","enderecosResumo":"Rua Barão de Araras, 789, Casa 2, Centro, Araras/SP\nRua Doutor Marrey Júnior, 456, Centro, Iracemápolis/SP","enderecosQuantidade":2,"vulgosResumo":"Zé do Gás","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"987.654.321-00","observacao":null},{"tipo":"rgSp","valor":"98.765.432-1","observacao":null},{"tipo":"matricula","valor":"MTR67890","observacao":null}]}}
+Script started: 2026-01-08 05:18:28
+Includes loaded.
+User authenticated.
+Record ID received: 1
+Database connection established. ID: 1
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":1,"nomeCompleto":"João da Silva","dataNascimento":"1985-04-12","sexo":"M","nomeMae":"Maria da Silva","nomePai":"Carlos da Silva","naturalidadeEstado":"São Paulo","idFaccao":1,"faccaoFuncao":"Disciplina","periculosidade":"Alta","observacoes":"Registro de teste 1 - gerado para QA","observacoesReservadas":null,"createdAt":"2025-11-21 08:51:23","updatedAt":"2025-11-23 13:59:00","fotoPerfil":null,"documentosResumo":"cpf: 123.456.789-09\nrgSp: 12.345.678-9\nmatricula: MTR12345","faccaoResumo":"PCC - Primeiro Comando da Capital (Disciplina)","enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":"Magrão","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"123.456.789-09","observacao":null},{"tipo":"rgSp","valor":"12.345.678-9","observacao":null},{"tipo":"matricula","valor":"MTR12345","observacao":null}]}}
+Script started: 2026-01-08 05:18:33
+Includes loaded.
+User authenticated.
+Record ID received: 1
+Database connection established. ID: 1
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":1,"nomeCompleto":"João da Silva","dataNascimento":"1985-04-12","sexo":"M","nomeMae":"Maria da Silva","nomePai":"Carlos da Silva","naturalidadeEstado":"São Paulo","idFaccao":1,"faccaoFuncao":"Disciplina","periculosidade":"Alta","observacoes":"Registro de teste 1 - gerado para QA","observacoesReservadas":null,"createdAt":"2025-11-21 08:51:23","updatedAt":"2025-11-23 13:59:00","fotoPerfil":null,"documentosResumo":"cpf: 123.456.789-09\nrgSp: 12.345.678-9\nmatricula: MTR12345","faccaoResumo":"PCC - Primeiro Comando da Capital (Disciplina)","enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":"Magrão","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"123.456.789-09","observacao":null},{"tipo":"rgSp","valor":"12.345.678-9","observacao":null},{"tipo":"matricula","valor":"MTR12345","observacao":null}]}}
+Script started: 2026-01-08 05:18:38
+Includes loaded.
+User authenticated.
+Record ID received: 3
+Database connection established. ID: 3
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 4
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":3,"nomeCompleto":"Alessandro Rodrigues da Silva Pereira Santos","dataNascimento":"2000-01-20","sexo":"M","nomeMae":"Luciana Pereira","nomePai":null,"naturalidadeEstado":"Ceará","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"Registro de teste 3 - cenário com alguns campos nulos","observacoesReservadas":null,"createdAt":"2025-11-21 08:51:23","updatedAt":"2026-01-07 23:47:08","fotoPerfil":null,"documentosResumo":"cpf: 12345678901\nrgSp: 123456789\nrgCriminal: 987654321\nmatricula: 2024001234","faccaoResumo":null,"enderecosResumo":"Rua Coronel Souza Franco, 150, Apto 22, Centro, Conchal/SP\nRua Boa Morte, 999, Casa dos fundos, Centro, Limeira/SP\nRua Coronel Joaquim Pinto, 500, Bloco B, Centro, Santa Cruz da Conceição/SP\nRua Coronel Amâncio Bueno, 250, Fundos, Centro, Leme/SP\nRua Major João Rodrigues, 100, Centro, Cordeirópolis/SP","enderecosQuantidade":5,"vulgosResumo":"Caveirinha; Zé Ruela","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"12345678901","observacao":null},{"tipo":"rgSp","valor":"123456789","observacao":null},{"tipo":"rgCriminal","valor":"987654321","observacao":null},{"tipo":"matricula","valor":"2024001234","observacao":null}]}}
+Script started: 2026-01-08 05:18:43
+Includes loaded.
+User authenticated.
+Record ID received: 2
+Database connection established. ID: 2
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":2,"nomeCompleto":"Maria Oliveira","dataNascimento":"1990-11-05","sexo":"F","nomeMae":"Ana Oliveira","nomePai":"Paulo Oliveira","naturalidadeEstado":"Santa Catarina","idFaccao":3,"faccaoFuncao":"Linha","periculosidade":"Alta","observacoes":"Registro de teste 2 - usado em buscas e fotos","observacoesReservadas":null,"createdAt":"2025-11-21 08:51:23","updatedAt":"2025-11-23 13:59:07","fotoPerfil":null,"documentosResumo":"cpf: 987.654.321-00\nrgSp: 98.765.432-1\nmatricula: MTR67890","faccaoResumo":"Bonde do Magrelo (Linha)","enderecosResumo":"Rua Barão de Araras, 789, Casa 2, Centro, Araras/SP\nRua Doutor Marrey Júnior, 456, Centro, Iracemápolis/SP","enderecosQuantidade":2,"vulgosResumo":"Zé do Gás","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"987.654.321-00","observacao":null},{"tipo":"rgSp","valor":"98.765.432-1","observacao":null},{"tipo":"matricula","valor":"MTR67890","observacao":null}]}}
+Script started: 2026-01-08 05:19:11
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
