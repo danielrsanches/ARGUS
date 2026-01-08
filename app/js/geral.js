@@ -117,67 +117,112 @@ function loadJs(files, callback) {
     });
 }
 
-/* -> Carrega um template em um alvo especificado, já carregando dinamicamente os arquivos CSS e JS correspondentes...
-   data = {
-     alvo: "main#modulo", //seletor onde será carregado o template
-     template: "../html/home.html section#home", // "URL seletor"
-     css: "css/home.css" | ["css/home.css", ...],
-     js: "js/home.js"   | ["js/home.js",   ...]
-   }
-   Ordem: CSS -> Template -> JS
-*/
-function loadTemplate(data, callback) {
+async function loadTemplate(data, callback) {
     callback = callback || function () {};
-
-    // garante objeto
     if (typeof data !== "object" || data === null) data = {};
 
-    var alvo = data.alvo || "main#modulo";
-    var template = data.template || ""; // suporta "url seletor"
-    var css = data.css || null; // string ou array
-    var js = data.js || null; // string ou array
+    const alvoSelector = data.alvo || "main#modulo";
+    const template = data.template || "";
+    const css = data.css || null;
+    const js = data.js || null;
 
     if (!template) {
         return callback(new Error("loadTemplate -> template não fornecido."));
     }
 
-    // limpa o alvo
-    $(alvo).empty();
+    const [url, templateSelector] = template.split(" ");
+    const alvo = document.querySelector(alvoSelector);
 
-    // 1) CSS primeiro
-    loadCss(css, function (errCss) {
-        if (errCss) return callback(errCss);
+    if (!alvo) {
+        return callback(new Error(`loadTemplate -> alvo "${alvoSelector}" não encontrado.`));
+    }
+    
+    alvo.innerHTML = ""; // Limpa o alvo
 
-        // 2) template no alvo (jQuery aceita "url seletor")
-        $(alvo).load(template, function (response, status, xhr) {
-            if (status !== "success") {
-                return callback(new Error("loadTemplate -> falha ao carregar template (" + (xhr && xhr.status) + ")"));
-            }
-
-            // 3) JS por último
-            loadJs(js, function (errJs) {
-                if (errJs) return callback(errJs);
-
-                // sucesso
-                callback(null);
-            });
+    try {
+        // 1) CSS primeiro
+        await new Promise((resolve, reject) => {
+            loadCss(css, (err) => err ? reject(err) : resolve());
         });
-    });
+
+        // 2) Template no alvo
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Falha ao carregar template de ${url} (${response.status})`);
+        }
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const templateContent = doc.querySelector(templateSelector);
+
+        if (!templateContent) {
+            throw new Error(`Seletor de template "${templateSelector}" não encontrado em ${url}`);
+        }
+        alvo.appendChild(templateContent);
+
+        // 3) JS por último
+        await new Promise((resolve, reject) => {
+            loadJs(js, (err) => err ? reject(err) : resolve());
+        });
+
+        callback(null); // Sucesso
+
+    } catch (err) {
+        callback(err);
+    }
 }
+
+
+/**
+ * Carrega um conteúdo HTML em um elemento alvo.
+ * @param {string} url - A URL do arquivo HTML a ser carregado.
+ * @param {string} targetSelector - O seletor do elemento onde o HTML será inserido.
+ * @param {string} [contentSelector] - O seletor do conteúdo a ser extraído do HTML carregado. Se não for fornecido, o body inteiro é carregado.
+ * @param {Function} [callback] - Função de callback a ser executada após o carregamento.
+ */
+async function loadHtml(url, targetSelector, contentSelector, callback) {
+    callback = callback || function () {};
+    const target = document.querySelector(targetSelector);
+
+    if (!target) {
+        return callback(new Error(`loadHtml -> alvo "${targetSelector}" não encontrado.`));
+    }
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Falha ao carregar HTML de ${url} (${response.status})`);
+        }
+        const html = await response.text();
+        
+        if (contentSelector) {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const content = doc.querySelector(contentSelector);
+            if (!content) {
+                throw new Error(`Seletor de conteúdo "${contentSelector}" não encontrado em ${url}`);
+            }
+            target.appendChild(content);
+        } else {
+            target.innerHTML = html;
+        }
+
+        callback(null); // Sucesso
+    } catch (err) {
+        callback(err);
+    }
+}
+
 
 //****************************** */
 // Spinner de carregamento global
 //****************************** */
 function showSpinner() {
-    // Mostra o spinner
-    const spinner = $("div#spinner")[0];
+    const spinner = document.getElementById("spinner");
     if (spinner) {
         spinner.classList.remove("hidden");
     }
 }
 function hideSpinner() {
-    // Oculta o spinner
-    const spinner = $("div#spinner")[0];
+    const spinner = document.getElementById("spinner");
     if (spinner) {
         spinner.classList.add("hidden");
     }
@@ -234,79 +279,55 @@ function dateInvert(data, withTime = false) {
     return "";
 }
 
-/**
- * Renderiza cards em um container HTML com base em um template e dados fornecidos.
- *
- * @param {Object} options - Configurações para renderização dos cards.
- * @param {string} options.templatePath - Caminho para o arquivo HTML contendo o template.
- * @param {string} options.templateSelector - Seletor CSS para o elemento do template dentro do arquivo.
- * @param {string} options.templateTarget - Seletor CSS do container onde os cards serão inseridos.
- * @param {Array<Object>} options.dados - Array de objetos contendo os dados para preencher os cards.
- * @param {boolean} [options.renderTotal=true] - Define se todos os cards devem ser renderizados ou apenas atualizados.
- * @param {Function} [options.showSpinner] - Função opcional para exibir um spinner de carregamento.
- * @param {Function} [options.hideSpinner] - Função opcional para ocultar o spinner de carregamento.
- */
-function renderizaCards(config) {
-    // validação completa de config (tipo + campos obrigatórios)
-    if (!config || typeof config !== "object" || Array.isArray(config) || !config.dados || !config.templatePath || !config.templateSelector || !config.templateTarget) {
-        throw new Error("func renderizaCards: parâmetro 'config' não é um objeto ou está incompleto");
+async function renderizaCards(config) {
+    if (!config || typeof config !== "object" || !config.dados || !config.templatePath || !config.templateSelector || !config.templateTarget || !config.populateCardFn || !config.eventHandlerFn) {
+        throw new Error("renderizaCards: 'config' incompleto. Requer: dados, templatePath, templateSelector, templateTarget, populateCardFn, eventHandlerFn.");
     }
-
-    // verifica os parâmetros opcionais e define valores padrão...
+    
     config.renderTotal = config.renderTotal ?? true;
 
-    // Verifica se as funções dependentes existem...
-    if (typeof gerarCardHTML !== "function" || typeof aplicaEventos !== "function") {
-        throw new Error("As funções 'gerarCardHTML' e/ou 'aplicaEventos' não estão definidas.");
-    }
+    try {
+        const template = await loadCard(config.templatePath, config.templateSelector);
+        const content = document.querySelector(config.templateTarget);
+        
+        if (!content) {
+            throw new Error(`renderizaCards: Alvo de renderização "${config.templateTarget}" não encontrado.`);
+        }
 
-    // Carrega o template do card uma vez
-    loadCard(config.templatePath, config.templateSelector).then((template) => {
-        // Seleciona o alvo onde os cards serão renderizados
-        const $content = $(config.templateTarget);
-
-        // Verifica se é renderização total ou parcial
         if (config.renderTotal) {
-            $content.hide().empty(); // Esconde e limpa o conteúdo atual
+            content.classList.add('hidden');
+            content.innerHTML = '';
 
-            //percorre todos os dados e gera os cards...
-            config.dados.forEach((element) => {
-                const cardHTML = gerarCardHTML(template, element); // Gera o HTML do card
-                $content.append(cardHTML); // Adiciona o card ao conteúdo
-
-                aplicaEventos(element.id); // Aplica os eventos ao card recém-criado
+            config.dados.forEach(element => {
+                const cardClone = template.cloneNode(true);
+                config.populateCardFn(cardClone, element); // Usa a função específica do módulo
+                content.appendChild(cardClone);
+                config.eventHandlerFn(element.id); // Usa a função de tratamento de eventos fornecida
             });
 
-            $content.fadeIn(); // Mostra o conteúdo com efeito de fade-in
+            content.classList.remove('hidden');
+            content.classList.add('fade-in');
+            content.addEventListener('animationend', () => content.classList.remove('fade-in'), { once: true });
         } else {
-            // Renderização parcial: atualiza ou cria cards individualmente
+             config.dados.forEach(element => {
+                const existingCard = content.querySelector(`.card[data-id='${element.id}']`);
+                const cardClone = template.cloneNode(true);
+                config.populateCardFn(cardClone, element);
 
-            //percorre todos os dados e atualiza ou cria os cards...
-            config.dados.forEach((element) => {
-                const $card = $(`section.card[data-id='${element.id}']`);
-
-                if ($card.length) {
-                    //se o card já existe, atualiza...
-                    const cardHTML = gerarCardHTML(template, element);
-                    $card.replaceWith(cardHTML);
+                if (existingCard) {
+                    existingCard.replaceWith(cardClone);
                 } else {
-                    //se o card não existe, cria...
-                    const cardHTML = gerarCardHTML(template, element);
-                    $content.append(cardHTML);
-
-                    aplicaEventos(element.id); // Aplica os eventos ao card recém-criado
+                    content.appendChild(cardClone);
                 }
+                config.eventHandlerFn(element.id); // Usa a função de tratamento de eventos fornecida
             });
         }
-    });
+
+    } catch (err) {
+        console.error("Erro em renderizaCards:", err);
+    }
 }
 
-/**
- * Permite arrastar um elemento (target) usando um "handle" (área de arrasto).
- * @param {string} handleSeletor  Seletor do elemento que inicia o drag (ex: ".modalTitulo")
- * @param {string} targetSeletor  Seletor do elemento que será movido (ex: ".modal")
- * @param {boolean} screenLimit   Limita o target dentro da viewport
- */
 function elementDrag(handleSeletor, targetSeletor, screenLimit = true) {
     const handle = document.querySelector(handleSeletor);
     const target = document.querySelector(targetSeletor);
@@ -316,60 +337,60 @@ function elementDrag(handleSeletor, targetSeletor, screenLimit = true) {
         return;
     }
 
-    let arrastando = false;
-    let offsetX = 0;
-    let offsetY = 0;
+    let isDragging = false;
+    let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
 
-    function clamp(v, min, max) {
-        return Math.max(min, Math.min(max, v));
-    }
-
-    function onMouseDown(event) {
-        // só botão esquerdo
-        if (event.button !== 0) return;
-
-        arrastando = true;
-
-        const rect = target.getBoundingClientRect();
-        offsetX = event.clientX - rect.left;
-        offsetY = event.clientY - rect.top;
-
-        target.style.position = "fixed";
-        target.style.margin = "0";
-        target.style.left = rect.left + "px";
-        target.style.top = rect.top + "px";
-
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-
-        event.preventDefault();
-    }
-
-    function onMouseMove(event) {
-        if (!arrastando) return;
-
-        let left = event.clientX - offsetX;
-        let top = event.clientY - offsetY;
-
-        if (screenLimit) {
-            const w = target.offsetWidth;
-            const h = target.offsetHeight;
-
-            left = clamp(left, 0, window.innerWidth - w);
-            top = clamp(top, 0, window.innerHeight - h);
+    function onMouseDown(e) {
+        if (e.button !== 0) return;
+        
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+        
+        if (e.target === handle) {
+            isDragging = true;
+            target.classList.add("is-dragging");
         }
-
-        target.style.left = left + "px";
-        target.style.top = top + "px";
     }
 
-    function onMouseUp() {
-        arrastando = false;
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
+    function onMouseMove(e) {
+        if (isDragging) {
+            e.preventDefault();
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+            
+            xOffset = currentX;
+            yOffset = currentY;
+
+            // Limitar ao viewport
+            if (screenLimit) {
+                const rect = target.getBoundingClientRect();
+                const parentRect = target.parentElement.getBoundingClientRect();
+                
+                if (currentX < -parentRect.left) currentX = -parentRect.left;
+                if (currentY < -parentRect.top) currentY = -parentRect.top;
+                if (currentX + rect.width > parentRect.right) currentX = parentRect.right - rect.width;
+                if (currentY + rect.height > parentRect.bottom) currentY = parentRect.bottom - rect.height;
+            }
+
+            // ATENÇÃO: A linha abaixo viola a Política de Segurança de Conteúdo (CSP)
+            // se 'unsafe-inline' não for permitido em 'style-src'.
+            // Mover um elemento dinamicamente com base na posição do mouse
+            // requer a atualização de 'transform', o que é difícil de fazer
+            // sem estilos inline. Uma alternativa seria usar CSS variables,
+            // mas 'style.setProperty' também é bloqueado por uma CSP estrita.
+            target.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+        }
     }
 
-    // importante: só o "handle" inicia o drag
-    handle.style.cursor = "move";
-    handle.addEventListener("mousedown", onMouseDown);
+    function onMouseUp(e) {
+        initialX = currentX;
+        initialY = currentY;
+        isDragging = false;
+        target.classList.remove("is-dragging");
+    }
+    
+    handle.classList.add("draggable-handle");
+    target.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mousemove", onMouseMove);
 }

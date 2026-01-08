@@ -14,6 +14,19 @@ div.modalBackdrop {
     justify-content: center;
     z-index: 9999;
 
+    opacity: 1; /* Default visible state */
+    /* visibility: visible; Removed transition for visibility */
+    transition: opacity 0.3s ease-out; /* Only transition opacity */
+
+    &.hidden {
+        display: none;
+    }
+
+    &.fade-out {
+        opacity: 0;
+        visibility: hidden; /* Directly set visibility hidden for final state */
+    }
+
     /* ================================
        MODAL
        ================================ */
@@ -31,6 +44,8 @@ div.modalBackdrop {
         flex-direction: column;
         overflow: hidden;
 
+        /* Removed transform and its transition for opacity-only fade */
+
         /* ============================
            TÍTULO
            ============================ */
@@ -42,10 +57,9 @@ div.modalBackdrop {
             align-items: center;
             border-bottom: 1px solid #2e3b47;
             cursor: move; /* indica que pode arrastar o modal */
-            transform: scale(0.95);
-            opacity: 0;
-            animation: modalFadeIn 0.18s ease-out forwards;
-
+            
+            /* Remove animation from here, will handle globally on modalBackdrop and modal */
+            
             div.texto {
                 font-size: 1.1rem;
                 font-weight: 600;
@@ -94,9 +108,4 @@ div.modalBackdrop {
         }
     }
 }
-@keyframes modalFadeIn {
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
+/* Removed modalFadeIn keyframes, will use transitions instead */

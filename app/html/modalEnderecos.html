@@ -1,0 +1,92 @@
+<div class="modalBackdrop hidden" id="enderecosModal">
+    <div class="modal">
+        <div class="modalTitulo fechar-secundario">
+            <div class="texto">Gerenciar Endereços</div>
+            <button class="fechar-secundario">X</button>
+        </div>
+        <div class="modalContent">
+            <input type="hidden" id="enderecos_idFotocrim" value="" />
+            <div class="enderecos-container-gerenciamento">
+                <!-- Endereços adicionados aparecerão aqui -->
+            </div>
+
+            <hr />
+
+            <div class="add-endereco-form">
+                <h4>Adicionar/Editar Endereço</h4>
+                <input type="hidden" id="end_id" value="" />
+                <div class="linha">
+                    <div class="campo w-80">
+                        <label for="end_logradouro">Logradouro</label>
+                        <input type="text" id="end_logradouro" maxlength="255" />
+                    </div>
+                    <div class="campo w-20">
+                        <label for="end_numero">Número</label>
+                        <input type="text" id="end_numero" maxlength="10" />
+                    </div>
+                </div>
+                <div class="linha">
+                    <div class="campo w-100">
+                        <label for="end_complemento">Complemento</label>
+                        <input type="text" id="end_complemento" maxlength="100" />
+                    </div>
+                </div>
+                <div class="linha">
+                    <div class="campo w-50">
+                        <label for="end_bairro">Bairro</label>
+                        <select id="end_bairro"></select>
+                    </div>
+                    <div class="campo w-50">
+                        <label for="end_cidade">Cidade</label>
+                        <select id="end_cidade"></select>
+                    </div>
+                </div>
+                <div class="linha">
+                    <div class="campo">
+                        <label for="end_uf">UF</label>
+                        <select id="end_uf">
+                            <option value="">—</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="linha">
+                    <div class="campo w-100">
+                        <label for="end_observacao">Observação</label>
+                        <textarea id="end_observacao"></textarea>
+                    </div>
+                </div>
+                <button type="button" class="adicionar-endereco primario">Salvar</button>
+            </div>
+        </div>
+        <div class="modalRodape">
+            <button class="concluir-enderecos primario">Concluir</button>
+        </div>
+    </div>
+</div>

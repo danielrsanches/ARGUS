@@ -207,8 +207,12 @@ section.fotocrimForm {
         width: 900px;
 
         form.fotocrim {
+            .main-columns-container {
+                flex-wrap: nowrap !important; /* Força as colunas a ficarem lado a lado */
+            }
+
             div.colFotoPerfil {
-                width: 180px;
+                flex: 0 0 180px; /* Do not grow, do not shrink, basis of 180px */
                 margin-bottom: 10px;
 
                 div.fotoPerfil {
@@ -221,11 +225,12 @@ section.fotocrimForm {
                     background-size: 100% 100%;
                     background-repeat: no-repeat;
                     background-position: center;
+                    cursor: pointer;
                 }
             }
 
             div.colDadosBasicos {
-                width: 660px;
+                flex: 1; /* Faz a coluna ocupar o espaço restante */
 
                 div.campoNascimento small {
                     align-self: center;
@@ -233,16 +238,55 @@ section.fotocrimForm {
                 }
             }
 
-            input#nomeCompleto {
-                width: 660px;
+            input#nomeMae,
+            input#nomePai {
+                width: 860px;
             }
 
-            input#nomeMae,
-            input#nomePai,
             textarea#observacoes,
             textarea#observacoesReservadas {
                 width: 860px;
+                min-height: 80px;
+                overflow: hidden; /* Adicionado para esconder a barra de rolagem */
             }
         }
     }
 }
+
+/* --- Estilos para Gerenciamento de Documentos (Display no form principal) --- */
+
+/* Botão principal para abrir o gerenciador */
+button.gerenciar-documentos {
+    width: 100%;
+    margin-top: 5px;
+    background-color: rgba(74, 85, 104, 0.5); /* Cor mais neutra */
+}
+
+button.gerenciar-documentos:hover {
+    background-color: rgba(74, 85, 104, 0.7);
+}
+
+/* Container para os 'pills' de documento no formulário principal */
+.documentos-display-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 5px 11px; /* igual a um input */
+    background-color: #2a2d32; /* igual a um input */
+    border-radius: 6px; /* igual a um input */
+    min-height: 30px; /* altura de um input */
+    margin-top: 4px;
+    border: 1px solid #3a3e45; /* igual a um input */
+    align-items: center; 
+}
+
+.documento-pill {
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+

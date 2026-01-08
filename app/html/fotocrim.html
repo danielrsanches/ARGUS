@@ -16,9 +16,12 @@
     </div>
 
     <div class="content"></div>
+    <div id="modal-documentos-container"></div>
+    <div id="modal-enderecos-container"></div>
 
     <section class="forms fotocrimForm">
-        <div class="modalBackdrop">
+        <!-- ===== MODAL PRINCIPAL ===== -->
+        <div class="modalBackdrop" id="fotocrimModal">
             <div class="modal">
                 <div class="modalTitulo">
                     <div class="texto">Dados Fotocrim</div>
@@ -26,39 +29,17 @@
                 </div>
                 <div class="modalContent">
                     <form id="fotocrim" class="fotocrim" method="post" enctype="multipart/form-data" autocomplete="off">
-                        <!-- ocultos -->
+                        <!-- hidden fields -->
                         <input type="hidden" id="id" name="id" value="" />
-                        <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*" />
+                        <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*" class="hidden" />
 
-                        <div class="linha">
+                        <div class="linha main-columns-container">
                             <div class="coluna colFotoPerfil">
-                                <div class="fotoPerfil"></div>
+                                <div class="fotoPerfil" title="Clique para alterar a foto"></div>
                             </div>
                             <div class="coluna colDadosBasicos">
                                 <div class="linha">
-                                    <div class="campo">
-                                        <label for="documentoTipo">Tipo de documento</label>
-                                        <select name="documentoTipo" id="documentoTipo">
-                                            <option value="">Selecione…</option>
-                                            <option value="cpf">CPF</option>
-                                            <option value="rgSp">RG/SP</option>
-                                            <option value="rgCriminal">RG Criminal</option>
-                                            <option value="rgOutroEstado">RG (outro Estado)</option>
-                                            <option value="matricula">Matrícula</option>
-                                            <option value="outro">Outro</option>
-                                        </select>
-                                    </div>
-                                    <div class="campo">
-                                        <label for="documentoValor">Número do documento</label>
-                                        <input type="text" id="documentoValor" name="documentoValor" maxlength="50" />
-                                    </div>
-                                    <div class="campo">
-                                        <label for="documentoObservacao">Observação</label>
-                                        <input type="text" id="documentoObservacao" name="documentoObservacao" maxlength="255" />
-                                    </div>
-                                </div>
-                                <div class="linha">
-                                    <div class="campo">
+                                    <div class="campo w-100">
                                         <label for="nomeCompleto">Nome completo</label>
                                         <input type="text" id="nomeCompleto" name="nomeCompleto" maxlength="150" required />
                                     </div>
@@ -69,7 +50,6 @@
                                         <input type="date" id="dataNascimento" name="dataNascimento" />
                                         <small class="idadeInfo">XX anos</small>
                                     </div>
-
                                     <div class="campo">
                                         <label for="sexo">Sexo</label>
                                         <select id="sexo" name="sexo">
@@ -78,7 +58,6 @@
                                             <option value="F">Feminino</option>
                                         </select>
                                     </div>
-
                                     <div class="campo">
                                         <label for="naturalidadeEstado">Naturalidade (UF)</label>
                                         <select id="naturalidadeEstado" name="naturalidadeEstado">
@@ -112,13 +91,21 @@
                                             <option value="Tocantins">Tocantins</option>
                                         </select>
                                     </div>
-
                                     <div class="campo">
                                         <label for="periculosidade">Periculosidade</label>
                                         <select id="periculosidade" name="periculosidade" required>
                                             <option value="Média" selected>Média</option>
                                             <option value="Alta">Alta</option>
                                         </select>
+                                    </div>
+                                </div>
+                                 <div class="linha">
+                                    <div class="campo w-100">
+                                        <label>Documentos</label>
+                                        <div class="documentos-display-container">
+                                            <!-- Documentos somente leitura aparecerão aqui -->
+                                        </div>
+                                        <button type="button" class="gerenciar-documentos">Gerenciar Documentos</button>
                                     </div>
                                 </div>
                             </div>
@@ -155,14 +142,14 @@
                         <div class="linha">
                             <div class="campo">
                                 <label for="observacoes">Observações</label>
-                                <textarea id="observacoes" name="observacoes" rows="4"></textarea>
+                                <textarea id="observacoes" name="observacoes"></textarea>
                             </div>
                         </div>
 
                         <div class="linha">
                             <div class="campo">
                                 <label for="observacoesReservadas">Observações reservadas</label>
-                                <textarea id="observacoesReservadas" name="observacoesReservadas" rows="4"></textarea>
+                                <textarea id="observacoesReservadas" name="observacoesReservadas"></textarea>
                             </div>
                         </div>
                     </form>
@@ -173,6 +160,8 @@
                 </div>
             </div>
         </div>
+
+        
     </section>
 </section>
 

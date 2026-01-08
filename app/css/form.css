@@ -66,6 +66,7 @@ input, textarea {
     font-size: 0.9rem;
     font-family: inherit;
     transition: 0.15s ease;
+    box-sizing: border-box;
 
     &:focus {
         border-color: #4a8bff;
@@ -105,6 +106,7 @@ div.coluna {
     gap: 12px;
     min-width: 0; /* Evita estouro de largura */
     flex: 0 0 auto; /* Por padrão, largura automática */
+    box-sizing: border-box;
 
     /* COLUNA que ocupa o espaço restante */
     &[style*="width: 100%"] {

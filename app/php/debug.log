@@ -1,0 +1,225 @@
+Script started: 2026-01-08 03:44:04
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 0
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"daniel sanches","dataNascimento":"1981-04-25","sexo":null,"nomeMae":"maria","nomePai":"decio","naturalidadeEstado":null,"idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":null,"observacoesReservadas":null,"createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:39:11","fotoPerfil":null,"documentosResumo":null,"faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[]}}
+Script started: 2026-01-08 03:44:18
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 0
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":null,"nomeMae":"maria","nomePai":"decio","naturalidadeEstado":null,"idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":null,"observacoesReservadas":null,"createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:44:14","fotoPerfil":null,"documentosResumo":null,"faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[]}}
+Script started: 2026-01-08 03:44:50
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"decio","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":null,"observacoesReservadas":null,"createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:44:43","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:45:07
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:45:19
+Includes loaded.
+User authenticated.
+Record ID received: 3
+Database connection established. ID: 3
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 4
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":3,"nomeCompleto":"Alessandro Rodrigues da Silva Pereira Santos","dataNascimento":"2000-01-20","sexo":"M","nomeMae":"Luciana Pereira","nomePai":"","naturalidadeEstado":"Ceará","idFaccao":null,"faccaoFuncao":"","periculosidade":"Média","observacoes":"Registro de teste 3 - cenário com alguns campos nulos","observacoesReservadas":"","createdAt":"2025-11-21 08:51:23","updatedAt":"2025-11-23 16:46:15","fotoPerfil":null,"documentosResumo":"cpf: 12345678901\nrgSp: 123456789\nrgCriminal: 987654321\nmatricula: 2024001234","faccaoResumo":null,"enderecosResumo":"Rua Coronel Souza Franco, 150, Apto 22, Centro, Conchal/SP\nRua Boa Morte, 999, Casa dos fundos, Centro, Limeira/SP\nRua Coronel Joaquim Pinto, 500, Bloco B, Centro, Santa Cruz da Conceição/SP\nRua Coronel Amâncio Bueno, 250, Fundos, Centro, Leme/SP\nRua Major João Rodrigues, 100, Centro, Cordeirópolis/SP","enderecosQuantidade":5,"vulgosResumo":"Caveirinha; Zé Ruela","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"12345678901","observacao":null},{"tipo":"rgSp","valor":"123456789","observacao":null},{"tipo":"rgCriminal","valor":"987654321","observacao":null},{"tipo":"matricula","valor":"2024001234","observacao":null}]}}
+Script started: 2026-01-08 03:47:01
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:47:04
+Includes loaded.
+User authenticated.
+Record ID received: 3
+Database connection established. ID: 3
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 4
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":3,"nomeCompleto":"Alessandro Rodrigues da Silva Pereira Santos","dataNascimento":"2000-01-20","sexo":"M","nomeMae":"Luciana Pereira","nomePai":"","naturalidadeEstado":"Ceará","idFaccao":null,"faccaoFuncao":"","periculosidade":"Média","observacoes":"Registro de teste 3 - cenário com alguns campos nulos","observacoesReservadas":"","createdAt":"2025-11-21 08:51:23","updatedAt":"2025-11-23 16:46:15","fotoPerfil":null,"documentosResumo":"cpf: 12345678901\nrgSp: 123456789\nrgCriminal: 987654321\nmatricula: 2024001234","faccaoResumo":null,"enderecosResumo":"Rua Coronel Souza Franco, 150, Apto 22, Centro, Conchal/SP\nRua Boa Morte, 999, Casa dos fundos, Centro, Limeira/SP\nRua Coronel Joaquim Pinto, 500, Bloco B, Centro, Santa Cruz da Conceição/SP\nRua Coronel Amâncio Bueno, 250, Fundos, Centro, Leme/SP\nRua Major João Rodrigues, 100, Centro, Cordeirópolis/SP","enderecosQuantidade":5,"vulgosResumo":"Caveirinha; Zé Ruela","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"12345678901","observacao":null},{"tipo":"rgSp","valor":"123456789","observacao":null},{"tipo":"rgCriminal","valor":"987654321","observacao":null},{"tipo":"matricula","valor":"2024001234","observacao":null}]}}
+Script started: 2026-01-08 03:48:04
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:48:28
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:48:33
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:48:40
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:48:43
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:48:47
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:49:52
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:50:14
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:50:29
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:57:29
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 03:57:33
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 04:24:02
+Includes loaded.
+User authenticated.
+Record ID received: 3
+Database connection established. ID: 3
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 4
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":3,"nomeCompleto":"Alessandro Rodrigues da Silva Pereira Santos","dataNascimento":"2000-01-20","sexo":"M","nomeMae":"Luciana Pereira","nomePai":null,"naturalidadeEstado":"Ceará","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"Registro de teste 3 - cenário com alguns campos nulos","observacoesReservadas":null,"createdAt":"2025-11-21 08:51:23","updatedAt":"2026-01-07 23:47:08","fotoPerfil":null,"documentosResumo":"cpf: 12345678901\nrgSp: 123456789\nrgCriminal: 987654321\nmatricula: 2024001234","faccaoResumo":null,"enderecosResumo":"Rua Coronel Souza Franco, 150, Apto 22, Centro, Conchal/SP\nRua Boa Morte, 999, Casa dos fundos, Centro, Limeira/SP\nRua Coronel Joaquim Pinto, 500, Bloco B, Centro, Santa Cruz da Conceição/SP\nRua Coronel Amâncio Bueno, 250, Fundos, Centro, Leme/SP\nRua Major João Rodrigues, 100, Centro, Cordeirópolis/SP","enderecosQuantidade":5,"vulgosResumo":"Caveirinha; Zé Ruela","tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":"Artigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: \nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: BOPM\nArtigo 0 da lei 0000/00 - Lei desconhecida (Artigo não informado) - fonte: Oficial","antecedentesQuantidade":5,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"12345678901","observacao":null},{"tipo":"rgSp","valor":"123456789","observacao":null},{"tipo":"rgCriminal","valor":"987654321","observacao":null},{"tipo":"matricula","valor":"2024001234","observacao":null}]}}
+Script started: 2026-01-08 04:25:26
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 04:28:47
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 04:30:00
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 04:33:03
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 04:33:12
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
+Script started: 2026-01-08 04:49:29
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 2
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-07 23:45:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455","faccaoResumo":null,"enderecosResumo":null,"enderecosQuantidade":0,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null}]}}
