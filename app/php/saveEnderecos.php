@@ -39,6 +39,18 @@ try {
         throw new InvalidArgumentException('JSON de endereços inválido: ' . json_last_error_msg());
     }
 
+    // Validação de duplicados no backend
+    $enderecosUnicos = [];
+    foreach ($enderecos as $end) {
+        $idRua = $end['idRua'] ?? 'novo'; // 'novo' para endereços ainda não existentes no DB
+        $numero = $end['numero'] ?? '';
+        $chave = $idRua . '-' . $numero;
+        if (isset($enderecosUnicos[$chave])) {
+            throw new InvalidArgumentException('Erro: Endereço duplicado (mesma rua e número) detectado no lote a ser salvo.');
+        }
+        $enderecosUnicos[$chave] = true;
+    }
+
     $pdo = db();
     
     $enderecosTableName = 'fotocrimEnderecos';

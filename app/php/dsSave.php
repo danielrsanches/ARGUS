@@ -210,6 +210,18 @@ try {
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new InvalidArgumentException('enderecosJson inválido: ' . json_last_error_msg());
         }
+
+        // Validação de duplicados no backend
+        $enderecosUnicos = [];
+        foreach ($enderecos as $end) {
+            $idRua = $end['idRua'] ?? 'novo'; // 'novo' para endereços ainda não existentes no DB
+            $numero = $end['numero'] ?? '';
+            $chave = $idRua . '-' . $numero;
+            if (isset($enderecosUnicos[$chave])) {
+                throw new InvalidArgumentException('Erro: Endereço duplicado (mesma rua e número) detectado no lote a ser salvo.');
+            }
+            $enderecosUnicos[$chave] = true;
+        }
         
         $enderecosTableName = 'fotocrimEnderecos'; // Hardcoding table name to be safe
         $enderecosForeignKey = 'idFotocrim';   // Hardcoding foreign key to be safe

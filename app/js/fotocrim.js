@@ -110,7 +110,7 @@ loadTemplate(
                 persist: false,
                 highlight: true,      // Highlight matched terms
                 diacritics: true,     // Handle accented characters
-                openOnFocus: true,    // Open dropdown on focus
+                openOnFocus: false,    // Open dropdown on focus
                 closeAfterSelect: true, // Keep dropdown open after selection for continued editing
                 maxItems: 1,
 
@@ -263,7 +263,6 @@ loadTemplate(
             
             if (endSearchTomSelect) {
                 endSearchTomSelect.clear();
-                endSearchTomSelect.focus();
                 selectedAddressData = null;
             }
         }
@@ -283,6 +282,12 @@ loadTemplate(
                 renderEnderecosGerenciamento(); 
                 resetEnderecosFormFields(); 
                 $("#enderecosModal").addClass('visible'); 
+                // Adiciona foco ao campo de busca TomSelect após o modal ser exibido
+                setTimeout(() => {
+                    if (endSearchTomSelect) {
+                        endSearchTomSelect.focus();
+                    }
+                }, 100); // 100ms de delay para garantir que a transição/renderização esteja completa
             };
         
             const loadAndShow = () => {
@@ -611,11 +616,10 @@ loadTemplate(
                 // Adição de um novo endereço
                 const isDuplicate = enderecos.some(end => 
                     end.idRua === novoEndereco.idRua &&
-                    end.numero === novoEndereco.numero &&
-                    end.complemento === novoEndereco.complemento
+                    end.numero === novoEndereco.numero
                 );
                 if (isDuplicate) {
-                    alert("Este endereço (rua, número e complemento) já foi adicionado.");
+                    alert("Este endereço (rua e número) já foi adicionado.");
                     return;
                 }
                 enderecos.push(novoEndereco);
@@ -623,6 +627,9 @@ loadTemplate(
             
             renderEnderecosGerenciamento();
             resetEnderecosFormFields(); 
+            if (endSearchTomSelect) {
+                endSearchTomSelect.focus();
+            }
         });
 
         // Adicionar novo documento
