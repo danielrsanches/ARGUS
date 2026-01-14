@@ -35,7 +35,7 @@ loadTemplate(
     {
         alvo: "main#modulo", //alvo onde o template será inserido...
         template: "html/fotocrim.html section#fotocrim", //template a ser carregado...
-        css: ["css/fotocrim.css", "css/modal.css", "css/fotocrim-documentos-modal.css", "vendor/tomSelect/tom-select.css", "css/fotocrim-enderecos-modal.css"], // CSS específico do módulo + outros CSS necessários...
+        css: ["css/fotocrim.css", "css/modal.css", "css/fotocrim-documentos-modal.css", "vendor/tomSelect/tom-select.css", "css/fotocrim-enderecos-modal.css", "css/fotocrim-antecedentes-modal.css"], // CSS específico do módulo + outros CSS necessários...
         js: ["vendor/dsPesquisa/dsPesquisa.js", "vendor/tomSelect/tom-select.complete.js"], //arquivos JS necessários (exceto do próprio módulo, pq é este arquivo aqui)...
     },
     function (err) {
@@ -88,6 +88,20 @@ loadTemplate(
 
         let endSearchTomSelect; // Declare the Tom Select instance variable
         let selectedAddressData = null; // Variable to hold the currently selected address from Tom Select
+
+        let antecedentes = []; // Array para armazenar os antecedentes em memória
+        let currentFotocrimIdForAntecedentes = null; // para rastrear a que fotocrim os antecedentes pertencem
+        let antecedentesModalLoaded = false; // Flag para controlar se o modal de antecedentes já foi carregado
+        let antArtigosCriminaisTomSelect; // Tom Select para pesquisa de artigos criminais
+
+        // Carrega o modal de antecedentes dinamicamente
+        loadHtml("html/modalAntecedentes.html", "#modal-antecedentes-container", "div#antecedentesModal", function(err) {
+            if (err) {
+                console.error("❌ Erro ao carregar o modal de antecedentes: ", err);
+                return;
+            }
+            elementDrag("#antecedentesModal div.modal div.modalTitulo", "#antecedentesModal div.modal");
+        });
 
         // Tom Select para pesquisa de endereços
         function initEnderecosTomSelect() {
@@ -165,92 +179,75 @@ loadTemplate(
             });
         }
 
+        // Tom Select para pesquisa de Artigos Criminais
+        function initAntecedentesTomSelect() {
+            const el = document.getElementById('ant_artigoCriminal'); // Changed ID
+            if (el && el.tomselect) {
+                el.tomselect.destroy();
+            }
+
+            antArtigosCriminaisTomSelect = new TomSelect("#ant_artigoCriminal", { // Changed ID
+                valueField: 'id',
+                labelField: 'artigo',
+                searchField: ['artigo', 'descricao'],
+                create: false, 
+                persist: false,
+                highlight: true,
+                diacritics: true,
+                openOnFocus: false,
+                closeAfterSelect: true,
+                maxItems: 1, // Changed to single selection
+
+                render: {
+                    option: function(item, escape) {
+                        return `<div class="py-2 d-flex"><span class="fw-bold">${escape(item.artigo)}</span>&nbsp;<span class="text-muted">${escape(item.descricao)}</div>`;
+                    },
+                    item: function(item, escape) {
+                        return `<div class="py-2 d-flex"><span class="fw-bold">${escape(item.artigo)}</span></div>`;
+                    },
+                    no_results: function(data, escape) {
+                        return `<div class="no-results">Nenhum artigo encontrado para "${escape(data.input)}".</div>`;
+                    }
+                },
+                load: function(query, callback) {
+                    if (!query.length || query.length < 3) {
+                        return callback();
+                    }
+                    fetch(`php/searchArtigosCriminais.php?search_term=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.data && data.data.length > 0) {
+                                callback(data.data);
+                            } else {
+                                callback();
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Erro na busca de artigos criminais (Tom Select):", error);
+                            callback();
+                        });
+                }
+            });
+        }
+
 
         let enderecos = [];  // Array para armazenar os endereços em memória
-        let currentFotocrimIdForEnderecos = null; //para rastrear a que fotocrim os endereços pertencem
-        let enderecosModalLoaded = false; // Flag para controlar se o modal de endereços já foi carregado
 
-        const mapaTiposDocumento = {
-            cpf: "CPF",
-            rgSp: "RG/SP",
-            rgCriminal: "RG Criminal",
-            rgOutroEstado: "RG (outro Estado)",
-            matricula: "Matrícula",
-            outro: "Outro",
-        };
-
-        // ===== Funções de Renderização =====
-        
-        const renderDocumentosDisplay = () => {
-            const container = $(".documentos-display-container");
-            container.empty();
-            if (documentos.length === 0) {
-                container.html('<span class="nenhum-documento">Nenhum documento adicionado.</span>');
-                return;
+        // Função auxiliar para limpar os campos do formulário de adição/edição de antecedente
+        function resetAntecedentesFormFields() {
+            $("#ant_id").val("");
+            $("#ant_fonteAntecedente").val(""); // New field
+            $("#ant_observacao").val("");
+            if (antArtigosCriminaisTomSelect) {
+                antArtigosCriminaisTomSelect.clear();
             }
-            documentos.forEach(doc => {
-                const tipoDisplay = mapaTiposDocumento[doc.tipo] || doc.tipo;
-                container.append(`<span class="documento-pill">${tipoDisplay}: ${doc.valor}</span>`);
-            });
-        };
-
-        const renderDocumentosGerenciamento = () => {
-            const container = $(".documentos-container-gerenciamento");
-            container.empty();
-
-            documentos.forEach((doc, index) => {
-                const tipoDisplay = mapaTiposDocumento[doc.tipo] || doc.tipo;
-                const cardHtml = `
-                    <div class="documento-gerencia-card" data-index="${index}">
-                        <div class="info">
-                            <span>${tipoDisplay}: ${doc.valor}</span>
-                            ${doc.observacao ? `<small>Obs: ${doc.observacao}</small>` : ''}
-                        </div>
-                        <div class="actions">
-                            <button type="button" class="remover-documento">Remover</button>
-                        </div>
-                    </div>
-                `;
-                container.append(cardHtml);
-            });
-        };
-
-        const renderEnderecosDisplay = () => {
-            // Implementação futura, se necessário exibir endereços diretamente no card principal
-        };
-
-        const renderEnderecosGerenciamento = () => {
-            const container = $(".enderecos-container-gerenciamento");
-            container.empty();
-            if (enderecos.length === 0) {
-                container.html('<span class="nenhum-endereco">Nenhum endereço adicionado.</span>');
-                return;
-            }
-            enderecos.forEach((end, index) => {
-                const cardHtml = `
-                    <div class="endereco-gerencia-card" data-index="${index}">
-                        <div class="info">
-                            <span>${end.logradouro}, ${end.numero} - ${end.bairro} (${end.cidade}/${end.uf})</span>
-                            ${end.complemento ? `<small>Comp: ${end.complemento}</small>` : ''}
-                            ${end.observacao ? `<small>Obs: ${end.observacao}</small>` : ''}
-                        </div>
-                        <div class="actions">
-                            <button type="button" class="editar-endereco">Editar</button>
-                            <button type="button" class="remover-endereco">Remover</button>
-                        </div>
-                    </div>
-                `;
-                container.append(cardHtml);
-            });
-        };
-        
-        const resetDocumentos = () => {
-            documentos = [];
-            renderDocumentosDisplay();
-            renderDocumentosGerenciamento();
-            $("#doc_valor").val("");
-            $("#doc_observacao").val("");
-            $("#doc_tipo").val("cpf").trigger("change"); // Trigger change to apply mask
+        }
+                                
+        const resetAntecedentes = () => {
+            antecedentes = [];
+            currentFotocrimIdForAntecedentes = null;
+            resetAntecedentesFormFields();
+            renderAntecedentesGerenciamento();
         };
 
         // Função auxiliar para limpar os campos do formulário de adição/edição de endereço
@@ -275,6 +272,32 @@ loadTemplate(
             resetEnderecosFormFields(); // Call the new reset function
         };
 
+        const renderAntecedentesGerenciamento = () => {
+            const container = $(".antecedentes-container-gerenciamento");
+            container.empty();
+            if (antecedentes.length === 0) {
+                container.html('<span class="nenhum-antecedente">Nenhum antecedente adicionado.</span>');
+                return;
+            }
+            antecedentes.forEach((ant, index) => {
+                const cardHtml = `
+                    <div class="antecedente-gerencia-card" data-index="${index}">
+                        <div class="info">
+                            <span>${ant.tipo} em ${dateInvert(ant.dataOcorrencia)}</span>
+                            ${ant.artigosCriminais && ant.artigosCriminais.length > 0 ? `<small>Artigos: ${ant.artigosCriminais.map(a => a.artigo).join(', ')}</small>` : ''}
+                            ${ant.descricao ? `<small>Descrição: ${ant.descricao}</small>` : ''}
+                            ${ant.observacao ? `<small>Obs: ${ant.observacao}</small>` : ''}
+                        </div>
+                        <div class="actions">
+                            <button type="button" class="editar-antecedente">Editar</button>
+                            <button type="button" class="remover-antecedente">Remover</button>
+                        </div>
+                    </div>
+                `;
+                container.append(cardHtml);
+            });
+        };
+        
         // Função para carregar e exibir os endereços para gerenciamento
         function carregaEnderecosParaGerenciamento(idFotocrim) {
             const showModal = () => {
@@ -339,6 +362,65 @@ loadTemplate(
             });
         }
                                                 
+        // Função para carregar e exibir os antecedentes para gerenciamento
+        function carregaAntecedentesParaGerenciamento(idFotocrim) {
+            const showModal = () => {
+                $("#antecedentes_idFotocrim").val(idFotocrim); 
+                renderAntecedentesGerenciamento(); 
+                resetAntecedentesFormFields(); 
+                $("#antecedentesModal").addClass('visible'); 
+                setTimeout(() => {
+                    $("#ant_dataOcorrencia").focus();
+                }, 100);
+            };
+        
+            const loadAndShow = () => {
+                if (!antecedentesModalLoaded) {
+                    loadHtml("html/modalAntecedentes.html", "#modal-antecedentes-container", "div#antecedentesModal", function(err) {
+                        if (err) {
+                            console.error("❌ Erro ao carregar o modal de antecedentes: ", err);
+                            return;
+                        }
+                        antecedentesModalLoaded = true;
+                        elementDrag("#antecedentesModal div.modal div.modalTitulo", "#antecedentesModal div.modal");
+                        initAntecedentesTomSelect(); // Initialize TomSelect for articles
+                        showModal();
+                    });
+                } else {
+                    showModal();
+                }
+            };
+        
+            showSpinner();
+            const formData = new FormData();
+            formData.append('idFotocrim', idFotocrim);
+
+            fetch("php/getFotocrimAntecedentes.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideSpinner();
+                if (data.success && data.data) {
+                    antecedentes = data.data; // Update the global array
+                    currentFotocrimIdForAntecedentes = idFotocrim; // Set the current ID
+                    loadAndShow(); // Now show the modal
+                } else {
+                    antecedentes = []; 
+                    currentFotocrimIdForAntecedentes = null;
+                    alert(data.message || "Erro ao carregar antecedentes.");
+                }
+            })
+            .catch(error => {
+                hideSpinner();
+                console.error("Erro ao carregar antecedentes:", error);
+                alert("Erro ao buscar os antecedentes. Verifique o console.");
+                antecedentes = [];
+                currentFotocrimIdForAntecedentes = null;
+            });
+        }
+                                                
         const renderConfig = {
             templatePath: "html/fotocrim.html",
             templateSelector: "section.card",
@@ -385,6 +467,7 @@ loadTemplate(
             $("form#fotocrim")[0].reset();
             resetDocumentos();
             resetEnderecos();
+            resetAntecedentes(); // Reset antecedentes
             $(".idadeInfo").text("XX anos"); // Reseta a idade
             // Força o redimensionamento dos textareas para o tamanho inicial
             $("textarea#observacoes, textarea#observacoesReservadas").trigger("input");
@@ -407,6 +490,8 @@ loadTemplate(
                 modalBackdrop.addClass('hidden').removeClass('fade-out');
                 $("section.forms.fotocrimForm").removeClass("visible");
                 resetDocumentos();
+                resetEnderecos();
+                resetAntecedentes();
             });
         });
 
@@ -477,6 +562,7 @@ loadTemplate(
             formData.append("configName", "fotocrim");
             formData.append("documentosJson", JSON.stringify(documentos));
             formData.append("enderecosJson", JSON.stringify(enderecos));
+            formData.append("antecedentesJson", JSON.stringify(antecedentes)); // Add antecedentes
 
             fetch("php/dsSave.php", { method: "POST", body: formData })
                 .then(response => response.json())
@@ -537,6 +623,16 @@ loadTemplate(
             }
         });
 
+        // Fechar/Concluir modal de gerenciamento de antecedentes
+        $modulo.on("click", "#antecedentesModal .fechar-secundario, #antecedentesModal .concluir-antecedentes", function() {
+            const modalBackdrop = $("#antecedentesModal");
+            modalBackdrop.removeClass('visible');
+            // If the main fotocrim modal is visible, focus an input there
+            if ($("#fotocrimModal").hasClass("visible")) {
+                $("#nomeMae").focus();
+            }
+        });
+
         // Salvar alterações de endereços
         $modulo.on("click", "#enderecosModal button.salvar-alteracoes-enderecos", function() {
             const idFotocrim = $("#enderecos_idFotocrim").val();
@@ -572,6 +668,41 @@ loadTemplate(
                 hideSpinner();
                 console.error("Erro ao salvar endereços:", error);
                 alert("Erro ao enviar os dados de endereço. Verifique o console.");
+            });
+        });
+
+        // Salvar alterações de antecedentes
+        $modulo.on("click", "#antecedentesModal button.salvar-alteracoes-antecedentes", function() {
+            const idFotocrim = $("#antecedentes_idFotocrim").val();
+            if (!idFotocrim) {
+                alert("Erro: ID do Fotocrim não encontrado.");
+                return;
+            }
+
+            $("#antecedentesModal").removeClass('visible');
+            showSpinner();
+
+            const formData = new FormData();
+            formData.append("idFotocrim", idFotocrim);
+            formData.append("antecedentesJson", JSON.stringify(antecedentes));
+
+            fetch("php/saveAntecedentes.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideSpinner();
+                if (data.success) {
+                    loadAndRenderSingleFotocrimCard(idFotocrim);
+                } else {
+                    alert(data.message || 'Ocorreu um erro desconhecido ao salvar antecedentes.');
+                }
+            })
+            .catch(error => {
+                hideSpinner();
+                console.error("Erro ao salvar antecedentes:", error);
+                alert("Erro ao enviar os dados de antecedentes. Verifique o console.");
             });
         });
 
@@ -632,6 +763,67 @@ loadTemplate(
             }
         });
 
+        // Adicionar novo antecedente (apenas na lista local)
+        $modulo.on("click", "#antecedentesModal button.inserir-antecedente-lista", function() {
+            const id = $("#ant_id").val();
+            const dataOcorrencia = $("#ant_dataOcorrencia").val();
+            const tipo = $("#ant_tipo").val();
+            const descricao = $("#ant_descricao").val().trim();
+            const observacao = $("#ant_observacao").val().trim();
+            const artigosCriminaisSelecionados = antArtigosCriminaisTomSelect ? antArtigosCriminaisTomSelect.items.map(itemId => {
+                const item = antArtigosCriminaisTomSelect.options[itemId];
+                return { id: item.id, artigo: item.artigo, descricao: item.descricao };
+            }) : [];
+
+
+            if (!dataOcorrencia) {
+                alert("A 'Data da Ocorrência' é obrigatória.");
+                return;
+            }
+            if (!tipo) {
+                alert("O 'Tipo' do antecedente é obrigatório.");
+                return;
+            }
+            if (!descricao) {
+                alert("A 'Descrição' é obrigatória.");
+                return;
+            }
+
+            const novoAntecedente = {
+                id: id || null,
+                dataOcorrencia,
+                tipo,
+                descricao,
+                observacao,
+                artigosCriminais: artigosCriminaisSelecionados,
+            };
+
+            if (id) {
+                // Edição
+                const index = antecedentes.findIndex(ant => ant.id == id);
+                if (index !== -1) {
+                    antecedentes[index] = { ...antecedentes[index], ...novoAntecedente };
+                }
+            } else {
+                // Adição - Verificar duplicidade por tipo, data e descrição
+                const isDuplicate = antecedentes.some(ant => 
+                    ant.tipo === novoAntecedente.tipo &&
+                    ant.dataOcorrencia === novoAntecedente.dataOcorrencia &&
+                    ant.descricao === novoAntecedente.descricao
+                );
+                if (isDuplicate) {
+                    alert("Este antecedente (tipo, data e descrição) já foi adicionado.");
+                    return;
+                }
+                antecedentes.push(novoAntecedente);
+            }
+
+            renderAntecedentesGerenciamento();
+            resetAntecedentesFormFields();
+            $("#ant_dataOcorrencia").focus();
+        });
+
+
         // Adicionar novo documento
         $modulo.on("click", "#documentosModal button.adicionar-documento", function() {
             const tipo = $("#doc_tipo").val();
@@ -673,6 +865,32 @@ loadTemplate(
                 $("#enderecosModal button.inserir-endereco-lista").trigger("click");
             }
         });
+
+        // Inserir novo antecedente com Enter
+        $modulo.on("keyup", "#ant_dataOcorrencia, #ant_tipo, #ant_descricao, #ant_observacao", function(e) {
+            if (e.keyCode === 13) { // 13 é o código para Enter
+                e.preventDefault();
+                $("#antecedentesModal button.inserir-antecedente-lista").trigger("click");
+            }
+        });
+
+        // Handler para a tecla ESC fechar os modais
+        $(document).on('keyup', function(e) {
+            if (e.key === "Escape" || e.keyCode === 27) {
+                // Se o modal de antecedentes estiver visível, fecha ele
+                if ($("#antecedentesModal").is(":visible")) {
+                    $("#antecedentesModal .fechar-secundario").first().trigger("click");
+                }
+                // Se o modal de endereços estiver visível, fecha ele
+                else if ($("#enderecosModal").is(":visible")) {
+                    $("#enderecosModal .fechar-secundario").first().trigger("click");
+                } 
+                // Senão, se o modal principal do fotocrim estiver visível, fecha ele
+                else if ($("#fotocrimModal").is(":visible")) {
+                    $("#fotocrimModal .cancelar").first().trigger("click");
+                }
+            }
+        });
         
         // Remover um documento
         $modulo.on("click", ".documentos-container-gerenciamento .remover-documento", function() {
@@ -687,6 +905,15 @@ loadTemplate(
             if (confirm("Tem certeza que deseja remover este endereço?")) {
                 enderecos.splice(index, 1);
                 renderEnderecosGerenciamento();
+            }
+        });
+
+        // Remover um antecedente
+        $modulo.on("click", ".antecedentes-container-gerenciamento .remover-antecedente", function() {
+            const index = $(this).closest(".antecedente-gerencia-card").data("index");
+            if (confirm("Tem certeza que deseja remover este antecedente?")) {
+                antecedentes.splice(index, 1);
+                renderAntecedentesGerenciamento();
             }
         });
 
@@ -725,6 +952,43 @@ loadTemplate(
             }
 
             $("#end_numero").focus(); // Focus on numero field for editing
+        });
+
+        // Editar um antecedente
+        $modulo.on("click", ".antecedentes-container-gerenciamento .editar-antecedente", function() {
+            const index = $(this).closest(".antecedente-gerencia-card").data("index");
+            const antecedente = antecedentes[index];
+
+            resetAntecedentesFormFields();
+
+            $("#ant_id").val(antecedente.id || "");
+            $("#ant_dataOcorrencia").val(antecedente.dataOcorrencia);
+            $("#ant_tipo").val(antecedente.tipo);
+            $("#ant_descricao").val(antecedente.descricao);
+            $("#ant_observacao").val(antecedente.observacao);
+
+            if (antArtigosCriminaisTomSelect && antecedente.artigosCriminais && antecedente.artigosCriminais.length > 0) {
+                const currentArticleIds = antArtigosCriminaisTomSelect.items;
+                const newArticleIds = antecedente.artigosCriminais.map(art => art.id);
+            
+                // Remover artigos que não estão na lista do antecedente
+                currentArticleIds.forEach(id => {
+                    if (!newArticleIds.includes(id)) {
+                        antArtigosCriminaisTomSelect.removeItem(id);
+                    }
+                });
+            
+                // Adicionar artigos do antecedente, se ainda não estiverem presentes
+                antecedente.artigosCriminais.forEach(art => {
+                    if (!antArtigosCriminaisTomSelect.options[art.id]) {
+                        antArtigosCriminaisTomSelect.addOption({id: art.id, artigo: art.artigo, descricao: art.descricao});
+                    }
+                });
+                antArtigosCriminaisTomSelect.setValue(newArticleIds);
+            }
+            
+
+            $("#ant_dataOcorrencia").focus();
         });
 
         // Clicar na foto para abrir seleção de arquivo
@@ -788,6 +1052,7 @@ loadTemplate(
             $("form#fotocrim")[0].reset();
             resetDocumentos();
             resetEnderecos(); // Limpa os endereços antigos
+            resetAntecedentes(); // Limpa os antecedentes antigos
             $(".idadeInfo").text("XX anos");
             $("#fotocrimModal").removeClass('hidden');
             $("section.forms.fotocrimForm").addClass("visible");
@@ -849,6 +1114,15 @@ loadTemplate(
                         enderecos = []; // Clear the array if no addresses are returned
                     }
 
+                    // Lidar com antecedentes
+                    currentFotocrimIdForAntecedentes = record.id;
+                    if (record.antecedentes && Array.isArray(record.antecedentes)) {
+                        antecedentes = record.antecedentes;
+                    } else {
+                        antecedentes = [];
+                    }
+
+
                     setTimeout(() => {
                         $("#nomeCompleto").focus().select();
                     }, 100);
@@ -889,6 +1163,12 @@ loadTemplate(
             $(`section.card[data-id='${id}'] button.enderecos`).on("click", function () {
                 const idFotocrim = $(this).closest('section.card').data('id');
                 carregaEnderecosParaGerenciamento(idFotocrim);
+            });
+
+            // Evento para o botão de antecedentes no card
+            $(`section.card[data-id='${id}'] button.antecedentes`).on("click", function () {
+                const idFotocrim = $(this).closest('section.card').data('id');
+                carregaAntecedentesParaGerenciamento(idFotocrim);
             });
         }
     } //fim do loadTemplate

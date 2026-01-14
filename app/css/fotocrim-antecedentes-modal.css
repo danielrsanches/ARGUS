@@ -1,0 +1,206 @@
+/* =====================================================
+   CSS para o MODAL DE GERENCIAMENTO DE ANTECEDENTES...
+   ===================================================== */
+
+/* --- Base do Modal (Adaptado de modal.css e fotocrim-documentos-modal.css) --- */
+div.modalBackdrop#antecedentesModal {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 65px);
+    background-color: rgba(0, 0, 0, 0.7); /* Mais escuro para focar */
+    display: none; /* ESCONDIDO POR PADRÃO */
+    align-items: center;
+    justify-content: center;
+    z-index: 10001; /* Acima do modal principal */
+
+    /* Reset transitions from modal.css to use specific animation */
+    opacity: 1; /* Ensure it starts opaque for the animation */
+    transition: none; /* Disable opacity transition from modal.css */
+}
+
+div.modalBackdrop#antecedentesModal.visible {
+    display: flex !important; /* MOSTRAR COM CLASSE */
+}
+
+div.modalBackdrop#antecedentesModal div.modal {
+    background-color: #1f2833;
+    color: #eee;
+    width: 700px;
+    max-width: 95%;
+    max-height: calc(100vh - 100px);
+    border-radius: 8px;
+    border: 1px solid #2e3b47;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95);
+    opacity: 0;
+    animation: modalFadeIn 0.18s ease-out forwards;
+}
+
+div.modalBackdrop#antecedentesModal div.modalTitulo {
+    background-color: #26313d;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2e3b47;
+    cursor: move;
+}
+
+div.modalBackdrop#antecedentesModal div.modalTitulo div.texto {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+div.modalBackdrop#antecedentesModal div.modalTitulo button.fechar-secundario {
+    background-color: #3a4652;
+    color: #fff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+div.modalBackdrop#antecedentesModal div.modalTitulo button.fechar-secundario:hover {
+    background-color: #f87171;
+}
+
+
+div.modalBackdrop#antecedentesModal div.modalContent {
+    background-color: #1f2833;
+    padding: 16px;
+    flex: 1;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #ddd;
+}
+
+div.modalBackdrop#antecedentesModal div.modalRodape {
+    background-color: #222c36;
+    padding: 12px 16px;
+    border-top: 1px solid #2e3b47;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+@keyframes modalFadeIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* --- Estilos de Formulário (Adaptado de fotocrim.css) --- */
+
+#antecedentesModal .antecedentes-fieldset {
+    border: 1px solid #4a5568;
+    padding: 15px;
+    margin-top: 0;
+    border-radius: 4px;
+}
+#antecedentesModal .antecedentes-fieldset legend {
+    padding: 0 10px;
+    color: #a0aec0;
+}
+#antecedentesModal .antecedentes-fieldset .linha {
+    align-items: flex-end;
+}
+#antecedentesModal .antecedentes-fieldset .linha .campo {
+    flex-grow: 1;
+}
+/* Original definition for adicionar-antecedente button */
+#antecedentesModal button.adicionar-antecedente {
+    height: 38px;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+/* Lista de antecedentes no modal de gerenciamento */
+.antecedentes-container-gerenciamento {
+    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px; /* Espaço para a barra de rolagem */
+}
+
+.antecedente-gerencia-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a202c;
+    border: 1px solid #2d3748;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.antecedente-gerencia-card .info {
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.antecedente-gerencia-card .info small {
+    color: #a0aec0;
+    font-size: 0.75rem;
+}
+
+.antecedente-gerencia-card .actions button {
+    background: none;
+    border: 1px solid transparent;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.antecedente-gerencia-card .actions button.remover-antecedente {
+    color: #f87171;
+}
+.antecedente-gerencia-card .actions button:hover {
+    border-color: #4a5568;
+}
+
+/* Custom styles for TomSelect selected item */
+.ts-wrapper.single .ts-control .item {
+    background-color: #1a202c; /* Cor cinza escuro do antecedente-gerencia-card */
+    border-color: #2d3748; /* Usar a mesma borda do antecedente-gerencia-card para consistência */
+    padding: 6px 10px; /* Ajustar padding para melhor visual */
+    border-radius: 4px; /* Manter borda arredondada */
+}
+
+/* Forçar a cor do texto para ser legível no fundo escuro, caso não esteja herdando */
+.ts-wrapper.single .ts-control .item .fw-bold {
+    color: #eee;
+}
+.ts-wrapper.single .ts-control .item .text-muted {
+    color: #a0aec0; /* Cor de texto mutado do antecedente-gerencia-card */
+}
+
+/* Margin superior para o botão Salvar/Adicionar Antecedente */
+#antecedentesModal button.adicionar-antecedente {
+    height: 38px;
+    margin-left: 10px;
+    flex-shrink: 0;
+    margin-top: 15px; /* Ensure margin-top is applied */
+}
+
+/* Ajustes de layout para os campos de número e complemento específicos no modal de antecedentes */
+#antecedentesModal .add-antecedente-form .linha:nth-of-type(2) > div.campo:nth-child(1) { /* For Numero field */
+    flex-basis: 20%;
+    max-width: 20%;
+}
+
+#antecedentesModal .add-antecedente-form .linha:nth-of-type(2) > div.campo:nth-child(2) { /* For Complemento field */
+    flex-basis: calc(80% - 12px); /* 80% minus the gap to ensure it fits on one line */
+    max-width: calc(80% - 12px);
+}

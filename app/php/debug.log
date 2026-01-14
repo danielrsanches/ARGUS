@@ -559,3 +559,73 @@ Fotocrim record fetched.
 Documents fetched. Count: 3
 Addresses fetched. Count: 1
 Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:29:28","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":25,"idFotocrim":5,"numero":"255","complemento":"teste","observacao":"","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:36:35
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:36:43
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:36:49
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:36:54
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:37:11
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:37:19
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}
+Script started: 2026-01-14 14:46:22
+Includes loaded.
+User authenticated.
+Record ID received: 5
+Database connection established. ID: 5
+Final SQL Query: SELECT t.* FROM viewFotocrim t WHERE t.`id` = :id
+Fotocrim record fetched.
+Documents fetched. Count: 3
+Addresses fetched. Count: 1
+Sending JSON response: {"success":true,"message":"Registro encontrado com sucesso.","data":{"id":5,"nomeCompleto":"Daniel Sanches","dataNascimento":"1981-04-25","sexo":"M","nomeMae":"Maria Cecília Sanches da Cruz","nomePai":"Décio Quirino da Cruz","naturalidadeEstado":"São Paulo","idFaccao":null,"faccaoFuncao":null,"periculosidade":"Média","observacoes":"teste","observacoesReservadas":"teste2","createdAt":"2026-01-07 23:39:11","updatedAt":"2026-01-14 10:35:03","fotoPerfil":null,"documentosResumo":"cpf: 220.002.148-86\nrgSp: 32580455\nmatricula: 39393939","faccaoResumo":null,"enderecosResumo":"Rua Major João Rodrigues, 255, teste codigoDeLocalização, Centro, Cordeirópolis/SP","enderecosQuantidade":1,"vulgosResumo":null,"tatuagensResumo":null,"tatuagensQuantidade":0,"antecedentesResumo":null,"antecedentesQuantidade":0,"alertasQuantidade":0,"arquivosQuantidade":0,"fotosQuantidade":0,"comparsasJson":null,"documentos":[{"tipo":"cpf","valor":"220.002.148-86","observacao":null},{"tipo":"rgSp","valor":"32580455","observacao":null},{"tipo":"matricula","valor":"39393939","observacao":null}],"enderecos":[{"id":28,"idFotocrim":5,"numero":"255","complemento":"teste codigoDeLocalização","observacao":"obs teste","idEnderecoRua":3,"logradouro":"Rua Major João Rodrigues","idBairro":1,"bairro":"Centro","idCidade":3,"cidade":"Cordeirópolis","uf":"SP"}]}}

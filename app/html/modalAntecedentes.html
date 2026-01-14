@@ -1,0 +1,50 @@
+<div class="modalBackdrop hidden" id="antecedentesModal">
+    <div class="modal">
+        <div class="modalTitulo fechar-secundario">
+            <div class="texto">Gerenciar Antecedentes</div>
+            <button class="fechar-secundario">X</button>
+        </div>
+        <div class="modalContent">
+            <input type="hidden" id="antecedentes_idFotocrim" value="" />
+            <div class="antecedentes-container-gerenciamento">
+                <!-- Antecedentes adicionados aparecerão aqui -->
+            </div>
+
+            <hr />
+
+            <div class="add-antecedente-form">
+                <h4>Adicionar/Editar Antecedente</h4>
+                <input type="hidden" id="ant_id" value="" />
+
+                <div class="linha">
+                    <div class="campo w-100">
+                        <label for="ant_artigoCriminal">Artigo Criminal</label>
+                        <select id="ant_artigoCriminal"></select>
+                    </div>
+                </div>
+                <div class="linha">
+                    <div class="campo w-100">
+                        <label for="ant_fonteAntecedente">Fonte do Antecedente</label>
+                        <select id="ant_fonteAntecedente">
+                            <option value="">— Selecione —</option>
+                            <option value="Oficial">Oficial</option>
+                            <option value="BOPM">BOPM</option>
+                            <option value="Não confirmada">Não confirmada</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="linha">
+                    <div class="campo w-100">
+                        <label for="ant_observacao">Observação</label>
+                        <textarea id="ant_observacao"></textarea>
+                    </div>
+                </div>
+                <button type="button" class="inserir-antecedente-lista primario">Inserir</button>
+            </div>
+        </div>
+        <div class="modalRodape">
+            <button class="salvar-alteracoes-antecedentes primario">Salvar Alterações</button>
+            <button class="fechar-secundario">Cancelar</button>
+        </div>
+    </div>
+</div>
