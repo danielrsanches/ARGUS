@@ -535,34 +535,42 @@ loadTemplate(
             }
         });
 
-        // Adicionar novo documento
-        $modulo.on("click", "#documentosModal button.adicionar-documento", function() {
-            const tipo = $("#doc_tipo").val();
-            const valor = $("#doc_valor").val().trim();
-            const observacao = $("#doc_observacao").val();
-
-            if (!valor) {
-                alert("O número do documento é obrigatório.");
+        // Salvar alterações de endereços
+        $modulo.on("click", "#enderecosModal button.salvar-alteracoes-enderecos", function() {
+            const idFotocrim = $("#enderecos_idFotocrim").val();
+            if (!idFotocrim) {
+                alert("Erro: ID do Fotocrim não encontrado.");
                 return;
             }
 
-            // Verifica se o documento já existe
-            const isDuplicate = documentos.some(doc => doc.tipo === tipo && doc.valor === valor);
-            if (isDuplicate) {
-                alert("Este documento já foi adicionado.");
-                return;
-            }
+            showSpinner();
+            const formData = new FormData();
+            formData.append("idFotocrim", idFotocrim);
+            formData.append("enderecosJson", JSON.stringify(enderecos));
 
-            documentos.push({ tipo, valor, observacao });
-            renderDocumentosGerenciamento();
-
-            $("#doc_valor").val("");
-            $("#doc_observacao").val("");
-            $("#doc_tipo").focus();
+            fetch("php/saveEnderecos.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideSpinner();
+                alert(data.message || (data.success ? 'Operação concluída.' : 'Ocorreu um erro desconhecido.'));
+                if (data.success) {
+                    $("#enderecosModal").removeClass('visible');
+                    loadAndRenderSingleFotocrimCard(idFotocrim);
+                }
+            })
+            .catch(error => {
+                hideSpinner();
+                console.error("Erro ao salvar endereços:", error);
+                alert("Erro ao enviar os dados de endereço. Verifique o console.");
+            });
         });
 
-        // Adicionar novo endereço
-        $modulo.on("click", "#enderecosModal button.adicionar-endereco", function() {
+
+        // Adicionar novo endereço (apenas na lista local)
+        $modulo.on("click", "#enderecosModal button.inserir-endereco-lista", function() {
             const id = $("#end_id").val(); // idEndereco, se for edição
             const numero = $("#end_numero").val().trim();
             const complemento = $("#end_complemento").val().trim();
@@ -593,17 +601,16 @@ loadTemplate(
 
             if (id) {
                 // Edição de um endereço existente
-                const index = enderecos.findIndex(end => end.id == id); // Assuming 'id' is unique for existing entries
+                const index = enderecos.findIndex(end => end.id == id);
                 if (index !== -1) {
                     enderecos[index] = { ...enderecos[index], ...novoEndereco };
                 }
             } else {
                 // Adição de um novo endereço
-                // Verificação de duplicidade (considerando idRua e numero, como um endereço deve ser único)
                 const isDuplicate = enderecos.some(end => 
                     end.idRua === novoEndereco.idRua &&
                     end.numero === novoEndereco.numero &&
-                    end.complemento === novoEndereco.complemento // Also check complement for uniqueness
+                    end.complemento === novoEndereco.complemento
                 );
                 if (isDuplicate) {
                     alert("Este endereço (rua, número e complemento) já foi adicionado.");
@@ -613,7 +620,33 @@ loadTemplate(
             }
             
             renderEnderecosGerenciamento();
-            resetEnderecosFormFields(); // Limpa o formulário de adição/edição
+            resetEnderecosFormFields(); 
+        });
+
+        // Adicionar novo documento
+        $modulo.on("click", "#documentosModal button.adicionar-documento", function() {
+            const tipo = $("#doc_tipo").val();
+            const valor = $("#doc_valor").val().trim();
+            const observacao = $("#doc_observacao").val();
+
+            if (!valor) {
+                alert("O número do documento é obrigatório.");
+                return;
+            }
+
+            // Verifica se o documento já existe
+            const isDuplicate = documentos.some(doc => doc.tipo === tipo && doc.valor === valor);
+            if (isDuplicate) {
+                alert("Este documento já foi adicionado.");
+                return;
+            }
+
+            documentos.push({ tipo, valor, observacao });
+            renderDocumentosGerenciamento();
+
+            $("#doc_valor").val("");
+            $("#doc_observacao").val("");
+            $("#doc_tipo").focus();
         });
 
         // Adicionar novo documento com Enter

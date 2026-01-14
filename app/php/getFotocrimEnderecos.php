@@ -40,7 +40,7 @@ try {
     $tableName = $tableConfigEnderecos['tableName'];
     $foreignKey = $tableConfigEnderecos['foreignKey'];
 
-    $sql = "SELECT fe.id, fe.idFotocrim, fe.numero, fe.complemento, fe.observacao, fe.idEnderecoRua,
+    $sql = "SELECT fe.id, fe.idFotocrim, fe.numero, fe.complemento, fe.observacao, fe.idEnderecoRua as idRua,
                    er.logradouro,
                    eb.id as idBairro, eb.nomeBairro as bairro,
                    ec.id as idCidade, ec.nomeCidade as cidade, ec.uf
