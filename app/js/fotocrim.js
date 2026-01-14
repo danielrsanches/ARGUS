@@ -260,10 +260,11 @@ loadTemplate(
             $("#end_numero").val("");
             $("#end_complemento").val("");
             $("#end_observacao").val("");
-            $("#end_search_logradouro").focus(); // Focus on the new search field
+            
             if (endSearchTomSelect) {
-                endSearchTomSelect.clear(); // Clear Tom Select selection
-                selectedAddressData = null; // Clear the stored selected address data
+                endSearchTomSelect.clear();
+                endSearchTomSelect.focus();
+                selectedAddressData = null;
             }
         }
                                 
@@ -301,40 +302,36 @@ loadTemplate(
                 }
             };
         
-            // Check if the addresses for this idFotocrim are already loaded
-            if (currentFotocrimIdForEnderecos === idFotocrim) {
-                loadAndShow();
-            } else {
-                // Fetch addresses from the server
-                showSpinner();
-                const formData = new FormData();
-                formData.append('idFotocrim', idFotocrim);
-        
-                fetch("php/getFotocrimEnderecos.php", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    hideSpinner();
-                    if (data.success && data.data) {
-                        enderecos = data.data; // Update the global array
-                        currentFotocrimIdForEnderecos = idFotocrim; // Set the current ID
-                        loadAndShow(); // Now show the modal
-                    } else {
-                        alert(data.message || "Erro ao carregar endereços.");
-                        enderecos = []; // Clear array on failure
-                        currentFotocrimIdForEnderecos = null;
-                    }
-                })
-                .catch(error => {
-                    hideSpinner();
-                    console.error("Erro ao carregar endereços:", error);
-                    alert("Erro ao buscar os endereços. Verifique o console.");
-                    enderecos = [];
+            // Sempre busca os endereços do servidor para garantir dados atualizados
+            showSpinner();
+            const formData = new FormData();
+            formData.append('idFotocrim', idFotocrim);
+
+            fetch("php/getFotocrimEnderecos.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideSpinner();
+                if (data.success && data.data) {
+                    enderecos = data.data; // Update the global array
+                    currentFotocrimIdForEnderecos = idFotocrim; // Set the current ID
+                    loadAndShow(); // Now show the modal
+                } else {
+                    // Limpa os dados antigos em caso de erro
+                    enderecos = []; 
                     currentFotocrimIdForEnderecos = null;
-                });
-            }
+                    alert(data.message || "Erro ao carregar endereços.");
+                }
+            })
+            .catch(error => {
+                hideSpinner();
+                console.error("Erro ao carregar endereços:", error);
+                alert("Erro ao buscar os endereços. Verifique o console.");
+                enderecos = [];
+                currentFotocrimIdForEnderecos = null;
+            });
         }
                                                 
         const renderConfig = {
