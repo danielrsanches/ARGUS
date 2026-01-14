@@ -543,7 +543,10 @@ loadTemplate(
                 return;
             }
 
+            // Close modal immediately and show spinner
+            $("#enderecosModal").removeClass('visible');
             showSpinner();
+
             const formData = new FormData();
             formData.append("idFotocrim", idFotocrim);
             formData.append("enderecosJson", JSON.stringify(enderecos));
@@ -555,10 +558,12 @@ loadTemplate(
             .then(response => response.json())
             .then(data => {
                 hideSpinner();
-                alert(data.message || (data.success ? 'Operação concluída.' : 'Ocorreu um erro desconhecido.'));
+                // No success alert, as requested
                 if (data.success) {
-                    $("#enderecosModal").removeClass('visible');
                     loadAndRenderSingleFotocrimCard(idFotocrim);
+                } else {
+                    // Show alert only on failure
+                    alert(data.message || 'Ocorreu um erro desconhecido.');
                 }
             })
             .catch(error => {
@@ -657,24 +662,14 @@ loadTemplate(
             }
         });
 
-        // Adicionar novo endereço com Enter nos campos relevantes (exceto observação)
-        $modulo.on("keyup", "#end_logradouro, #end_numero, #end_complemento, #end_bairro, #end_cidade, #end_uf", function(e) {
+        // Inserir novo endereço com Enter
+        $modulo.on("keyup", "#end_search_logradouro, #end_numero, #end_complemento", function(e) {
             if (e.keyCode === 13) { // 13 é o código para Enter
                 e.preventDefault();
-                $("#enderecosModal button.adicionar-endereco").trigger("click");
+                $("#enderecosModal button.inserir-endereco-lista").trigger("click");
             }
         });
-
-
-
-        // Novo: Adicionar novo endereço com Enter no campo número
-        $modulo.on("keyup", "#end_numero", function(e) {
-            if (e.keyCode === 13) { // 13 é o código para Enter
-                e.preventDefault();
-                $("#enderecosModal button.adicionar-endereco").trigger("click");
-            }
-        });
-
+        
         // Remover um documento
         $modulo.on("click", ".documentos-container-gerenciamento .remover-documento", function() {
             const index = $(this).closest(".documento-gerencia-card").data("index");
