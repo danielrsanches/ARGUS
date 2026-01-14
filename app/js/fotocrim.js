@@ -167,6 +167,7 @@ loadTemplate(
 
 
         let enderecos = [];  // Array para armazenar os endereços em memória
+        let currentFotocrimIdForEnderecos = null; //para rastrear a que fotocrim os endereços pertencem
         let enderecosModalLoaded = false; // Flag para controlar se o modal de endereços já foi carregado
 
         const mapaTiposDocumento = {
@@ -268,6 +269,7 @@ loadTemplate(
                                 
         const resetEnderecos = () => {
             enderecos = [];
+            currentFotocrimIdForEnderecos = null;
             renderEnderecosDisplay(); // Se houver display no card
             renderEnderecosGerenciamento();
             resetEnderecosFormFields(); // Call the new reset function
@@ -276,27 +278,62 @@ loadTemplate(
         // Função para carregar e exibir os endereços para gerenciamento
         function carregaEnderecosParaGerenciamento(idFotocrim) {
             const showModal = () => {
-                // O array 'enderecos' já foi carregado por carregaFotocrimParaEdicao
-                $("#enderecos_idFotocrim").val(idFotocrim); // Apenas garante que o ID está setado
-                renderEnderecosGerenciamento(); // Renderiza os dados já existentes
-                resetEnderecosFormFields(); // Limpa os campos de input do endereço
-                $("#enderecosModal").addClass('visible'); // Exibe o modal
+                $("#enderecos_idFotocrim").val(idFotocrim); 
+                renderEnderecosGerenciamento(); 
+                resetEnderecosFormFields(); 
+                $("#enderecosModal").addClass('visible'); 
             };
-
-            if (!enderecosModalLoaded) {
-                loadHtml("html/modalEnderecos.html", "#modal-enderecos-container", "div#enderecosModal", function(err) {
-                    if (err) {
-                        console.error("❌ Erro ao carregar o modal de endereços: ", err);
-                        return;
-                    }
-                    enderecosModalLoaded = true;
-                    // Anexa o handler de arrastar APÓS o modal ser carregado
-                    elementDrag("#enderecosModal div.modal div.modalTitulo", "#enderecosModal div.modal");
-                    initEnderecosTomSelect(); // Initialize Tom Select here
+        
+            const loadAndShow = () => {
+                if (!enderecosModalLoaded) {
+                    loadHtml("html/modalEnderecos.html", "#modal-enderecos-container", "div#enderecosModal", function(err) {
+                        if (err) {
+                            console.error("❌ Erro ao carregar o modal de endereços: ", err);
+                            return;
+                        }
+                        enderecosModalLoaded = true;
+                        elementDrag("#enderecosModal div.modal div.modalTitulo", "#enderecosModal div.modal");
+                        initEnderecosTomSelect();
+                        showModal();
+                    });
+                } else {
                     showModal();
-                });
+                }
+            };
+        
+            // Check if the addresses for this idFotocrim are already loaded
+            if (currentFotocrimIdForEnderecos === idFotocrim) {
+                loadAndShow();
             } else {
-                showModal();
+                // Fetch addresses from the server
+                showSpinner();
+                const formData = new FormData();
+                formData.append('idFotocrim', idFotocrim);
+        
+                fetch("php/getFotocrimEnderecos.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideSpinner();
+                    if (data.success && data.data) {
+                        enderecos = data.data; // Update the global array
+                        currentFotocrimIdForEnderecos = idFotocrim; // Set the current ID
+                        loadAndShow(); // Now show the modal
+                    } else {
+                        alert(data.message || "Erro ao carregar endereços.");
+                        enderecos = []; // Clear array on failure
+                        currentFotocrimIdForEnderecos = null;
+                    }
+                })
+                .catch(error => {
+                    hideSpinner();
+                    console.error("Erro ao carregar endereços:", error);
+                    alert("Erro ao buscar os endereços. Verifique o console.");
+                    enderecos = [];
+                    currentFotocrimIdForEnderecos = null;
+                });
             }
         }
                                                 
@@ -773,8 +810,11 @@ loadTemplate(
                     }
 
                     // Lidar com endereços
+                    currentFotocrimIdForEnderecos = record.id; // Always set the ID for the current record
                     if (record.enderecos && Array.isArray(record.enderecos)) {
-                        enderecos = record.enderecos; // Atualiza o array de endereços global
+                        enderecos = record.enderecos; // Update the global addresses array
+                    } else {
+                        enderecos = []; // Clear the array if no addresses are returned
                     }
 
                     setTimeout(() => {
