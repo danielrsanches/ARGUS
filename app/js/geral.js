@@ -97,23 +97,22 @@ function loadJs(files, callback) {
     }
 
     list.forEach(function (src) {
-        // evita duplicar
+        // Evita duplicar
         if (document.querySelector('script[src="' + src + '"]')) {
             return done(null);
         }
 
-        var s = document.createElement("script");
-        s.src = src;
-        s.defer = true; // não bloqueia o parser
+        var script = document.createElement("script");
+        script.src = src;
 
-        s.onload = function () {
+        script.onload = function () {
             done(null);
         };
-        s.onerror = function () {
+        script.onerror = function () {
             done(new Error("Falha ao carregar JS: " + src));
         };
 
-        document.head.appendChild(s);
+        document.head.appendChild(script);
     });
 }
 

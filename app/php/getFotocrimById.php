@@ -69,6 +69,29 @@ try {
 
         $fotocrimRecord['documentos'] = $documents; // Add documents to the main record
 
+        // Fetch associated addresses
+        global $tableConfigEnderecos;
+        $enderecosTableName = $tableConfigEnderecos['tableName'];
+        $enderecosForeignKey = $tableConfigEnderecos['foreignKey'];
+
+        $endSql = "SELECT fe.id, fe.idFotocrim, fe.numero, fe.complemento, fe.observacao, fe.idEnderecoRua,
+                          er.logradouro,
+                          eb.id as idBairro, eb.nomeBairro as bairro,
+                          ec.id as idCidade, ec.nomeCidade as cidade, ec.uf
+                   FROM `{$enderecosTableName}` fe
+                   LEFT JOIN `enderecoRuas` er ON fe.idEnderecoRua = er.id
+                   LEFT JOIN `enderecoBairros` eb ON er.idBairro = eb.id
+                   LEFT JOIN `enderecoCidades` ec ON er.idCidade = ec.id
+                   WHERE fe.`{$enderecosForeignKey}` = :fotocrimId
+                   ORDER BY fe.id ASC";
+        $endStmt = $pdo->prepare($endSql);
+        $endStmt->bindValue(':fotocrimId', $id, PDO::PARAM_INT);
+        $endStmt->execute();
+        $addresses = $endStmt->fetchAll(PDO::FETCH_ASSOC);
+        file_put_contents('debug.log', "Addresses fetched. Count: " . count($addresses) . "\n", FILE_APPEND);
+
+        $fotocrimRecord['enderecos'] = $addresses; // Add addresses to the main record
+
         sendResponse(true, 'Registro encontrado com sucesso.', $fotocrimRecord);
     } else {
         sendResponse(false, 'Registro não encontrado.', null); // Changed to null for single record not found

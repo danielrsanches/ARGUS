@@ -203,121 +203,92 @@ try {
     }
     // --- END HANDLE DOCUMENTS ---
 
-    sendResponse(true, 'Registro salvo com sucesso!', null, (int)$recordId);
-
     // --- HANDLE ADDRESSES (if configName is fotocrim and enderecosJson is provided) ---
     if ($configName === 'fotocrim' && isset($_POST['enderecosJson'])) {
-        global $tableConfigEnderecos; // Ensure tableConfigEnderecos is available
-
-        if (!isset($tableConfigEnderecos) || !is_array($tableConfigEnderecos)) {
-            throw new RuntimeException("A variável \$tableConfigEnderecos não está definida ou é inválida.");
-        }
-
-        $enderecosTableName = $tableConfigEnderecos['tableName'];
-        $enderecosPrimaryKey = $tableConfigEnderecos['primaryKey'];
-        $enderecosForeignKey = $tableConfigEnderecos['foreignKey'];
-        $enderecosFields = $tableConfigEnderecos['fields'];
-
         $enderecos = json_decode($_POST['enderecosJson'], true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new InvalidArgumentException('enderecosJson inválido: ' . json_last_error_msg());
         }
         
-        // Sempre deleta os endereços existentes para este fotocrim_id e insere os novos
-        // Isso simplifica o gerenciamento e evita problemas de sincronização.
+        $enderecosTableName = 'fotocrimEnderecos'; // Hardcoding table name to be safe
+        $enderecosForeignKey = 'idFotocrim';   // Hardcoding foreign key to be safe
+
         $deleteSql = "DELETE FROM `{$enderecosTableName}` WHERE `{$enderecosForeignKey}` = :fotocrimId";
         $deleteStmt = $pdo->prepare($deleteSql);
-        $deleteStmt->execute([':fotocrimId' => $recordId]);
+        $deleteStmt->execute(['fotocrimId' => $recordId]);
 
         if (!empty($enderecos)) {
-            // Prepara a query de INSERT para os endereços
-            $endColumns = [];
-            $endPlaceholders = [];
-
-            // Inclui a chave estrangeira
-            $endColumns[] = "`{$enderecosForeignKey}`";
-            $endPlaceholders[] = ":{$enderecosForeignKey}";
-
-            foreach ($enderecosFields as $field) {
-                if ($field['editable'] && $field['name'] !== $enderecosPrimaryKey && $field['name'] !== $enderecosForeignKey) {
-                    $endColumns[] = "`{$field['name']}`";
-                    $endPlaceholders[] = ":{$field['name']}";
-                }
-            }
-            
-            $insertEndSql = "INSERT INTO `{$enderecosTableName}` (" . implode(', ', $endColumns) . ") VALUES (" . implode(', ', $endPlaceholders) . ")";
+            // Prepare the INSERT statement ONCE outside the loop for efficiency.
+            // The columns are hardcoded to match the ACTUAL schema from drscco66_argus.sql, ignoring the incorrect fotocrimConfig.php
+            $insertEndSql = "INSERT INTO `{$enderecosTableName}` (`{$enderecosForeignKey}`, `idEnderecoRua`, `numero`, `complemento`, `observacao`) VALUES (:idFotocrim, :idEnderecoRua, :numero, :complemento, :observacao)";
             $insertEndStmt = $pdo->prepare($insertEndSql);
 
             foreach ($enderecos as $end) {
-                // Determine idEnderecoRua
-                $idEnderecoRua = $end['idEnderecoRua'] ?? null;
+                // Use 'idRua' which comes from the frontend TomSelect logic
+                $idEnderecoRua = $end['idRua'] ?? null;
 
-                // If idEnderecoRua is not provided or is invalid, attempt to find/create it
                 if (!is_numeric($idEnderecoRua) || (int)$idEnderecoRua <= 0) {
                     $cidade = $end['cidade'] ?? null;
                     $uf = $end['uf'] ?? null;
                     $bairro = $end['bairro'] ?? null;
                     $logradouro = $end['logradouro'] ?? null;
-                    $cep = $end['cep'] ?? null; // Added cep
 
                     if (!$cidade || !$uf || !$bairro || !$logradouro) {
-                        // Skip this address or throw error if essential components are missing
-                        // For now, we'll skip to allow saving other valid addresses
                         continue;
                     }
 
                     // Find or Create Cidade
                     $stmt = $pdo->prepare("SELECT id FROM `enderecoCidades` WHERE nomeCidade = :cidade AND uf = :uf");
-                    $stmt->execute([':cidade' => $cidade, ':uf' => $uf]);
+                    $stmt->execute(['cidade' => $cidade, 'uf' => $uf]);
                     $idCidade = $stmt->fetchColumn();
                     if (!$idCidade) {
                         $stmt = $pdo->prepare("INSERT INTO `enderecoCidades` (nomeCidade, uf) VALUES (:cidade, :uf)");
-                        $stmt->execute([':cidade' => $cidade, ':uf' => $uf]);
+                        $stmt->execute(['cidade' => $cidade, 'uf' => $uf]);
                         $idCidade = $pdo->lastInsertId();
                     }
 
                     // Find or Create Bairro
                     $stmt = $pdo->prepare("SELECT id FROM `enderecoBairros` WHERE nomeBairro = :bairro");
-                    $stmt->execute([':bairro' => $bairro]);
+                    $stmt->execute(['bairro' => $bairro]);
                     $idBairro = $stmt->fetchColumn();
                     if (!$idBairro) {
                         $stmt = $pdo->prepare("INSERT INTO `enderecoBairros` (nomeBairro) VALUES (:bairro)");
-                        $stmt->execute([':bairro' => $bairro]);
+                        $stmt->execute(['bairro' => $bairro]);
                         $idBairro = $pdo->lastInsertId();
                     }
 
                     // Find or Create Rua
                     $stmt = $pdo->prepare("SELECT id FROM `enderecoRuas` WHERE idCidade = :idCidade AND idBairro = :idBairro AND logradouro = :logradouro");
-                    $stmt->execute([':idCidade' => $idCidade, ':idBairro' => $idBairro, ':logradouro' => $logradouro]);
+                    $stmt->execute(['idCidade' => $idCidade, 'idBairro' => $idBairro, 'logradouro' => $logradouro]);
                     $idEnderecoRua = $stmt->fetchColumn();
                     if (!$idEnderecoRua) {
-                        $stmt = $pdo->prepare("INSERT INTO `enderecoRuas` (idCidade, idBairro, logradouro) VALUES (:idCidade, :idBairro, :logradouro)"); // Removed cep here
-                        $stmt->execute([':idCidade' => $idCidade, ':idBairro' => $idBairro, ':logradouro' => $logradouro]);
+                        $stmt = $pdo->prepare("INSERT INTO `enderecoRuas` (idCidade, idBairro, logradouro) VALUES (:idCidade, :idBairro, :logradouro)");
+                        $stmt->execute(['idCidade' => $idCidade, 'idBairro' => $idBairro, 'logradouro' => $logradouro]);
                         $idEnderecoRua = $pdo->lastInsertId();
                     }
                 }
 
                 if (!is_numeric($idEnderecoRua) || (int)$idEnderecoRua <= 0) {
-                    // If idEnderecoRua still not resolved, skip this address
                     continue;
                 }
-
+                
+                // Build the array for execute(). Keys must match placeholders WITHOUT the colon.
                 $endToSave = [
-                    ":{$enderecosForeignKey}" => $recordId,
-                    ":idEnderecoRua"          => (int)$idEnderecoRua,
-                    ":numero"                 => $end['numero'] ?? null,
-                    ":complemento"            => $end['complemento'] ?? null,
-                    ":observacao"             => $end['observacao'] ?? null,
+                    'idFotocrim'    => $recordId,
+                    'idEnderecoRua' => (int)$idEnderecoRua,
+                    'numero'        => $end['numero'] ?? null,
+                    'complemento'   => $end['complemento'] ?? null,
+                    'observacao'    => $end['observacao'] ?? null,
                 ];
 
-                $insertEndSql = "INSERT INTO `{$enderecosTableName}` (`{$enderecosForeignKey}`, `idEnderecoRua`, `numero`, `complemento`, `observacao`) VALUES (:idFotocrim, :idEnderecoRua, :numero, :complemento, :observacao)";
-                $insertEndStmt = $pdo->prepare($insertEndSql);
                 $insertEndStmt->execute($endToSave);
             }
         }
     }
     // --- END HANDLE ADDRESSES ---
+
+    sendResponse(true, 'Registro salvo com sucesso!', null, (int)$recordId);
 
 } catch (PDOException $e) {
     // Trata erros de banco de dados

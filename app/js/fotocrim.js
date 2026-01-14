@@ -1,37 +1,34 @@
-//limpa CSS e JS não fixos...
-clearCss();
-clearJs();
+// Aplica uma máscara de CPF (###.###.###-##) a um campo de input.
+function maskCpf(event) {
+    let value = event.target.value;
+    value = value.replace(/\D/g, ""); // Remove tudo que não é dígito
+    value = value.replace(/(\d{3})(\d)/, "$1.$2"); // Coloca um ponto entre o terceiro e o quarto dígitos
+    value = value.replace(/(\d{3})(\d)/, "$1.$2"); // Coloca um ponto entre o sexto e o sétimo dígitos
+    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Coloca um hífen antes dos dois últimos dígitos
+    event.target.value = value;
+    return event;
+}
 
-// Lógica de máscara para CPF
-const applyCpfMask = (value) => {
-    value = value.replace(/\D/g, ''); // Remove tudo que não é dígito
-    if (value.length > 11) {
-        value = value.substring(0, 11);
-    }
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    return value;
-};
-
-const toggleCpfMask = () => {
+// Adiciona ou remove a máscara de CPF do campo #doc_valor com base no tipo de documento selecionado.
+function toggleCpfMask() {
     const docTipo = $("#doc_tipo").val();
-    const $docValor = $("#doc_valor");
+    const docValorInput = $("#doc_valor");
 
-    // Remove qualquer evento input anterior para evitar duplicação
-    $docValor.off('input.cpfMask');
+    // Remove qualquer evento 'input' anterior para evitar duplicação
+    docValorInput.off("input.cpfMask");
 
-    if (docTipo === "cpf") {
-        // Aplica a máscara no valor atual e adiciona o evento input
-        $docValor.val(applyCpfMask($docValor.val()));
-        $docValor.on('input.cpfMask', function() {
-            $(this).val(applyCpfMask($(this).val()));
-        });
+    if (docTipo === 'cpf') {
+        docValorInput.attr("maxlength", 14);
+        // Adiciona o evento de máscara com um namespace para fácil remoção
+        docValorInput.on("input.cpfMask", maskCpf);
+        // Aplica a máscara ao valor atual, caso já exista
+        docValorInput.trigger("input");
     } else {
-        // Remove a máscara (mantém apenas dígitos)
-        $docValor.val($docValor.val().replace(/\D/g, ''));
+        docValorInput.removeAttr("maxlength");
+        // Opcional: Limpar o valor ao mudar de tipo se a máscara não for compatível
+        // docValorInput.val("");
     }
-};
+}
 
 //carrega o template do módulo...
 loadTemplate(
@@ -234,7 +231,6 @@ loadTemplate(
                         <div class="info">
                             <span>${end.logradouro}, ${end.numero} - ${end.bairro} (${end.cidade}/${end.uf})</span>
                             ${end.complemento ? `<small>Comp: ${end.complemento}</small>` : ''}
-                            ${end.cep ? `<small>CEP: ${end.cep}</small>` : ''}
                             ${end.observacao ? `<small>Obs: ${end.observacao}</small>` : ''}
                         </div>
                         <div class="actions">
@@ -279,41 +275,12 @@ loadTemplate(
 
         // Função para carregar e exibir os endereços para gerenciamento
         function carregaEnderecosParaGerenciamento(idFotocrim) {
-            const loadAndShow = () => {
-                showSpinner();
-                resetEnderecos(); // Limpa antes de carregar
-                $("#enderecos_idFotocrim").val(idFotocrim); // Define o ID do fotocrim pai
-    
-                const formData = new FormData();
-                formData.append('idFotocrim', idFotocrim);
-    
-                fetch("php/getFotocrimEnderecos.php", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    hideSpinner();
-                    if (data.success && data.data) {
-                        enderecos = data.data; // Atualiza o array de endereços global
-                        renderEnderecosGerenciamento();
-                        $("#enderecosModal").addClass('visible'); // Exibe o modal
-                        
-                        // Reset fields, ensuring a clean state for new input or editing
-                        $("#end_id").val("");
-                        $("#end_numero").val(""); // Keep numero input
-                        $("#end_complemento").val(""); // Keep complemento input
-                    } else {                                                        
-                        alert(data.message || "Erro ao carregar endereços.");
-                        $("#enderecosModal").removeClass('visible');
-                    }
-                })
-                .catch(error => {
-                    hideSpinner();
-                    console.error("Erro ao carregar endereços:", error);
-                    alert("Erro ao carregar os endereços. Verifique o console.");
-                    $("#enderecosModal").addClass('hidden');
-                });
+            const showModal = () => {
+                // O array 'enderecos' já foi carregado por carregaFotocrimParaEdicao
+                $("#enderecos_idFotocrim").val(idFotocrim); // Apenas garante que o ID está setado
+                renderEnderecosGerenciamento(); // Renderiza os dados já existentes
+                resetEnderecosFormFields(); // Limpa os campos de input do endereço
+                $("#enderecosModal").addClass('visible'); // Exibe o modal
             };
 
             if (!enderecosModalLoaded) {
@@ -326,10 +293,10 @@ loadTemplate(
                     // Anexa o handler de arrastar APÓS o modal ser carregado
                     elementDrag("#enderecosModal div.modal div.modalTitulo", "#enderecosModal div.modal");
                     initEnderecosTomSelect(); // Initialize Tom Select here
-                    loadAndShow();
+                    showModal();
                 });
             } else {
-                loadAndShow();
+                showModal();
             }
         }
                                                 
@@ -378,6 +345,7 @@ loadTemplate(
         $modulo.on("click", "section.fotocrim button.novo", function () {
             $("form#fotocrim")[0].reset();
             resetDocumentos();
+            resetEnderecos();
             $(".idadeInfo").text("XX anos"); // Reseta a idade
             // Força o redimensionamento dos textareas para o tamanho inicial
             $("textarea#observacoes, textarea#observacoesReservadas").trigger("input");
@@ -524,7 +492,6 @@ loadTemplate(
         $modulo.on("click", "#enderecosModal .fechar-secundario, #enderecosModal .concluir-enderecos", function() {
             const modalBackdrop = $("#enderecosModal");
             modalBackdrop.removeClass('visible');
-            resetEnderecos();
             // If the main fotocrim modal is visible, focus an input there
             if ($("#fotocrimModal").hasClass("visible")) {
                 $("#nomeMae").focus();
@@ -584,7 +551,6 @@ loadTemplate(
                 cidade: selectedAddressData.cidade,
                 idCidade: selectedAddressData.idCidade,
                 uf: selectedAddressData.uf,
-                cep: selectedAddressData.cep,
                 observacao,
             };
 
@@ -678,8 +644,7 @@ loadTemplate(
                     cidade: endereco.cidade,
                     idCidade: endereco.idCidade,
                     uf: endereco.uf,
-                    cep: endereco.cep,
-                    display: `${endereco.logradouro}, ${endereco.bairro}, ${endereco.cidade}/${endereco.uf} - CEP: ${endereco.cep}`
+                    display: `${endereco.logradouro}, ${endereco.bairro}, ${endereco.cidade}/${endereco.uf}`
                 };
                 // Add the item to Tom Select options if not already there and select it
                 if (!endSearchTomSelect.options[itemToSelect.idRua]) {
@@ -753,6 +718,7 @@ loadTemplate(
             // Limpa o formulário e reseta documentos antes de carregar novos dados
             $("form#fotocrim")[0].reset();
             resetDocumentos();
+            resetEnderecos(); // Limpa os endereços antigos
             $(".idadeInfo").text("XX anos");
             $("#fotocrimModal").removeClass('hidden');
             $("section.forms.fotocrimForm").addClass("visible");
@@ -804,6 +770,11 @@ loadTemplate(
                         documentos = record.documentos; // Atualiza o array de documentos global
                         renderDocumentosDisplay();
                         renderDocumentosGerenciamento();
+                    }
+
+                    // Lidar com endereços
+                    if (record.enderecos && Array.isArray(record.enderecos)) {
+                        enderecos = record.enderecos; // Atualiza o array de endereços global
                     }
 
                     setTimeout(() => {
